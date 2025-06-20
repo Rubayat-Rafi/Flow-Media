@@ -1,0 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+body {
+  background: var(--background);
+  color: var(--text);
+  font-family: "Montserrat", sans-serif;
+}
+
+@theme {
+  --background: #000000;
+  --secondary: #1a1a1a;
+  --primary: #f44336;
+  --accent: #ff5722;
+  --text: #e5e5e5;
+}
+
+
+@layer components {
+  .primary-btn{
+    @apply font-semibold py-2 px-4 rounded-md border-2  bg-[var(--primary)] hover:bg-[var(--accent)] cursor-pointer border-[var(--primary)] hover:border-[var(--accent)] transition-colors duration-300 ease-in ;
+  }
+
+  .no-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scroll > option {
+    background: #1a1a1a;
+  }
+}
