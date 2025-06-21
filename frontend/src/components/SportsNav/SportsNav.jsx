@@ -62,7 +62,7 @@ const SportsNav = ({ onSelectCategory }) => {
                 onClick={() => handleClick(cat.name)}
                 className={`px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition duration-200 uppercase cursor-pointer  ${
                   active === cat.name
-                    ? "bg-[var(--primary)] "
+                    ? "bg-[var(--primary)] text-[var(--background)]"
                     : "bg-[var(--secondary)] "
                 }`}
               >

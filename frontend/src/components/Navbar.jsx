@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import { IoInformationCircleOutline } from "react-icons/io5";
+import { CgProfile } from "react-icons/cg";
 import Container from "./Shared/Container";
+import { useLocation } from "react-router";
+import { useAuth } from "../hooks/useAuth";
+import ProfileMenu from "./ProfileMenu/ProfileMenu";
 
 const Navbar = () => {
+  const location = useLocation();
   const [localTime, setLocalTime] = useState("");
+  const [clickProfile, setClickProfile] = useState(false);
+  const { user, loading, signOutUser } = useAuth();
 
   useEffect(() => {
     // Update time immediately and set interval
@@ -25,13 +32,25 @@ const Navbar = () => {
     );
   };
 
+  if (location.pathname === "/login" || location.pathname === "/signup")
+    return null;
+
+  if (loading) return <h1>...Loading</h1>;
+
+  const handleClickProfile = () => {
+    setClickProfile(!clickProfile);
+  };
+
   return (
     <Container>
-      <nav className="flex items-center justify-between py-4">
+      <nav className="flex items-center justify-between py-4 relative">
         <div className="flex items-center gap-5">
           {/* logo */}
-          <div className="text-4xl font-black text-[var(--primary)] uppercase">
+          {/* <div className="text-4xl font-black text-[var(--primary)] uppercase">
             Flow <span className="text-[var(--text)]">Media</span>
+          </div> */}
+          <div>
+            <img src="/logo.png" className="max-h-[48px]" alt="logo" />
           </div>
           <div className="flex items-center gap-2 py-2 px-4 rounded-md bg-[var(--secondary)]">
             {/* Clock Icon */}
@@ -91,8 +110,21 @@ const Navbar = () => {
             <IoInformationCircleOutline className="text-2xl" />
             FAQ?
           </a>
-          <button className="primary-btn">My Account</button>
+          {user ? (
+            <button onClick={handleClickProfile}>
+              <CgProfile className="text-3xl cursor-pointer hover:text-[var(--primary)] transition-colors duration-300 ease-in" />
+            </button>
+          ) : (
+            <a href="/login" className="primary-btn">
+              My Account
+            </a>
+          )}
         </div>
+        {clickProfile && user && (
+          <div className="absolute w-64 right-0 top-20 z-50 transition-transform duration-300 ease-in-out">
+            <ProfileMenu user={user} signOutUser={signOutUser} />
+          </div>
+        )}
       </nav>
     </Container>
   );

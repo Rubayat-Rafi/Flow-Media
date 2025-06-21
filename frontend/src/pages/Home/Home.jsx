@@ -4,7 +4,7 @@ import SportsNav from "../../components/SportsNav/SportsNav";
 import MainContent from "../../components/MianContent/MainContent";
 
 const Home = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("Channel");
   const category = (selectCategory) => {
     setSelectedCategory(selectCategory);
     console.log("Seelected Category:", selectCategory);
@@ -13,10 +13,9 @@ const Home = () => {
   return (
     <section>
       <SportsNav onSelectCategory={category} />
-
-      <div className="max-w-[1440px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-4 mt-10 min-h-[calc(100vh-300px)]">
+      <div className="max-w-[1440px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-4 my-10 min-h-[calc(100vh-372px)]">
         {/* sidebar content */}
-        <div className="w-full md:w-1/4 lg:w-1/5">
+        <div className="w-full  md:w-1/4 lg:w-1/5">
           <Sidebar sidebarContent={selectedCategory} />
         </div>
         {/* main content */}
