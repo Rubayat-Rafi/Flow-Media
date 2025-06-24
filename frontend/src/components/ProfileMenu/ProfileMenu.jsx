@@ -8,7 +8,7 @@ const ProfileMenu = ({ user, signOutUser }) => {
     <aside className="bg-[var(--secondary)] shadow-lg rounded-md h-full p-5 space-y-4 ">
       {/* User Profile */}
       <div className="space-y-2 bg-[var(--background)] p-4 rounded-md">
-        <h1>User Name</h1>
+        <h1 className="uppercase">{user.displayName}</h1>
         <p>{user.email}</p>
       </div>
       {/* profile option */}

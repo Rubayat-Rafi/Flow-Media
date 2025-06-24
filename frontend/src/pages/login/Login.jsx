@@ -1,8 +1,10 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 
 const Login = () => {
+  const navigate = useNavigate();
   const { signInUser } = useAuth();
   const { register, handleSubmit, reset } = useForm();
 
@@ -14,7 +16,7 @@ const Login = () => {
       reset();
       alert("sign In successfull");
       // redirect to home page
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
       console.error("Error during Sign Up:", error);
       alert("Login faild. Please try again Later.");

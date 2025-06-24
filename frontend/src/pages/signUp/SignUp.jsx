@@ -1,21 +1,23 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router";
 
 const SignUp = () => {
-  const { createUser } = useAuth();
-
+  const { createUser, updateUserProfile } = useAuth();
+  const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
 
   const handleSignUpFormSubmit = async (data) => {
-    const { email, password } = data;
+    const { name, email, password } = data;
 
     try {
       await createUser(email, password);
+      await updateUserProfile(name);
       reset();
       alert("sign up successfull");
       // redirect to home page
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
       console.error("Error during Sign Up:", error);
       alert("Sign up failed. please try again later.");
