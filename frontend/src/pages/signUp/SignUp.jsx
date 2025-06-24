@@ -2,6 +2,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
+import { saveUser } from "../../api/utils";
 
 const SignUp = () => {
   const { createUser, updateUserProfile } = useAuth();
@@ -14,6 +15,9 @@ const SignUp = () => {
     try {
       await createUser(email, password);
       await updateUserProfile(name);
+
+      // Prepare user object for saving
+      await saveUser(data);
       reset();
       alert("sign up successfull");
       // redirect to home page
