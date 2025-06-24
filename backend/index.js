@@ -28,9 +28,7 @@ const verifyToken = async (req, res, next) => {
     })
 }
 
-
-
-
+// routes
 app.get("/", (req, res) => {
   res.send("Hello from Flow Media Backend!");
 });
