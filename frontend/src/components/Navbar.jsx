@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import Container from "./Shared/Container";
@@ -10,15 +10,9 @@ const Navbar = () => {
   const location = useLocation();
   const [localTime, setLocalTime] = useState("");
   const [clickProfile, setClickProfile] = useState(false);
+  const profileBtnRef = useRef(null);
+  const menuRef = useRef(null);
   const { user, loading, signOutUser } = useAuth();
-
-  useEffect(() => {
-    // Update time immediately and set interval
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const updateTime = () => {
     // Format local time as 12-hour with AM/PM
@@ -32,14 +26,35 @@ const Navbar = () => {
     );
   };
 
+  // Time update effect (runs once)
+  useEffect(() => {
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Click outside effect (runs when clickProfile changes)
+  useEffect(() => {
+    if (!clickProfile) return;
+    const handleClickOutside = (event) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        profileBtnRef.current &&
+        !profileBtnRef.current.contains(event.target)
+      ) {
+        setClickProfile(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [clickProfile]);
+  const handleClickProfile = () => setClickProfile((prev) => !prev);
+
   if (location.pathname === "/login" || location.pathname === "/signup")
     return null;
 
   if (loading) return <h1>...Loading</h1>;
-
-  const handleClickProfile = () => {
-    setClickProfile(!clickProfile);
-  };
 
   return (
     <Container>
@@ -70,7 +85,7 @@ const Navbar = () => {
             </svg>
 
             {/* Timezone Dropdown */}
-            <select className="text-sm focus:outline-none p-1 focus:ring-2 focus:ring-[var(--accent)] focus:rounded-md overflow-y-scroll no-scroll ">
+            <select className="bg-[var(--secondary)] text-sm focus:outline-none  p-1 focus:ring-2 focus:ring-[var(--accent)] focus:rounded-md overflow-y-scroll no-scroll ">
               <option value="GMT-11">GMT -11</option>
               <option value="GMT-10">GGMT -10</option>
               <option value="GMT-9">GMT -9</option>
@@ -111,7 +126,7 @@ const Navbar = () => {
             FAQ?
           </a>
           {user ? (
-            <button onClick={handleClickProfile}>
+            <button ref={profileBtnRef} onClick={handleClickProfile}>
               <CgProfile className="text-3xl cursor-pointer hover:text-[var(--primary)] transition-colors duration-300 ease-in" />
             </button>
           ) : (
@@ -121,7 +136,10 @@ const Navbar = () => {
           )}
         </div>
         {clickProfile && user && (
-          <div className="absolute w-64 right-0 top-20 z-50 transition-transform duration-300 ease-in-out">
+          <div
+            ref={menuRef}
+            className="absolute w-64 right-0 top-20 z-50 transition-transform duration-300 ease-in-out"
+          >
             <ProfileMenu user={user} signOutUser={signOutUser} />
           </div>
         )}
