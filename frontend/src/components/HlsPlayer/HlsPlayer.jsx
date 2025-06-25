@@ -56,7 +56,6 @@ const HlsPlayer = ({ src }) => {
 
   return (
     <div className="w-full">
-<<<<<<< HEAD
       {/* live status  */}
       <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
         <div className="inline-grid *:[grid-area:1/1]">
@@ -83,31 +82,6 @@ const HlsPlayer = ({ src }) => {
           ))}
         </select>
       </div>
-=======
-      <video
-        ref={videoRef}
-        controls
-        autoPlay
-        className="w-full rounded border border-white"
-      />
-      {levels.length > 0 && (
-        <div className="mt-2">
-          <label className="mr-2">Resolution:</label>
-          <select
-            value={selectedLevel}
-            onChange={(e) => handleQualityChange(parseInt(e.target.value))}
-            className="text-black p-1"
-          >
-            <option value={-1}>Auto</option>
-            {levels.map((level, i) => (
-              <option key={i} value={i}>
-                {level.height}p
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
->>>>>>> 86a8580b1bdeff54e79900d6e3fd60898ade7ba1
     </div>
   );
 };
