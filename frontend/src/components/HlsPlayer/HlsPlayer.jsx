@@ -34,7 +34,6 @@ const HlsPlayer = ({ src }) => {
       setSelectedLevel(levelIndex);
     }
   };
-
   return (
     <div className="w-full">
       <video
