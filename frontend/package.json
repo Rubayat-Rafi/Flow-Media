@@ -11,13 +11,21 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.10",
+<<<<<<< HEAD
     "firebase": "^11.9.1",
     "hls.js": "^1.6.5",
+=======
+    "axios": "^1.10.0",
+    "firebase": "^11.9.1",
+>>>>>>> 25cd817d1ce1cd11a1d1010d151a2b85c59c24f6
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.58.1",
     "react-icons": "^5.5.0",
+<<<<<<< HEAD
     "react-player": "^2.16.0",
+=======
+>>>>>>> 25cd817d1ce1cd11a1d1010d151a2b85c59c24f6
     "react-router": "^7.6.2",
     "tailwindcss": "^4.1.10"
   },
