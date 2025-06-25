@@ -5,9 +5,9 @@ const WatchBtn = () => {
   return (
     <button
       onClick={() => setWatch(!watch)}
-      className=" bg-orange-500 px-2 py-1 rounded-lg"
+      className=" bg-[var(--primary)] text-[var(--background)] text-sm font-medium px-2 py-1 rounded-md cursor-pointer"
     >
-      {!watch ? "watch" : "watching..."}
+      {!watch ? "watch" : "watching"}
     </button>
   );
 };
