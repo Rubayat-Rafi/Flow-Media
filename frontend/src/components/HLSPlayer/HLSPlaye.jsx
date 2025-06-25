@@ -4,9 +4,7 @@ const HLSPlayer = ({ src }) => {
   const videoRef = useRef(null);
   const [hlsInstance, setHlsInstance] = useState(null);
   const [levels, setLevels] = useState([]);
-  const [selectedLevel, setSelectedLevel] = useState(-1); // -1 = auto
-
-  useEffect(() => {
+  const [selectedLevel, setSelectedLevel] = useState(-1);
     if (Hls.isSupported()) {
       const hls = new Hls();
       setHlsInstance(hls);
@@ -32,7 +30,6 @@ const HLSPlayer = ({ src }) => {
       setSelectedLevel(levelIndex);
     }
   };
-
   return (
     <div className="w-full">
       <video
