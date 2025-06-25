@@ -15,7 +15,6 @@ const SignUp = () => {
     try {
       await createUser(email, password);
       await updateUserProfile(name);
-
       // Prepare user object for saving
       await saveUser(data);
       reset();
