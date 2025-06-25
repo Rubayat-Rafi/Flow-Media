@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
+@plugin "daisyui";
 
 body {
   background: var(--background);
@@ -40,10 +41,15 @@ body {
     @apply w-full bg-[var(--primary)]  py-3 px-4 rounded-md font-medium hover:bg-[var(--accent)] transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] cursor-pointer;
   }
 
+  /* filepath: d:\FLOW MEDIA\frontend\src\index.css */
   .no-scroll::-webkit-scrollbar {
     display: none;
   }
+  .no-scroll {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
   .no-scroll > option {
-    background: #1a1a1a;
+    background: var(--secondary);
   }
 }

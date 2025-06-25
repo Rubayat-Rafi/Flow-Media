@@ -1,18 +1,18 @@
 const ProfileMenu = ({ user, signOutUser }) => {
   const links = [
     { name: "Profile", href: "#" },
-    { name: "Dadhboard", href: "#" },
+    { name: "Dadhboard", href: "/dashboard" },
   ];
 
   return (
-    <aside className="bg-[var(--secondary)] shadow-lg rounded-md h-full p-5 space-y-4 ">
+    <aside className="bg-[var(--secondary)] shadow-lg rounded-md h-full p-5 space-y-2">
       {/* User Profile */}
-      <div className="space-y-2 bg-[var(--background)] p-4 rounded-md">
+      <div className=" bg-[var(--background)] p-4 rounded-md">
         <h1 className="uppercase">{user.displayName}</h1>
         <p>{user.email}</p>
       </div>
       {/* profile option */}
-      <div className="flex flex-col space-y-4">
+      <div className="flex flex-col space-y-2">
         {links.map((link, index) => (
           <a
             key={index}
