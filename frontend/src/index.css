@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
+
+body {
+  background: var(--background);
+  color: var(--text);
+  font-family: "Montserrat", sans-serif;
+}
+@theme {
+  --background: #0c1117;
+  --secondary: #151d28;
+  --primary: #dd8f3c;
+  --accent: #d48129;
+  --text: #e5e5e5;
+}
+
+@layer base {
+}
+
+@layer components {
+  .link {
+    color: var(--primary);
+    transition: 0.3s ease-in-out;
+    &:hover {
+      text-decoration: underline;
+      transition: transform 0.3s ease-in-out;
+    }
+  }
+
+  .primary-btn {
+    @apply font-semibold py-2 px-4 rounded-md border-2 text-[var(--background)]  bg-[var(--primary)] hover:bg-[var(--accent)] cursor-pointer border-[var(--primary)] hover:border-[var(--accent)] transition-colors duration-300 ease-in;
+  }
+  .input-fild {
+    @apply w-full px-4 py-3 rounded-md text-[var(--background)] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] placeholder:text-gray-400;
+  }
+  .label-text {
+    @apply text-[var(--background)] font-medium;
+  }
+  .signup-btn {
+    @apply w-full bg-[var(--primary)]  py-3 px-4 rounded-md font-medium hover:bg-[var(--accent)] transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)] cursor-pointer;
+  }
+
+  .no-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scroll > option {
+    background: #1a1a1a;
+  }
+}
