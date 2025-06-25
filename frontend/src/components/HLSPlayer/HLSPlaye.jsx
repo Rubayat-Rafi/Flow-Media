@@ -1,28 +1,28 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+
 import Hls from "hls.js";
 const HLSPlayer = ({ src }) => {
   const videoRef = useRef(null);
   const [hlsInstance, setHlsInstance] = useState(null);
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(-1);
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      setHlsInstance(hls);
-      hls.loadSource(src);
-      hls.attachMedia(videoRef.current);
+  if (Hls.isSupported()) {
+    const hls = new Hls();
+    setHlsInstance(hls);
+    hls.loadSource(src);
+    hls.attachMedia(videoRef.current);
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        setLevels(hls.levels);
-        setSelectedLevel(hls.currentLevel);
-      });
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      setLevels(hls.levels);
+      setSelectedLevel(hls.currentLevel);
+    });
 
-      return () => {
-        hls.destroy();
-      };
-    } else if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
-      videoRef.current.src = src;
-    }
-  }, [src]);
+    return () => {
+      hls.destroy();
+    };
+  } else if (videoRef.current.canPlayType("application/vnd.apple.mpegurl")) {
+    videoRef.current.src = src;
+  }
 
   const handleQualityChange = (levelIndex) => {
     if (hlsInstance) {
