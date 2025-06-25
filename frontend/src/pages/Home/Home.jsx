@@ -18,7 +18,7 @@ const Home = () => {
         <div className=" w-2/6 max-md:w-full ">
           <Sidebar
             sidebarContent={selectedCategory}
-            chennels={m3u8FilesArray}
+            channels={m3u8FilesArray}
           />
         </div>
         {/* main content */}
