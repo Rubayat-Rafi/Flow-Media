@@ -2,12 +2,12 @@ import { useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import SportsNav from "../../components/SportsNav/SportsNav";
 import MainContent from "../../components/MianContent/MainContent";
-import { m3u8FilesArray } from "../../components/M3u8Files/M3u8Files";
+import { AllChannels } from "../../components/AllChennels/AllChannels";
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("Channel");
+  
   const category = (selectCategory) => {
     setSelectedCategory(selectCategory);
-    console.log("Seelected Category:", selectCategory);
   };
 
   return (
@@ -18,11 +18,11 @@ const Home = () => {
         <div className="w-2/8 max-md:w-full">
           <Sidebar
             sidebarContent={selectedCategory}
-            channels={m3u8FilesArray}
+            channels={AllChannels}
           />
         </div>
-        {/* main content */}
-        <div className="w-6/8 max-md:w-full ">
+
+        <div className=" w-4/6 max-md:w-full ">
           <MainContent />
         </div>
       </div>
