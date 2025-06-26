@@ -5,6 +5,7 @@ import Container from "./Shared/Container";
 import { useLocation } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import ProfileMenu from "./ProfileMenu/ProfileMenu";
+import LoadingSpinner from "./Shared/LoadingSpinner";
 
 const Navbar = () => {
   const location = useLocation();
@@ -51,10 +52,14 @@ const Navbar = () => {
   }, [clickProfile]);
   const handleClickProfile = () => setClickProfile((prev) => !prev);
 
-  if (location.pathname === "/login" || location.pathname === "/signup" || location.pathname === "/dashboard")
+  if (
+    location.pathname === "/login" ||
+    location.pathname === "/signup" ||
+    location.pathname === "/dashboard"
+  )
     return null;
 
-  if (loading) return <h1>...Loading</h1>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <Container>
