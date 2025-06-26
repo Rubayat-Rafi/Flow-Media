@@ -68,11 +68,11 @@ const HlsPlayer = ({ src }) => {
           <select
             value={selectedLevel}
             onChange={(e) => handleQualityChange(parseInt(e.target.value))}
-            className="text-black p-1"
+            className=" p-1"
           >
             <option value={-1}>Auto</option>
             {levels.map((level, i) => (
-              <option key={i} value={i}>
+              <option key={i} value={i} className=" text-black">
                 {level.height}p
               </option>
             ))}
