@@ -4,6 +4,7 @@ const Slice = createSlice({
   initialState: {
     url: "",
     usbscribe: false,
+    hideVideoFlag: false,
   },
   reducers: {
     addUrl: (state, action) => {
@@ -12,8 +13,11 @@ const Slice = createSlice({
     addSubscription: (state, action) => {
       state.usbscribe = action.payload;
     },
+    addVideoFlag: (state, action) => {
+      state.hideVideoFlag = action.payload;
+    },
   },
 });
 
-export const { addUrl } = Slice.actions;
+export const { addUrl, addSubscription, addVideoFlag } = Slice.actions;
 export default Slice.reducer;

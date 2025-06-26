@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUrl } from "../../utils/redux/slices/slice";
 import { useNavigate } from "react-router";
+import { addVideoFlag } from "../../utils/redux/slices/slice";
 const Sidebar = ({ sidebarContent, channels }) => {
+  const { url } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(null);
   return (
-    <aside className="bg-[var(--secondary)] rounded-md shadow-lg h-full overflow-hidden">
+    <aside className="bg-[var(--secondary)] h-[500px] overflow-y-scroll rounded-md shadow-lg  overflow-hidden">
       <p>{sidebarContent ?? "None selected"}</p>
       <div className="space-y-3">
         {channels?.map((ch, idx) => (
@@ -21,13 +23,15 @@ const Sidebar = ({ sidebarContent, channels }) => {
               onClick={() => {
                 setActiveIndex(idx);
                 dispatch(addUrl(ch?.url));
-                setTimeout(()=>{
-                  navigate("/login")
-                },5000)
+                dispatch(addVideoFlag(true));
+
+                // setTimeout(()=>{
+                //   navigate("/login")
+                // },5000)
               }}
               className="bg-orange-500 px-2 py-1 rounded-lg"
             >
-              {activeIndex === idx ? "Watching..." : "Watch"}
+              {activeIndex === idx && url !== "" ? "Watching..." : "Watch"}
             </button>
           </div>
         ))}
