@@ -29,9 +29,21 @@ const Sidebar = ({ sidebarContent, channels }) => {
                 //   navigate("/login")
                 // },5000)
               }}
-              className="bg-orange-500 px-2 py-1 rounded-lg"
+              className={` ${
+                activeIndex === idx && url !== ""
+                  ? " bg-red-600"
+                  : "bg-orange-500"
+              } w-20 px-2 py-1 rounded-lg`}
             >
-              {activeIndex === idx && url !== "" ? "Watching..." : "Watch"}
+              {activeIndex === idx && url !== "" ? (
+                <div className=" relative flex items-center justify-center">
+                  live
+                   <span class="loading loading-ring loading-xl absolute"></span>
+                </div>
+               
+              ) : (
+                "Watch"
+              )}
             </button>
           </div>
         ))}
