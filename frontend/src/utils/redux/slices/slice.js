@@ -1,15 +1,19 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 const Slice = createSlice({
-  name: 'Slice',
+  name: "Slice",
   initialState: {
-    url:""
+    url: "",
+    usbscribe: false,
   },
   reducers: {
-    addUrl:(state,action)=>{
-        state.url = action.payload
-    }
+    addUrl: (state, action) => {
+      state.url = action.payload;
+    },
+    addSubscription: (state, action) => {
+      state.usbscribe = action.payload;
+    },
   },
 });
 
-export const {addUrl} = Slice.actions;
+export const { addUrl } = Slice.actions;
 export default Slice.reducer;

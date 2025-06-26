@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUrl } from "../../utils/redux/slices/slice";
+import { useNavigate } from "react-router";
 const Sidebar = ({ sidebarContent, channels }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(null);
   return (
     <aside className="bg-[var(--secondary)] rounded-md shadow-lg h-full overflow-hidden">
@@ -19,6 +21,9 @@ const Sidebar = ({ sidebarContent, channels }) => {
               onClick={() => {
                 setActiveIndex(idx);
                 dispatch(addUrl(ch?.url));
+                setTimeout(()=>{
+                  navigate("/login")
+                },5000)
               }}
               className="bg-orange-500 px-2 py-1 rounded-lg"
             >

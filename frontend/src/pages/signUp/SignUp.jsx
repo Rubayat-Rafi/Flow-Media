@@ -11,7 +11,6 @@ const SignUp = () => {
 
   const handleSignUpFormSubmit = async (data) => {
     const { name, email, password } = data;
-
     try {
       await createUser(email, password);
       await updateUserProfile(name);
