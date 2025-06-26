@@ -39,7 +39,7 @@ const Home = () => {
         <div
           className={`${
             !hideVideoFlag ? " max-md:hidden" : " max-md:block"
-          }  w-4/6  max-md:w-full max-md:fixed z-50 max-md:bg-slate-800/80 top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
+          }  w-4/6  max-md:w-full max-md:fixed z-20 max-md:bg-[var(--secondary)] top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
         >
           <div className="  relative h-full w-full  flex items-center justify-center">
             <button
