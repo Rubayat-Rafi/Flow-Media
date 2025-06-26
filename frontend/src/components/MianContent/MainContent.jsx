@@ -1,8 +1,10 @@
 import HlsPlayer from "../HlsPlayer/HlsPlayer";
+import { useSelector } from "react-redux";
 const MainContent = () => {
+  const { url } = useSelector((state) => state?.Slice);
   return (
     <section className="h-full bg-[var(--secondary)] rounded-md shadow-lg p-4">
-      <HlsPlayer src="https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8" />
+      <HlsPlayer src={url} />
     </section>
   );
 };
