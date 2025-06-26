@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addUrl } from "../../utils/redux/slices/slice";
-import { useNavigate } from "react-router";
 import { addVideoFlag } from "../../utils/redux/slices/slice";
 const Sidebar = ({ sidebarContent, channels }) => {
   const { url } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
+
   const [activeIndex, setActiveIndex] = useState(null);
   return (
     <aside className="bg-[var(--secondary)] h-[500px] overflow-y-scroll rounded-md shadow-lg  overflow-hidden">
@@ -37,7 +37,7 @@ const Sidebar = ({ sidebarContent, channels }) => {
             >
               {activeIndex === idx && url !== "" ? (
                 <div className=" relative flex items-center justify-center">
-                  live
+                  Watching
                    <span class="loading loading-ring loading-xl absolute"></span>
                 </div>
                

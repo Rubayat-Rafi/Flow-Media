@@ -30,7 +30,7 @@ const Home = () => {
   return (
     <section>
       <SportsNav onSelectCategory={category} />
-      <div className="max-w-[1440px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-4 my-10">
+      <div className="max-w-[1440px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-6 my-10">
         {/* sidebar content */}
         <div className="w-2/6 max-md:w-full">
           <Sidebar sidebarContent={selectedCategory} channels={AllChannels} />

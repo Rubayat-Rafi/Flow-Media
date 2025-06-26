@@ -3,7 +3,11 @@ import Container from "./Shared/Container";
 
 const Footer = () => {
   const location = useLocation();
-  if (location.pathname === "/login" || location.pathname === "/signup")
+  if (
+    location.pathname === "/login" ||
+    location.pathname === "/signup" ||
+    location.pathname === "/dashboard"
+  )
     return null;
 
   return (
@@ -19,15 +23,15 @@ const Footer = () => {
             <div className="flex gap-4">
               <a href="#" className="link">
                 Terms And Conditions
-              </a>{" "}
+              </a>
               |
               <a href="#" className="link">
                 Privacy Policy
-              </a>{" "}
-              |{" "}
+              </a>
+              |
               <a href="#" className="link">
                 Affiliates
-              </a>{" "}
+              </a>
               |
               <a href="#" className="link">
                 Contact Us
@@ -36,10 +40,7 @@ const Footer = () => {
           </div>
 
           <div className="flex items-center flex-col">
-            {/* <div className="text-xl font-black text-[var(--primary)] uppercase">
-              Flow <span className="text-[var(--text)]">Media TV</span>
-            </div> */}
-            <div className="">
+            <div>
               <img src="/logo.png" className="max-h-[32px]" alt="logo" />
             </div>
             <p>Watch For LESS!</p>
