@@ -12,6 +12,9 @@ const Home = () => {
   const category = (selectCategory) => {
     setSelectedCategory(selectCategory);
   };
+
+
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -20,6 +23,8 @@ const Home = () => {
         document.body.style.overflow = "auto";
       }
     };
+
+
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => {
@@ -27,6 +32,9 @@ const Home = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+
+  
   return (
     <section>
       <SportsNav onSelectCategory={category} />

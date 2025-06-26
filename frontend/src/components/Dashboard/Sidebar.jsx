@@ -8,11 +8,12 @@ import { useState } from "react";
 import logo from "../../../public/logo.png";
 import { Link } from "react-router";
 import useRole from "../../hooks/useRole";
+import AdminMenu from "./Menu/AdminMenu";
 
 const Sidebar = () => {
   const { signOutUser } = useAuth();
   const [isActive, setActive] = useState(false);
-  const [role, isLoading] = useRole();
+  const [role] = useRole();
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
@@ -70,7 +71,7 @@ const Sidebar = () => {
           <div className="flex flex-col justify-between flex-1 mt-6">
             <nav>
               {/*  Menu Items */}
-              {role === "user" && 'User Data'}
+              {role === "user" && <AdminMenu/>}
             </nav>
           </div>
         </div>
