@@ -13,8 +13,6 @@ const Home = () => {
     setSelectedCategory(selectCategory);
   };
 
-
-
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768 && hideVideoFlag) {
@@ -23,7 +21,6 @@ const Home = () => {
         document.body.style.overflow = "auto";
       }
     };
-
 
     handleResize();
     window.addEventListener("resize", handleResize);
