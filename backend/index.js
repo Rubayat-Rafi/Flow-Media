@@ -9,10 +9,14 @@ const port = process.env.PORT || 5000;
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+
 async function run() {
   try {
     app.use("/api/user", subsCriptionRoutes);
     app.use("/api/user", userRoutes);
+    
+
+
     app.get("/", (req, res) => {
       res.send("Flow Media Backend Running");
     });
