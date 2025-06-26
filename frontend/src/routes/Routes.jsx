@@ -4,6 +4,7 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/login/Login";
 import SignUp from "../pages/signUp/SignUp";
 import DashboardLayout from "../layout/DashboardLayout";
+import Statistics from "../pages/Dashboard/Common/Statistics";
 
 export const router = createBrowserRouter([
   {
@@ -25,6 +26,12 @@ export const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <DashboardLayout />,
+        children: [
+          {
+            index: true,
+            element: <Statistics />,
+          },
+        ],
       },
     ],
   },
