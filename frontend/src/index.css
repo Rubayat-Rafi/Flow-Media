@@ -19,13 +19,14 @@ body {
 }
 
 @layer components {
-  .link {
+  .link_css {
     color: var(--primary);
     transition: 0.3s ease-in-out;
     &:hover {
       text-decoration: underline;
       transition: transform 0.3s ease-in-out;
     }
+    
   }
 
   .primary-btn {

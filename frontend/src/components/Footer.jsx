@@ -17,19 +17,19 @@ const Footer = () => {
               </p>
             </div>
             <div className="flex gap-4">
-              <a href="#" className="link">
+              <a href="#" className="link_css">
                 Terms And Conditions
               </a>{" "}
               |
-              <a href="#" className="link">
+              <a href="#" className="link_css">
                 Privacy Policy
               </a>{" "}
               |{" "}
-              <a href="#" className="link">
+              <a href="#" className="link_css">
                 Affiliates
               </a>{" "}
               |
-              <a href="#" className="link">
+              <a href="#" className="link_css">
                 Contact Us
               </a>
             </div>
