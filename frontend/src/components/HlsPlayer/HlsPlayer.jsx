@@ -9,7 +9,10 @@ const HlsPlayer = ({ src }) => {
 
   const isMp4 = src.endsWith(".mp4");
   const isM3u8 = src.endsWith(".m3u8");
-  const isEmbed = src.includes("youtube.com") || src.includes("vimeo.com") || src.includes("embed");
+  const isEmbed =
+    src.includes("youtube.com") ||
+    src.includes("vimeo.com") ||
+    src.includes("embed");
 
   useEffect(() => {
     if (isM3u8 && Hls.isSupported()) {
@@ -26,7 +29,10 @@ const HlsPlayer = ({ src }) => {
       return () => {
         hls.destroy();
       };
-    } else if (isM3u8 && videoRef.current?.canPlayType("application/vnd.apple.mpegurl")) {
+    } else if (
+      isM3u8 &&
+      videoRef.current?.canPlayType("application/vnd.apple.mpegurl")
+    ) {
       videoRef.current.src = src;
     } else if (isMp4) {
       videoRef.current.src = src;
