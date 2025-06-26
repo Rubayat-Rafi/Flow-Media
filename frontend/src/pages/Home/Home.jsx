@@ -30,7 +30,7 @@ const Home = () => {
   return (
     <section>
       <SportsNav onSelectCategory={category} />
-      <div className="max-w-[1440px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-4 my-10">
+      <div className="max-w-[1440px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-6 my-10">
         {/* sidebar content */}
         <div className="w-2/6 max-md:w-full">
           <Sidebar sidebarContent={selectedCategory} channels={AllChannels} />
@@ -39,7 +39,11 @@ const Home = () => {
         <div
           className={`${
             !hideVideoFlag ? " max-md:hidden" : " max-md:block"
+<<<<<<< hirock
           }  w-4/6  max-md:w-full max-md:fixed z-20 max-md:bg-slate-800/80 top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
+=======
+          }  w-4/6  max-md:w-full max-md:fixed z-20 max-md:bg-[var(--secondary)] top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
+>>>>>>> development
         >
           <div className="  relative h-full w-full  flex items-center justify-center">
             <button

@@ -22,13 +22,14 @@ body {
   .link_css {
     color: var(--primary);
     transition: 0.3s ease-in-out;
-    &:hover {
-      text-decoration: underline;
-      transition: transform 0.3s ease-in-out;
+    &:hover{
+          text-decoration: underline;
+    transition: transform 0.3s ease-in-out;
     }
     
   }
 
+  
   .primary-btn {
     @apply font-semibold py-2 px-4 rounded-md border-2 text-[var(--background)]  bg-[var(--primary)] hover:bg-[var(--accent)] cursor-pointer border-[var(--primary)] hover:border-[var(--accent)] transition-colors duration-300 ease-in;
   }
