@@ -37,7 +37,7 @@ const HlsPlayer = ({ src }) => {
     } else if (isMp4) {
       videoRef.current.src = src;
     }
-  }, [src]);
+  }, [src, isM3u8, isMp4]);
 
   const handleQualityChange = (levelIndex) => {
     if (hlsInstance) {
