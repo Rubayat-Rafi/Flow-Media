@@ -30,7 +30,7 @@ const MainContent = () => {
           </div>
         </div>
       ) : (
-        <HlsPlayer src={url} />
+        <HlsPlayer src={user ? url : ""} />
       )}
     </section>
   );
