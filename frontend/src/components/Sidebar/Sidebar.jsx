@@ -5,10 +5,8 @@ const Sidebar = ({ sidebarContent, channels }) => {
   const dispatch = useDispatch();
   const [activeIndex, setActiveIndex] = useState(null);
   return (
-    <aside className="bg-[var(--secondary)] p-4 rounded-md shadow-lg h-full">
-      <h2 className="font-bold text-white mb-2">Selected Category:</h2>
+    <aside className="bg-[var(--secondary)] rounded-md shadow-lg h-full overflow-hidden">
       <p>{sidebarContent ?? "None selected"}</p>
-
       <div className="space-y-3">
         {channels?.map((ch, idx) => (
           <div

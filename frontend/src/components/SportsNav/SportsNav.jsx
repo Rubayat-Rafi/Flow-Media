@@ -52,7 +52,7 @@ const SportsNav = ({ onSelectCategory }) => {
         {/* Added margin for arrows */}
         <div
           ref={scrollRef}
-          className=" w-full whitespace-nowrap overflow-x-scroll no-scroll scroll-smooth "
+          className="w-full whitespace-nowrap overflow-x-scroll no-scroll "
         >
           <div className="flex space-x-4 mx-auto">
             {/* Centered and full width */}
