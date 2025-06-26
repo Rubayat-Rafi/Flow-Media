@@ -14,7 +14,7 @@ const Home = () => {
   };
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
+      if (window.innerWidth < 768 && hideVideoFlag) {
         document.body.style.overflow = "hidden";
       } else {
         document.body.style.overflow = "auto";
@@ -26,7 +26,7 @@ const Home = () => {
       document.body.style.overflow = "auto";
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [hideVideoFlag]);
   return (
     <section>
       <SportsNav onSelectCategory={category} />
