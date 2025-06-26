@@ -27,13 +27,8 @@ const Footer = () => {
               |
               <a href="#" className="link_css">
                 Privacy Policy
-<<<<<<< hirock
-              </a>{" "}
-              |{" "}
-=======
               </a>
               |
->>>>>>> development
               <a href="#" className="link_css">
                 Affiliates
               </a>
