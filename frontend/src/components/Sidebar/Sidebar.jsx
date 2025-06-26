@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addUrl, addVideoFlag } from "../../utils/redux/slices/slice";
-import { useNavigate } from "react-router";
 
 const Sidebar = ({ sidebarContent, channels }) => {
   const { url } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   const [activeIndex, setActiveIndex] = useState(null);
 
   // Filtered channels
@@ -41,7 +40,14 @@ const Sidebar = ({ sidebarContent, channels }) => {
   );
 };
 
-const ChannelCard = ({ ch, idx, activeIndex, setActiveIndex, dispatch, url }) => (
+const ChannelCard = ({
+  ch,
+  idx,
+  activeIndex,
+  setActiveIndex,
+  dispatch,
+  url,
+}) => (
   <div className="border-b py-2 flex items-center justify-between">
     <h1>{ch?.logo}</h1>
     <h1>{ch.name}</h1>
