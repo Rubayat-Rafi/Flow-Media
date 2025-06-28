@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const subsCriptionRoutes = require("./routes/subscription.routes.js");
 const userRoutes = require("./routes/user.routes.js");
 const app = express();
 const port = process.env.PORT || 5000;
@@ -12,11 +11,8 @@ app.use(cookieParser());
 
 async function run() {
   try {
-    app.use("/api/user", subsCriptionRoutes);
     app.use("/api/user", userRoutes);
     
-
-
     app.get("/", (req, res) => {
       res.send("Flow Media Backend Running");
     });

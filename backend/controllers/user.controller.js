@@ -29,17 +29,20 @@ exports.registerUser = async (req, res) => {
 };
 
 exports.userRole = async (req, res) => {
-try {
-  const db = client.db("flow_media");
-  const usersCollection = db.collection("users");
-  const email = req.params.email;
-  const query = { email };
-  const user = await usersCollection.findOne(query);
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+  try {
+    const db = client.db("flow_media");
+    const usersCollection = db.collection("users");
+    const email = req.params.email;
+    const query = { email };
+    const user = await usersCollection.findOne(query, {
+      projection: { password: 0 },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.send({ role: user.role, user });
+  } catch (err) {
+    res.status(500).json({ message: "Role Not Found", error: err.message });
   }
-  res.send({ role: user.role });
-} catch (err) {
-  res.status(500).json({ message: "Role Not Found", error: err.message });
-}
 };
