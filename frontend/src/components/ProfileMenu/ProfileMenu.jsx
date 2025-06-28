@@ -25,7 +25,7 @@ const ProfileMenu = ({ user, signOutUser }) => {
       </div>
       <div>
         <button
-          onClick={signOutUser}
+          onClick={()=>{signOutUser(),localStorage.removeItem("user")}}
           className="w-full text-center bg-red-500 hover:bg-red-600 transition-colors duration-300 ease-linear font-medium py-2 rounded-md cursor-pointer "
         >
           Log Out
