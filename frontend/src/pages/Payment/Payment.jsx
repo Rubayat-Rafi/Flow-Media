@@ -1,13 +1,13 @@
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
+import Container from "../../components/Shared/Container";
+
 const Payment = () => {
-      const location = useLocation();
+  const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const packageType = searchParams.get("package");
   return (
     <div>
-      <div className=" max-w-[1440px] mx-auto w-11/12">
-        {packageType}
-      </div>
+      <Container>{packageType}</Container>
     </div>
   );
 };

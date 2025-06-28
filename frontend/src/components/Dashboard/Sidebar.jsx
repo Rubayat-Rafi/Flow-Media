@@ -71,14 +71,13 @@ const Sidebar = () => {
           <div className="flex flex-col justify-between flex-1 mt-6">
             <nav>
               {/*  Menu Items */}
-              {role === "user" && <AdminMenu/>}
+              {role === "admin" && <AdminMenu />}
             </nav>
           </div>
         </div>
 
         <div>
           <hr />
-
           <MenuItem
             icon={IoIosSettings}
             label="Profile"

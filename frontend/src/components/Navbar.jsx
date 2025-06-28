@@ -55,7 +55,7 @@ const Navbar = () => {
   if (
     location.pathname === "/login" ||
     location.pathname === "/signup" ||
-    location.pathname === "/dashboard"
+    location.pathname.startsWith("/dashboard")
   )
     return null;
 
