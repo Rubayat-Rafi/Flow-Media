@@ -2,13 +2,19 @@ import { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import SportsNav from "../../components/SportsNav/SportsNav";
 import MainContent from "../../components/MianContent/MainContent";
-import { AllChannels } from "../../components/AllChennels/AllChannels";
 import { useDispatch, useSelector } from "react-redux";
 import { addVideoFlag, addUrl } from "../../utils/redux/slices/slice";
+import useCategory from "../../hooks/useCategory";
+import LoadingSpinner from "../../components/Shared/LoadingSpinner";
+
 const Home = () => {
   const { hideVideoFlag } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("Channel");
+  const [categorys, isLoading] = useCategory();
+
+  if (isLoading) return <LoadingSpinner />;
+
   const category = (selectCategory) => {
     setSelectedCategory(selectCategory);
   };
@@ -29,13 +35,14 @@ const Home = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [hideVideoFlag]);
+
   return (
     <section>
       <SportsNav onSelectCategory={category} />
       <div className="max-w-[1440px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-6 my-10">
         {/* sidebar content */}
         <div className="w-2/6 max-md:w-full">
-          <Sidebar sidebarContent={selectedCategory} channels={AllChannels} />
+          <Sidebar sidebarContent={selectedCategory} channels={categorys} />
         </div>
 
         <div

@@ -1,44 +1,43 @@
 import { useForm } from "react-hook-form";
-import {
-  GiBaseballGlove,
-  GiBoxingGloveSurprise,
-  GiHockey,
-} from "react-icons/gi";
-import {
-  IoBasketballSharp,
-  IoCarSportSharp,
-  IoFootball,
-} from "react-icons/io5";
-import {
-  MdOutlineLiveTv,
-  MdOutlineSportsMma,
-  MdSportsCricket,
-  MdSportsTennis,
-} from "react-icons/md";
-import { PiBoxingGloveBold } from "react-icons/pi";
 import InputField from "../../../components/Shared/InputField";
-
-const categories = [
-  { name: "Channel", Icon: MdOutlineLiveTv },
-  { name: "Football", Icon: IoFootball },
-  { name: "Cricket", Icon: MdSportsCricket },
-  { name: "Basketball", Icon: IoBasketballSharp },
-  { name: "Tennis", Icon: MdSportsTennis },
-  { name: "MMA", Icon: MdOutlineSportsMma },
-  { name: "Boxing", Icon: PiBoxingGloveBold },
-  { name: "Racing", Icon: IoCarSportSharp },
-  { name: "Baseball", Icon: GiBaseballGlove },
-  { name: "Wrestling", Icon: GiBoxingGloveSurprise },
-  { name: "Hockey", Icon: GiHockey },
-];
+import { Categories } from "../../../components/Categories/Categories";
+import { useEffect } from "react";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const PostCategory = () => {
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch, resetField, reset } = useForm();
   const selectedCategory = watch("category"); // Changed to watch "category" instead of "Channel"
+  const axiosSecure = useAxiosSecure();
 
-  const handlePostCategoryForm = (data) => {
-    console.log(data);
+  const handlePostCategoryForm = async (data) => {
+    try {
+      const res = await axiosSecure.post("/api/category", data);
+      if (res.status === 201) {
+        reset();
+        alert("Post successfully");
+      } else {
+        alert("Failed to post category");
+      }
+    } catch (error) {
+      console.error(error.message);
+      alert("An error occurred while posting the category.");
+    }
   };
+
+  // Reset fields when category changes
+  useEffect(() => {
+    if (selectedCategory === "Channel") {
+      resetField("matchDate");
+      resetField("matchTeams");
+      resetField("matchTime");
+      resetField("team1Image");
+      resetField("team2Image");
+    } else if (selectedCategory && selectedCategory !== "Channel") {
+      resetField("channelName");
+      resetField("channelLogo");
+      resetField("channelURL");
+    }
+  }, [selectedCategory, resetField]);
 
   return (
     <div className="max-w-[1440px] mt-10">
@@ -57,7 +56,7 @@ const PostCategory = () => {
                 className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
               >
                 <option value="">Select a category</option>
-                {categories.map((cat) => (
+                {Categories.map((cat) => (
                   <option key={cat.name} value={cat.name}>
                     {cat.name}
                   </option>
@@ -95,7 +94,7 @@ const PostCategory = () => {
                   register={register}
                 />
                 <InputField
-                  label="Teams Playing (e.g. Argentina vs Brazil)"
+                  label="Teams Playing (e.g. A vs B)"
                   name="matchTeams"
                   register={register}
                 />
@@ -124,8 +123,8 @@ const PostCategory = () => {
             )}
           </div>
           {/* Submit Button */}
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="signup-btn mt-6"
             disabled={!selectedCategory} // Disable if no category selected
           >
