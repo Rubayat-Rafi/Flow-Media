@@ -6,7 +6,6 @@ import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 const SportsNav = ({ onSelectCategory }) => {
   const scrollRef = useRef(null);
   const [active, setActive] = useState("Channel");
-
   const handleClick = (category) => {
     setActive(category);
     onSelectCategory(category);
