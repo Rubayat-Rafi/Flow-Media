@@ -13,13 +13,17 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("Channel");
   const [categorys, isLoading] = useCategory();
 
-  if (isLoading) return <LoadingSpinner />;
+  const [isMounted, setIsMounted] = useState(false);
 
-  const category = (selectCategory) => {
-    setSelectedCategory(selectCategory);
-  };
-
+  // Prevent hydration mismatch by waiting for mount
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Fix scroll issue on small screens
+  useEffect(() => {
+    if (!isMounted) return;
+
     const handleResize = () => {
       if (window.innerWidth < 768 && hideVideoFlag) {
         document.body.style.overflow = "hidden";
@@ -34,30 +38,41 @@ const Home = () => {
       document.body.style.overflow = "auto";
       window.removeEventListener("resize", handleResize);
     };
-  }, [hideVideoFlag]);
+  }, [hideVideoFlag, isMounted]);
+
+  const category = (selectCategory) => {
+    setSelectedCategory(selectCategory);
+  };
+
+  // Only render after mount to avoid hydration mismatch
+  if (!isMounted || isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <section>
       <SportsNav onSelectCategory={category} />
       <div className="max-w-[1440px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-6 my-10">
-        {/* sidebar content */}
+        {/* Sidebar */}
         <div className="w-2/6 max-md:w-full">
           <Sidebar sidebarContent={selectedCategory} channels={categorys} />
         </div>
 
+        {/* Main content */}
         <div
           className={`${
-            !hideVideoFlag ? " max-md:hidden" : " max-md:block"
-          }  w-4/6  max-md:w-full max-md:fixed z-20 max-md:bg-[var(--secondary)] top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
+            !hideVideoFlag ? "max-md:hidden" : "max-md:block"
+          } w-4/6 max-md:w-full max-md:fixed z-20 max-md:bg-[var(--secondary)] top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
         >
-          <div className="  relative h-full w-full  flex items-center justify-center">
+          <div className="relative h-full w-full flex items-center justify-center">
             <button
               onClick={() => {
-                dispatch(addVideoFlag(false)), dispatch(addUrl(""));
+                dispatch(addVideoFlag(false));
+                dispatch(addUrl(""));
               }}
-              className=" md:hidden absolute right-5 top-5 px-5 py-1 rounded-md cursor-pointer hover:bg-orange-600"
+              className="md:hidden absolute right-5 top-5 px-5 py-1 rounded-md cursor-pointer hover:bg-orange-600"
             >
-              cancel
+              Cancel
             </button>
             <MainContent />
           </div>
