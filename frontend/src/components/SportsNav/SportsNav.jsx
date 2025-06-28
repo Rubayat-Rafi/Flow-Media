@@ -1,24 +1,7 @@
 import { useRef, useState } from "react";
 import Container from "../Shared/Container";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import { MdOutlineLiveTv, MdOutlineSportsMma, MdSportsCricket, MdSportsTennis  } from "react-icons/md";
-import { IoFootball, IoBasketballSharp, IoCarSportSharp  } from "react-icons/io5";
-import { PiBoxingGloveBold } from "react-icons/pi";
-import { GiBaseballGlove , GiBoxingGloveSurprise, GiHockey } from "react-icons/gi";
-
-const categories = [
-  { name: "Channel", Icon: MdOutlineLiveTv },
-  { name: "Football", Icon: IoFootball },
-  { name: "Cricket", Icon: MdSportsCricket },
-  { name: "Basketball", Icon: IoBasketballSharp },
-  { name: "Tennis", Icon: MdSportsTennis },
-  { name: "MMA", Icon: MdOutlineSportsMma  },
-  { name: "Boxing", Icon: PiBoxingGloveBold  },
-  { name: "Racing", Icon: IoCarSportSharp },
-  { name: "Baseball", Icon: GiBaseballGlove  },
-  { name: "Wrestling", Icon: GiBoxingGloveSurprise  },
-  { name: "Hockey", Icon: GiHockey },
-];
+ import { Categories } from "../Categories/Categories";
 
 const SportsNav = ({ onSelectCategory }) => {
   const scrollRef = useRef(null);
@@ -56,7 +39,7 @@ const SportsNav = ({ onSelectCategory }) => {
         >
           <div className="flex space-x-4 mx-auto">
             {/* Centered and full width */}
-            {categories.map((cat) => (
+            {Categories.map((cat) => (
               <button
                 key={cat.name}
                 onClick={() => handleClick(cat.name)}

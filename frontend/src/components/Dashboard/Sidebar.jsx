@@ -25,7 +25,7 @@ const Sidebar = () => {
       {/* Small Screen Navbar */}
       <div className="flex justify-between md:hidden bg-[var(--secondary)]">
         <div>
-          <div className="block cursor-pointer p-4 font-bold">
+          <div className="block cursor-pointer p-4 font-bold outline-none">
             <Link to="/">
               <img
                 // className='hidden md:block'
