@@ -49,69 +49,85 @@ const MainContent = () => {
               Rodeo, MLB, NHL, NBA No Blackouts. Instant activation!
             </p>
 
-            <div className=" space-y-5 mt-5">
-              <div className=" hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
-                <div className="">
-                  <div className=" flex items-center gap-5">
-                    <h1 className=" text-4xl font-semibold">Annual Pass</h1>
-                    <h1>365 days</h1>
-                  </div>
-                  <h1 className=" mt-3">2 Devices</h1>
-                </div>
-                <div className="">
-                  <h1 className=" uppercase relative -top-6 bg-orange-500 px-2 rounded-md">
-                    best value
-                  </h1>
+            <div className=" flex flex-col gap-5 mt-5">
+              <a href="/payment/?package=annual">
+                <div className=" hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
                   <div className="">
-                    <h1>$240</h1>
-                    <h1>
-                      $99<sap>.99</sap>
-                    </h1>
+                    <div className=" flex items-center gap-5">
+                      <h1 className=" text-4xl font-semibold">Annual Pass</h1>
+                      <h1>365 days</h1>
+                    </div>
+                    <h1 className=" mt-3">2 Devices</h1>
                   </div>
-                </div>
-              </div>
-
-              <div className=" hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
-                <div className="">
-                  <div className=" flex items-center gap-5">
-                    <h1 className=" text-4xl font-semibold">Annual Pass</h1>
-                    <h1>365 days</h1>
-                  </div>
-                  <h1 className=" mt-3">2 Devices</h1>
-                </div>
-                <div className="">
-                  <h1 className=" uppercase relative -top-6 bg-orange-500 px-2 rounded-md">
-                    best value
-                  </h1>
                   <div className="">
-                    <h1>$240</h1>
-                    <h1>
-                      $99<sap>.99</sap>
+                    <h1 className=" uppercase relative -top-6 text-center bg-orange-500 px-2 rounded-md">
+                      best value
                     </h1>
+                    <div className=" flex items-center gap-5">
+                      <h1 className=" line-through">$240</h1>
+                      <h1 className="">
+                        <span>$99</span>
+                        <sup>.99</sup>
+                        <h1 className=" bg-orange-400 px-1 rounded-md">
+                          50% offer
+                        </h1>
+                      </h1>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              <div className=" hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
-                <div className="">
-                  <div className=" flex items-center gap-5">
-                    <h1 className=" text-4xl font-semibold">Annual Pass</h1>
-                    <h1>365 days</h1>
-                  </div>
-                  <h1 className=" mt-3">2 Devices</h1>
-                </div>
-                <div className="">
-                  <h1 className=" uppercase relative -top-6 bg-orange-500 px-2 rounded-md">
-                    best value
-                  </h1>
+              </a>
+              <a href="/payment/?package=mountly">
+                <div className=" hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
                   <div className="">
-                    <h1>$240</h1>
-                    <h1>
-                      $99<sap>.99</sap>
+                    <div className=" flex items-center gap-5">
+                      <h1 className=" text-4xl font-semibold">Monthly Pass</h1>
+                      <h1>30 days</h1>
+                    </div>
+                    <h1 className=" mt-3">2 Devices</h1>
+                  </div>
+                  <div className="">
+                    <h1 className=" uppercase relative -top-6 text-center bg-orange-500 px-2 rounded-md">
+                      best value
                     </h1>
+                    <div className=" flex items-center gap-5">
+                      <h1 className=" line-through">$240</h1>
+                      <h1 className="">
+                        <span>$99</span>
+                        <sup>.99</sup>
+                        <h1 className=" bg-orange-400 px-1 rounded-md">
+                          50% offer
+                        </h1>
+                      </h1>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </a>
+              <a href="/payment/?package=weekly">
+                <div className=" hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
+                  <div className="">
+                    <div className=" flex items-center gap-5">
+                      <h1 className=" text-4xl font-semibold">Weekly Pass</h1>
+                      <h1>7 days</h1>
+                    </div>
+                    <h1 className=" mt-3">2 Devices</h1>
+                  </div>
+                  <div className="">
+                    <h1 className=" uppercase relative -top-6 text-center bg-orange-500 px-2 rounded-md">
+                      best value
+                    </h1>
+                    <div className=" flex items-center gap-5">
+                      <h1 className=" line-through">$240</h1>
+                      <h1 className="">
+                        <span>$99</span>
+                        <sup>.99</sup>
+                        <h1 className=" bg-orange-400 px-1 rounded-md">
+                          50% offer
+                        </h1>
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+              </a>
             </div>
 
             <p className=" mt-5">
