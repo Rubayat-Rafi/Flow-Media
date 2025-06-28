@@ -2,7 +2,6 @@ import { Helmet } from "react-helmet";
 import useRole from "../../../hooks/useRole";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 import AdminStatistics from "../../../components/Dashboard/Statistics/AdminStatistics";
-import { Navigate } from "react-router";
 
 const Statistics = () => {
   const [role, isLoading] = useRole();
@@ -16,7 +15,7 @@ const Statistics = () => {
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
-      {role === "user" && <AdminStatistics />}
+      {role === "admin" && <AdminStatistics />}
     </div>
   );
 };

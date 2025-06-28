@@ -6,6 +6,10 @@ import SignUp from "../pages/signUp/SignUp";
 import DashboardLayout from "../layout/DashboardLayout";
 import Statistics from "../pages/Dashboard/Common/Statistics";
 import Payment from "../pages/Payment/Payment";
+import PrivetRoute from "./PrivetRoute";
+import AdminRoute from "./AdminRoute";
+import PostCategory from "../pages/Dashboard/Admin/PostCategory";
+import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 
 export const router = createBrowserRouter([
   {
@@ -30,11 +34,41 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <DashboardLayout />,
+        element: (
+          <PrivetRoute>
+            <DashboardLayout />
+          </PrivetRoute>
+        ),
         children: [
           {
             index: true,
-            element: <Statistics />,
+            element: (
+              <PrivetRoute>
+                <AdminRoute>
+                  <Statistics />
+                </AdminRoute>
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "post-category",
+            element: (
+              <PrivetRoute>
+                <AdminRoute>
+                  <PostCategory />
+                </AdminRoute>
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "manage-users",
+            element: (
+              <PrivetRoute>
+                <AdminRoute>
+                  <ManageUsers />
+                </AdminRoute>
+              </PrivetRoute>
+            ),
           },
         ],
       },
