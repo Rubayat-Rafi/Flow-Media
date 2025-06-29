@@ -16,11 +16,11 @@ exports.payments = async (req, res) => {
 };
 
 exports.paymentIntendSystem = async (req, res) => {
-  const { amount } = req.body;
-  console.log(amount);
+  const { amount, pack, queryEmail } = req.body;
+  console.log(amount, pack,queryEmail);
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // Stripe uses cents
+      amount: Math.round(amount * 100),
       currency: "usd",
       payment_method_types: ["card"],
     });

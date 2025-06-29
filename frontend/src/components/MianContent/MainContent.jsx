@@ -61,7 +61,7 @@ const MainContent = () => {
             </p>
 
             <div className="flex flex-col gap-5 mt-5">
-              <a target="_blank" href="https://stirring-moxie-b3d44a.netlify.app/">
+              <a target="_blank" href={`${import.meta.env.VITE_PAYMENT_URL}/payment/annual?email=${user?.email}`}>
                 <div className="hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-5">
@@ -88,7 +88,7 @@ const MainContent = () => {
                 </div>
               </a>
 
-              <a target="_blank" href="https://stirring-moxie-b3d44a.netlify.app/">
+              <a target="_blank" href={`${import.meta.env.VITE_PAYMENT_URL}/payment/monthly?email=${user?.email}`}>
                 <div className="hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-5">
@@ -115,7 +115,7 @@ const MainContent = () => {
                 </div>
               </a>
 
-              <a target="_blank" href="https://stirring-moxie-b3d44a.netlify.app/">
+              <a target="_blank" href={`${import.meta.env.VITE_PAYMENT_URL}/payment/weekly?email=${user?.email}`}>
                 <div className="hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-5">
