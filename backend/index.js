@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -13,10 +13,14 @@ app.use(cookieParser());
 
 async function run() {
   try {
-    
     app.use("/api/user", userRoutes);
     app.use("/api", categoryRoutes);
     app.use("/api/payment", paymentRoutes);
+    app.use("/api/users", userRoutes);
+  
+
+
+  
 
     app.get("/", (req, res) => {
       res.send("Flow Media Backend Running");
@@ -25,8 +29,6 @@ async function run() {
     app.listen(port, () => {
       console.log(`Backend server is running on port: ${port}`);
     });
-
-    
   } catch (error) {
     console.error("Failed to connect to MongoDB:", error.message);
   }
