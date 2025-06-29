@@ -45,16 +45,16 @@ const Home = () => {
   };
 
   // Only render after mount to avoid hydration mismatch
-  if (!isMounted || isLoading) {
-    return <LoadingSpinner />;
-  }
+  // if (!isMounted || isLoading) {
+  //   return <LoadingSpinner />;
+  // }
 
   return (
     <section>
       <SportsNav onSelectCategory={category} />
-      <div className="max-w-[1440px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-6 my-10">
+      <div className="max-w-[1440px] h-full w-full mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-6 my-10">
         {/* Sidebar */}
-        <div className="w-2/6 max-md:w-full">
+        <div className="w-2/8 max-md:w-full">
           <Sidebar sidebarContent={selectedCategory} channels={categorys} />
         </div>
 
@@ -62,7 +62,7 @@ const Home = () => {
         <div
           className={`${
             !hideVideoFlag ? "max-md:hidden" : "max-md:block"
-          } w-4/6 max-md:w-full max-md:fixed z-20 max-md:bg-[var(--secondary)] top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
+          } w-6/8 max-md:w-full  max-md:fixed z-20 max-md:bg-[var(--secondary)] top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
         >
           <div className="relative h-full w-full flex items-center justify-center">
             <button
@@ -70,7 +70,7 @@ const Home = () => {
                 dispatch(addVideoFlag(false));
                 dispatch(addUrl(""));
               }}
-              className="md:hidden absolute right-5 top-5 px-5 py-1 rounded-md cursor-pointer hover:bg-orange-600"
+              className="md:hidden absolute right-5 top-5 px-5 py-1 rounded-md cursor-pointer hover:bg-primary"
             >
               Cancel
             </button>
