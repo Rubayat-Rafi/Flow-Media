@@ -2,7 +2,7 @@ import HlsPlayer from "../HlsPlayer/HlsPlayer";
 import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
-
+import axios from "axios";
 const subscriptions = [
   {
     id: 1,
@@ -39,29 +39,24 @@ const subscriptions = [
 
 // url: `${import.meta.env.PAYMENT_URL}/payment/annual?email=${user?.email}`,
 
+
 const MainContent = () => {
   const { user } = useAuth();
   const { url } = useSelector((state) => state?.Slice);
   const [subscription, setSubscription] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
 
-  // Only run browser-side logic after mount
   useEffect(() => {
-    setIsMounted(true);
-
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const { subscribe } = JSON.parse(storedUser);
-        setSubscription(subscribe);
-      } catch (error) {
-        console.error("Error parsing user from localStorage", error);
-      }
+    if (user) {
+      const reqUser = async () => {
+        const response = await axios.get(
+          `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${user.email}`
+        );
+        console.log(response?.data?.user);
+        setSubscription(response?.data?.user?.subscribe);
+      };
+      reqUser();
     }
-  }, []);
-
-  // Prevent rendering until mounted (fix hydration)
-  if (!isMounted) return null;
+  }, [user]);
 
   return (
     <section
@@ -95,6 +90,67 @@ const MainContent = () => {
               Watch Unlimited BOXING, MMA (PPV INCLUDED), NFL, NCAAF, NCAAB,
               Rodeo, MLB, NHL, NBA No Blackouts. Instant activation!
             </p>
+
+            <div className="flex flex-col gap-5 mt-5">
+              <a
+                target="_blank"
+                href={`${
+                  import.meta.env.VITE_PAYMENT_URL
+                }/payment/yearly?email=${user?.email}`}
+              >
+                <div className="hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-5">
+                      <h1 className="text-4xl font-semibold">Annual Pass</h1>
+                      <h1>365 days</h1>
+                    </div>
+                    <h1 className="mt-3">2 Devices</h1>
+                  </div>
+                  <div>
+                    <h1 className="uppercase relative -top-6 text-center bg-orange-500 px-2 rounded-md">
+                      best value
+                    </h1>
+                    <div className="flex items-center gap-5">
+                      <h1 className="line-through">$240</h1>
+                      <div>
+                        <span>$99</span>
+                        <sup>.99</sup>
+                        <h1 className="bg-orange-400 px-1 rounded-md">
+                          50% offer
+                        </h1>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+
+              <a
+                target="_blank"
+                href={`${
+                  import.meta.env.VITE_PAYMENT_URL
+                }/payment/monthly?email=${user?.email}`}
+              >
+                <div className="hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-5">
+                      <h1 className="text-4xl font-semibold">Monthly Pass</h1>
+                      <h1>30 days</h1>
+                    </div>
+                    <h1 className="mt-3">2 Devices</h1>
+                  </div>
+                  <div>
+                    <h1 className="uppercase relative -top-6 text-center bg-orange-500 px-2 rounded-md">
+                      best value
+                    </h1>
+                    <div className="flex items-center gap-5">
+                      <h1 className="line-through">$240</h1>
+                      <div>
+                        <span>$99</span>
+                        <sup>.99</sup>
+                        <h1 className="bg-orange-400 px-1 rounded-md">
+                          50% offer
+                        </h1>
+
             <div className="flex flex-col gap-6 mt-6">
               {subscriptions.map((subscription) => (
                 <a
@@ -113,11 +169,44 @@ const MainContent = () => {
                         <p className="text-sm group-hover:text-[var(--secondary)]">
                           {subscription.days}
                         </p>
+
                       </div>
                       <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">
                         {subscription.device}
                       </p>
                     </div>
+
+                  </div>
+                </div>
+              </a>
+
+              <a
+                target="_blank"
+                href={`${
+                  import.meta.env.VITE_PAYMENT_URL
+                }/payment/weekly?email=${user?.email}`}
+              >
+                <div className="hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-5">
+                      <h1 className="text-4xl font-semibold">Weekly Pass</h1>
+                      <h1>7 days</h1>
+                    </div>
+                    <h1 className="mt-3">2 Devices</h1>
+                  </div>
+                  <div>
+                    <h1 className="uppercase relative -top-6 text-center bg-orange-500 px-2 rounded-md">
+                      best value
+                    </h1>
+                    <div className="flex items-center gap-5">
+                      <h1 className="line-through">$240</h1>
+                      <div>
+                        <span>$99</span>
+                        <sup>.99</sup>
+                        <h1 className="bg-orange-400 px-1 rounded-md">
+                          50% offer
+                        </h1>
+
                     <div>
                       {subscription.value && (
                         <p className="uppercase text-center absolute -top-3 bg-[var(--primary)] text-xs p-1 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
@@ -142,6 +231,7 @@ const MainContent = () => {
                             </p>
                           )}
                         </div>
+
                       </div>
                     </div>
                   </div>
