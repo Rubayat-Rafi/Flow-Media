@@ -8,6 +8,8 @@ const Sidebar = ({ sidebarContent, channels }) => {
 
   const [activeIndex, setActiveIndex] = useState(null);
 
+  console.log(channels);
+
   // Filtered channels
   const filteredChannels =
     sidebarContent === "Channel"
