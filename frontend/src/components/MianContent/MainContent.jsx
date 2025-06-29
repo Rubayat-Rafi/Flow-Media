@@ -97,9 +97,7 @@ const MainContent = () => {
                 <a
                   key={subscription.id}
                   target="_blank"
-                  href={`${import.meta.env.PAYMENT_URL}${
-                    subscription.url
-                  }?email=${user?.email}`}
+                  href={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url }?email=${user?.email}`}
                 >
                   <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                     <div>
