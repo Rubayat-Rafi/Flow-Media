@@ -70,21 +70,26 @@ const MainContent = () => {
       } w-full  md:bg-[var(--secondary)] rounded-md shadow-lg p-8`}
     >
       {!user ? (
-        <div className="flex items-center justify-center h-full w-full">
-          <div className="bg-black rounded-xl p-5">
-            <a href="/signup">
-              <button className="text-2xl max-md:text-xl bg-orange-500 py-3 px-5 rounded-xl cursor-pointer uppercase">
-                signup to keep watching
-              </button>
+        <div className="flex items-center justify-center h-full w-full ">
+          <div
+            className="bg-[var(--background)] rounded-xl p-6"
+            style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
+          >
+            <a
+              href="/signup"
+              className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
+            >
+              signup to keep watching
             </a>
-            <div className="text-xl max-md:text-base flex items-center gap-2 bg-slate-600 py-2 px-5 rounded-xl mt-3">
-              <h1>Have an account already?</h1>
-              <a href="/login">
-                <button className="text-orange-500 font-semibold">
-                  Log in
-                </button>
+            <p className="text-base max-md:text-xs text-center mt-4">
+              Have an account already?
+              <a
+                href="/login"
+                className="text-[var(--primary)] font-medium ml-2"
+              >
+                Log in
               </a>
-            </div>
+            </p>
           </div>
         </div>
       ) : !subscription ? (

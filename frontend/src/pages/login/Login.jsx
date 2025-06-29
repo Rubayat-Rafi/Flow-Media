@@ -3,16 +3,21 @@ import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { saveUser } from "../../api/utils";
+
 const Login = () => {
   const navigate = useNavigate();
   const { signInUser } = useAuth();
   const { register, handleSubmit, reset } = useForm();
+
 
   // Handle form submission
   const handleSignInFormSubmit = async (data) => {
     const { email, password } = data;
     try {
       await signInUser(email, password);
+      await saveUser(data);
+
       const response = await axios.get(
         `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
       );

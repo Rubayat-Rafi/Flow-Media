@@ -45,9 +45,9 @@ const Home = () => {
   };
 
   // Only render after mount to avoid hydration mismatch
-  // if (!isMounted || isLoading) {
-  //   return <LoadingSpinner />;
-  // }
+  if (!isMounted || isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <section>
