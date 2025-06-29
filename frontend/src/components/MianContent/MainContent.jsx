@@ -2,7 +2,7 @@ import HlsPlayer from "../HlsPlayer/HlsPlayer";
 import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
-
+import axios from "axios";
 const subscriptions = [
   {
     id: 1,
@@ -49,7 +49,6 @@ const MainContent = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${user.email}`
         );
-        console.log(response?.data?.user);
         setSubscription(response?.data?.user?.subscribe);
       };
       reqUser();
