@@ -5,6 +5,7 @@ import Container from "./Shared/Container";
 import { useLocation } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import ProfileMenu from "./ProfileMenu/ProfileMenu";
+import LoadingSpinner from "./Shared/LoadingSpinner";
 
 const Navbar = () => {
   const location = useLocation();
@@ -51,19 +52,19 @@ const Navbar = () => {
   }, [clickProfile]);
   const handleClickProfile = () => setClickProfile((prev) => !prev);
 
-  if (location.pathname === "/login" || location.pathname === "/signup")
+  if (
+    location.pathname === "/login" ||
+    location.pathname === "/signup" ||
+    location.pathname.startsWith("/dashboard")
+  )
     return null;
 
-  if (loading) return <h1>...Loading</h1>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <Container>
       <nav className="flex items-center justify-between py-4 relative">
         <div className="flex items-center gap-5">
-          {/* logo */}
-          {/* <div className="text-4xl font-black text-[var(--primary)] uppercase">
-            Flow <span className="text-[var(--text)]">Media</span>
-          </div> */}
           <div>
             <img src="/logo.png" className="max-h-[48px]" alt="logo" />
           </div>

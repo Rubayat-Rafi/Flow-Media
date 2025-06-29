@@ -2,17 +2,33 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
   const { signInUser } = useAuth();
   const { register, handleSubmit, reset } = useForm();
 
+
   // Handle form submission
   const handleSignInFormSubmit = async (data) => {
     const { email, password } = data;
     try {
       await signInUser(email, password);
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
+      );
+
+      const reqBody = response?.data?.user;
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email: reqBody?.email,
+          role: reqBody?.role,
+          subscribe: reqBody?.subscribe,
+        })
+      );
       reset();
       alert("sign In successfull");
       // redirect to home page
