@@ -31,6 +31,8 @@ exports.registerUser = async (req, res) => {
   }
 };
 
+
+
 exports.userRole = async (req, res) => {
   const db = client.db("flow_media");
   const usersCollection = db.collection("users");

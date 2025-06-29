@@ -53,7 +53,34 @@ exports.payments = async (req, res) => {
   }
 };
 
+exports.expiredSubscription = async(req,res)=>{
+  try {
+    const { email } = req.body;
 
+
+    const now = new Date();
+    
+    if (now > new Date(subscription.endDate)) {
+      subscription.status = "expired";
+      await usersCollection.updateOne(
+        { email: queryEmail },
+        {
+          $set: {
+            subscribe: false,
+            subscription: subscription,
+          },
+        }
+      );
+
+      return res.status(200).json({ message: "Subscription expired and updated", success: true });
+    }
+
+
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
 
 
 

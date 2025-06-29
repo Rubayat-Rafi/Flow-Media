@@ -93,9 +93,9 @@ const MainContent = () => {
               Rodeo, MLB, NHL, NBA No Blackouts. Instant activation!
             </p>
             <div className="flex flex-col gap-6 mt-6">
-              {subscriptions.map((subscription) => (
+              {subscriptions.map((subscription,index) => (
                 <a
-                  key={subscription.id}
+                  key={index}
                   target="_blank"
                   href={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url }?email=${user?.email}`}
                 >
