@@ -3,14 +3,12 @@ import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import { saveUser } from "../../api/utils";
 
 const Login = () => {
   const navigate = useNavigate();
   const { signInUser } = useAuth();
   const { register, handleSubmit, reset } = useForm();
 
-  // Handle form submission
   const handleSignInFormSubmit = async (data) => {
     const { email, password } = data;
     try {
