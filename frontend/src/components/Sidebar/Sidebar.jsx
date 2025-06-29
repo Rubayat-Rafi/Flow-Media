@@ -99,7 +99,7 @@ const ChannelCard = ({
         }}
         className={`${
           isActive && url !== "" ? "bg-red-600" : "bg-orange-500"
-        } w-20 px-2 py-1 rounded-lg text-white font-medium text-sm`}
+        } cursor-pointer w-20 px-2 py-1 rounded-lg text-white font-medium text-sm`}
       >
         {isActive && url !== "" ? (
           <div className="relative flex items-center justify-center">
@@ -165,12 +165,12 @@ const SheduleCard = ({
       <button
         onClick={() => {
           setActiveChannel(ch);
-          dispatch(addUrl(ch?.channelURL));
+          // dispatch(addUrl(ch?.channelURL));
           dispatch(addVideoFlag(true));
         }}
         className={`${
           isActive && url !== "" ? "bg-red-600" : "bg-orange-500"
-        } h-fit w-20 px-2 py-1 rounded-lg text-white font-medium text-sm`}
+        } cursor-pointer h-fit w-20 px-2 py-1 rounded-lg text-white font-medium text-sm`}
       >
         {isActive && url !== "" ? (
           <div className="relative flex items-center justify-center">
