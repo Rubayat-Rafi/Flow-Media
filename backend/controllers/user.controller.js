@@ -1,3 +1,4 @@
+require("dotenv").config();
 const client = require("../lib/db_connection/db_connection.js");
 const bcrypt = require("bcryptjs");
 exports.registerUser = async (req, res) => {
