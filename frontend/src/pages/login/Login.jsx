@@ -10,14 +10,11 @@ const Login = () => {
   const { signInUser } = useAuth();
   const { register, handleSubmit, reset } = useForm();
 
-
   // Handle form submission
   const handleSignInFormSubmit = async (data) => {
     const { email, password } = data;
     try {
       await signInUser(email, password);
-      await saveUser(data);
-
       const response = await axios.get(
         `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
       );
@@ -30,7 +27,6 @@ const Login = () => {
           subscribe: reqBody?.subscribe,
         })
       );
-
       reset();
       alert("sign In successfull");
       // redirect to home page
