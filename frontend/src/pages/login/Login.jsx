@@ -3,7 +3,6 @@ import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import { saveUser } from "../../api/utils";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,11 +15,11 @@ const Login = () => {
     const { email, password } = data;
     try {
       await signInUser(email, password);
-      await saveUser(data);
 
       const response = await axios.get(
         `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
       );
+
       const reqBody = response?.data?.user;
       localStorage.setItem(
         "user",
@@ -30,7 +29,6 @@ const Login = () => {
           subscribe: reqBody?.subscribe,
         })
       );
-
       reset();
       alert("sign In successfull");
       // redirect to home page

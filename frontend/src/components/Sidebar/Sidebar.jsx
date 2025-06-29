@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUrl, addVideoFlag } from "../../utils/redux/slices/slice";
 
 const Sidebar = ({ sidebarContent, channels }) => {
+
+  
   const { url } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
-
   const [activeIndex, setActiveIndex] = useState(null);
 
   console.log(channels);
@@ -42,8 +43,14 @@ const Sidebar = ({ sidebarContent, channels }) => {
   );
 };
 
-const ChannelCard = ({ch, idx, activeIndex, setActiveIndex, dispatch,url,}) => (
-  
+const ChannelCard = ({
+  ch,
+  idx,
+  activeIndex,
+  setActiveIndex,
+  dispatch,
+  url,
+}) => (
   <div className="border-b py-2 flex items-center justify-between">
     <h1>{ch?.logo}</h1>
     <h1>{ch.name}</h1>
