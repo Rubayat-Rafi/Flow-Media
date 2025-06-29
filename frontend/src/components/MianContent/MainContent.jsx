@@ -2,30 +2,24 @@ import HlsPlayer from "../HlsPlayer/HlsPlayer";
 import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
-
+import axios from "axios";
 const MainContent = () => {
   const { user } = useAuth();
   const { url } = useSelector((state) => state?.Slice);
   const [subscription, setSubscription] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
 
-  // Only run browser-side logic after mount
   useEffect(() => {
-    setIsMounted(true);
-
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        const { subscribe } = JSON.parse(storedUser);
-        setSubscription(subscribe);
-      } catch (error) {
-        console.error("Error parsing user from localStorage", error);
-      }
+    if (user) {
+      const reqUser = async () => {
+        const response = await axios.get(
+          `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${user.email}`
+        );
+        console.log(response?.data?.user);
+        setSubscription(response?.data?.user?.subscribe);
+      };
+      reqUser();
     }
-  }, []);
-
-  // Prevent rendering until mounted (fix hydration)
-  if (!isMounted) return null;
+  }, [user]);
 
   return (
     <section
@@ -61,7 +55,12 @@ const MainContent = () => {
             </p>
 
             <div className="flex flex-col gap-5 mt-5">
-              <a target="_blank" href={`${import.meta.env.VITE_PAYMENT_URL}/payment/annual?email=${user?.email}`}>
+              <a
+                target="_blank"
+                href={`${
+                  import.meta.env.VITE_PAYMENT_URL
+                }/payment/yearly?email=${user?.email}`}
+              >
                 <div className="hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-5">
@@ -88,7 +87,12 @@ const MainContent = () => {
                 </div>
               </a>
 
-              <a target="_blank" href={`${import.meta.env.VITE_PAYMENT_URL}/payment/monthly?email=${user?.email}`}>
+              <a
+                target="_blank"
+                href={`${
+                  import.meta.env.VITE_PAYMENT_URL
+                }/payment/monthly?email=${user?.email}`}
+              >
                 <div className="hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-5">
@@ -115,7 +119,12 @@ const MainContent = () => {
                 </div>
               </a>
 
-              <a target="_blank" href={`${import.meta.env.VITE_PAYMENT_URL}/payment/weekly?email=${user?.email}`}>
+              <a
+                target="_blank"
+                href={`${
+                  import.meta.env.VITE_PAYMENT_URL
+                }/payment/weekly?email=${user?.email}`}
+              >
                 <div className="hover:bg-orange-600 px-5 py-2 border rounded-md flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-5">
