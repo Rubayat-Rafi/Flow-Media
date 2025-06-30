@@ -6,7 +6,7 @@ const InputField = ({ label, name, register, type = "text" }) => {
         id={name}
         type={type}
         {...register(name)}
-        className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
+        className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
         placeholder={`Enter ${label.toLowerCase()}`}
       />
     </div>

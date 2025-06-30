@@ -28,10 +28,12 @@ const PostCategory = () => {
   useEffect(() => {
     if (selectedCategory === "Channel") {
       resetField("matchDate");
-      resetField("matchTeams");
+      resetField("teamA");
+      resetField("teamB");
       resetField("matchTime");
       resetField("team1Image");
       resetField("team2Image");
+      resetField("matchUrl");
     } else if (selectedCategory && selectedCategory !== "Channel") {
       resetField("channelName");
       resetField("channelLogo");
@@ -53,7 +55,7 @@ const PostCategory = () => {
               <select
                 id="category"
                 {...register("category")}
-                className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
+                className="w-full py-3 px-4 rounded-md border border-gray-300  focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
               >
                 <option value="">Select a category</option>
                 {Categories.map((cat) => (
@@ -93,11 +95,8 @@ const PostCategory = () => {
                   type="date"
                   register={register}
                 />
-                <InputField
-                  label="Teams Playing (e.g. A vs B)"
-                  name="matchTeams"
-                  register={register}
-                />
+                <InputField label="Team A" name="temaA" register={register} />
+                <InputField label="Team B" name="teamB" register={register} />
                 <InputField
                   label="Match Time"
                   name="matchTime"
@@ -105,13 +104,18 @@ const PostCategory = () => {
                   register={register}
                 />
                 <InputField
-                  label="Team 1 Image URL"
+                  label="Team A Image URL"
                   name="team1Image"
                   register={register}
                 />
                 <InputField
-                  label="Team 2 Image URL"
+                  label="Team B Image URL"
                   name="team2Image"
+                  register={register}
+                />
+                <InputField
+                  label="Match Stream URL"
+                  name="matchUrl"
                   register={register}
                 />
               </>
@@ -125,7 +129,7 @@ const PostCategory = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="signup-btn mt-6"
+            className="signup-btn mt-6 text-[var(--background)]"
             disabled={!selectedCategory} // Disable if no category selected
           >
             Save Event

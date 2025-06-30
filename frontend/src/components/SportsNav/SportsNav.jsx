@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import Container from "../Shared/Container";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
- import { Categories } from "../Categories/Categories";
+import { Categories } from "../Categories/Categories";
 
 const SportsNav = ({ onSelectCategory }) => {
   const scrollRef = useRef(null);
@@ -22,7 +22,7 @@ const SportsNav = ({ onSelectCategory }) => {
 
   return (
     <Container>
-      <div className="relative flex items-center px-10 mt-8">
+      <div className="relative flex items-center px-10">
         {/* Left Arrow */}
         <button
           onClick={() => scroll("left")}
@@ -42,13 +42,13 @@ const SportsNav = ({ onSelectCategory }) => {
               <button
                 key={cat.name}
                 onClick={() => handleClick(cat.name)}
-                className={`px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition duration-200 uppercase cursor-pointer  ${
+                className={`px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition duration-200 uppercase cursor-pointer   " ${
                   active === cat.name
                     ? "bg-[var(--primary)] text-[var(--background)]"
-                    : "bg-[var(--secondary)] "
+                    : "bg-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--background)]"
                 }`}
               >
-                <cat.Icon className="text-xl" />
+                <cat.Icon className="text-xl hover:text-[var(--background)]" />
                 {cat.name}
               </button>
             ))}
