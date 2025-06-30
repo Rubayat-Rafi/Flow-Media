@@ -45,11 +45,11 @@ const ManageUsers = () => {
       <div className="mt-10">
         <h4 className="text-2xl font-bold text-center mb-8">User data</h4>
 
-        <div className="overflow-x-auto rounded-box border border-base-content/5 bg-[var(--secondary)]">
-          <table className="table">
+        <div className="overflow-x-auto rounded-box  border-base-content/5 bg-[var(--secondary)]">
+          <table className="table border">
             {/* head */}
             <thead>
-              <tr>
+              <tr className="text-[var(--text)]">
                 <th></th>
                 <th>Name</th>
                 <th>Email</th>
@@ -61,7 +61,7 @@ const ManageUsers = () => {
             <tbody>
               {/* row 1 */}
               {users.map((user, index) => (
-                <tr key={user?.id}>
+                <tr key={user?.id} >
                   <th>{index + 1}</th>
                   <td className="uppercase">{user?.name}</td>
                   <td>{user?.email}</td>
