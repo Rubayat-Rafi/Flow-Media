@@ -4,22 +4,17 @@ import { addUrl, addVideoFlag } from "../../utils/redux/slices/slice";
 import { convertMatchTimeByTimeZone } from "../TimeZone/convertMatchTimeByTimeZone";
 const Sidebar = ({ sidebarContent, channels }) => {
   const { url, timeZone } = useSelector((state) => state?.Slice);
-
   const dispatch = useDispatch();
   const [activeChannel, setActiveChannel] = useState(null);
-
   const filteredChannels = channels?.filter(
     (ch) => ch.category === sidebarContent
   );
-
   const isActiveOutside =
     activeChannel && activeChannel.category !== sidebarContent;
-
   const allChannelsToShow = [
     ...(isActiveOutside ? [activeChannel] : []),
     ...filteredChannels,
   ];
-
   return (
     <aside className="bg-[var(--secondary)] h-[500px] overflow-y-scroll rounded-md shadow-lg overflow-hidden p-3">
       <p className="text-lg font-semibold mb-2">
@@ -165,7 +160,7 @@ const SheduleCard = ({
       <button
         onClick={() => {
           setActiveChannel(ch);
-          // dispatch(addUrl(ch?.channelURL));
+          dispatch(addUrl(ch?.matchUrl));
           dispatch(addVideoFlag(true));
         }}
         className={`${
