@@ -3,15 +3,13 @@ const client = require("../lib/db_connection/db_connection.js");
 const Stripe = require("stripe");
 const bcrypt = require("bcryptjs");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 const package = require("../utils/subscriptions/packages/packages.js");
-
 exports.payments = async (req, res) => {
   try {
     const { amount, pack, queryEmail, formData } = req.body;
     const plan = pack;
-    // const expiryDate = await package.Package({ plan });
-    const expiryDate = new Date(new Date().getTime() + 2 * 60 * 1000);
+    const expiryDate = await package.Package({ plan });
+    // const expiryDate = new Date(new Date().getTime() + 2 * 60 * 1000);
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
     const findUser = await usersCollection.findOne({ email: queryEmail });
@@ -124,17 +122,19 @@ exports.addDeveiceEmail = async (req, res) => {
     if (deviceUser) {
       await usersCollection.updateOne(
         { email: deviceEmail },
-        { $set: { "subscribe": true } }
+        { $set: { subscribe: true } }
       );
     } else {
       return res.status(404).json({
         message: "Device email user not found. Please create an account first.",
-        success: false
+        success: false,
       });
     }
     const user = await usersCollection.findOne({ email: userEmail });
     if (!user || !user.subscription) {
-      return res.status(404).json({ message: "User or subscription not found" });
+      return res
+        .status(404)
+        .json({ message: "User or subscription not found" });
     }
     const subscription = user.subscription;
     if (subscription.status !== "active") {
@@ -143,11 +143,13 @@ exports.addDeveiceEmail = async (req, res) => {
     if (subscription.emails.includes(deviceEmail)) {
       return res.status(400).json({ message: "Device email already exists" });
     }
-    const maxEmails = pack === "yearly" ? 3 : 2;
+    const maxEmails = pack === "yearly" ? 2 : 1;
 
     if (subscription.emails.length >= maxEmails) {
       return res.status(400).json({
-        message: `Maximum ${maxEmails - 1} extra devices allowed for ${pack} plan`,
+        message: `Maximum ${
+          maxEmails - 1
+        } extra devices allowed for ${pack} plan`,
       });
     }
     subscription.emails.push(deviceEmail);
@@ -169,3 +171,48 @@ exports.addDeveiceEmail = async (req, res) => {
   }
 };
 
+exports.cancelDeviceEmail = async (req, res) => {
+  try {
+    const { userEmail, deviceEmail } = req.body;
+    const db = client.db("flow_media");
+    const usersCollection = db.collection("users");
+    const user = await usersCollection.findOne({ email: userEmail });
+    if (!user || !user.subscription) {
+      return res
+        .status(404)
+        .json({ message: "User or subscription not found" });
+    }
+    const subscription = user.subscription;
+    if (!subscription.emails.includes(deviceEmail)) {
+      return res
+        .status(400)
+        .json({ message: "Device email not found in subscription" });
+    }
+    const updatedEmails = subscription.emails.filter(
+      (email) => email !== deviceEmail
+    );
+    subscription.emails = updatedEmails;
+    const updateSubscription = await usersCollection.updateOne(
+      { email: userEmail },
+      { $set: { subscription } }
+    );
+    const updateDevice = await usersCollection.updateOne(
+      { email: deviceEmail },
+      { $set: { subscribe: false } }
+    );
+    if (
+      updateSubscription.modifiedCount > 0 ||
+      updateDevice.modifiedCount > 0
+    ) {
+      return res.status(200).json({
+        message: "Device email removed successfully",
+        emails: updatedEmails,
+        success: true,
+      });
+    } else {
+      return res.status(400).json({ message: "Failed to update data" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

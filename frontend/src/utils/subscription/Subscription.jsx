@@ -20,6 +20,7 @@ const Subscription = ({ children, className }) => {
     const interval = setInterval(checkSubscription, 500);
     return () => clearInterval(interval);
   }, [user?.email]);
+  
   return <div className={className}>{children}</div>;
 };
 export default Subscription;

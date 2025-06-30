@@ -17,11 +17,6 @@ async function run() {
     app.use("/api", categoryRoutes);
     app.use("/api/payment", paymentRoutes);
     app.use("/api/users", userRoutes);
-  
-
-
-  
-
     app.get("/", (req, res) => {
       res.send("Flow Media Backend Running");
     });
