@@ -55,7 +55,7 @@ const Navbar = () => {
 
   return (
     <Container>
-      <nav className="flex items-center justify-between py-4 relative">
+      <nav className="flex items-center justify-between py-6 relative">
         <div className="flex items-center gap-5">
           <div>
             <img src="/logo.png" className="max-h-[48px]" alt="logo" />
