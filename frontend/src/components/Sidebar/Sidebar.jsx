@@ -76,8 +76,8 @@ const ChannelCard = ({
         />
       </div>
 
+      <h3 className="font-medium text-sm">{ch?.channelName}</h3>
       {/* <div className="">
-        <h1 className="font-medium text-sm">{ch?.channelName}</h1>
         {isTopLive && (
           <p className="text-[10px] text-green-400 font-semibold">
             LIVE from other category
@@ -92,7 +92,9 @@ const ChannelCard = ({
           dispatch(addVideoFlag(true));
         }}
         className={`${
-          isActive && url !== "" ? "bg-red-500 text-[var(--text)]" : "bg-[var(--primary)]"
+          isActive && url !== ""
+            ? "bg-red-500 text-[var(--text)]"
+            : "bg-[var(--primary)]"
         } cursor-pointer px-3 py-1.5 rounded-md text-[var(--background)] font-medium text-sm transform duration-300 ease-linear`}
       >
         {isActive && url !== "" ? (
@@ -104,7 +106,6 @@ const ChannelCard = ({
           "Watch"
         )}
       </button>
-
     </div>
   </div>
 );
@@ -134,19 +135,11 @@ const SheduleCard = ({
         </div>
         <div className=" space-y-2 mt-2">
           <div className=" flex items-center gap-3">
-            <img
-              className="h-8"
-              src={ch?.team1Image}
-              alt=""
-            />
+            <img className="h-8" src={ch?.team1Image} alt="" />
             <h4>Marcus</h4>
           </div>
           <div className=" flex items-center gap-5">
-            <img
-              className=" h-8"
-              src={ch?.team2Image}
-              alt=""
-            />
+            <img className=" h-8" src={ch?.team2Image} alt="" />
             <h4>Marcus</h4>
           </div>
         </div>
@@ -164,7 +157,9 @@ const SheduleCard = ({
           dispatch(addVideoFlag(true));
         }}
         className={`${
-          isActive && url !== "" ? "bg-red-500 text-[var(--text)]" : "bg-[var(--primary)]"
+          isActive && url !== ""
+            ? "bg-red-500 text-[var(--text)]"
+            : "bg-[var(--primary)]"
         } cursor-pointer px-3 py-1.5 rounded-md text-[var(--background)] font-medium text-sm transform duration-300 ease-linear`}
       >
         {isActive && url !== "" ? (

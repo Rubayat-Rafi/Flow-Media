@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../../../hooks/useAuth";
 import { useEffect } from "react";
 const AddDeviceEmail = ({ packageType }) => {
   const [deviceEmail, setDeviceEmail] = useState("");
