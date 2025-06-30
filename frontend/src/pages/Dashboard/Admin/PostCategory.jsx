@@ -97,12 +97,15 @@ const PostCategory = () => {
                 />
                 <InputField label="Team A" name="temaA" register={register} />
                 <InputField label="Team B" name="teamB" register={register} />
-                <InputField
-                  label="Match Time"
-                  name="matchTime"
-                  type="time"
-                  register={register}
-                />
+                {/* time  */}
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="time">Match Time</label>
+                  <input
+                    type="time"
+                    {...register("matchTime", { required: true })}
+                    className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)] "
+                  />
+                </div>
                 <InputField
                   label="Team A Image URL"
                   name="team1Image"

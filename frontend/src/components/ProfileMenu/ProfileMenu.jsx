@@ -1,7 +1,6 @@
 const ProfileMenu = ({ user, signOutUser }) => {
   const links = [
     { name: "Profile", href: "#" },
-    { name: "Add Device Email", href: "/add_device/email" },
     { name: "Dadhboard", href: "/dashboard" },
   ];
 

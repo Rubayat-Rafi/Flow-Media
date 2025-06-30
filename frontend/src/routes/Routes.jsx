@@ -10,7 +10,10 @@ import PrivetRoute from "./PrivetRoute";
 import AdminRoute from "./AdminRoute";
 import PostCategory from "../pages/Dashboard/Admin/PostCategory";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
-import AddDeviceEmail from "../pages/AddDeviceEmail/AddDeviceEmail";
+import AddDeviceEmail from "../pages/Dashboard/User/AddDeviceEmail/AddDeviceEmail";
+import ChannelAndEvents from "../pages/Dashboard/Admin/ChannelAndEvents";
+import Subscription from "../pages/Dashboard/User/Subscription/Subscription";
+import Profile from "../pages/Dashboard/Common/Profile";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -65,12 +68,46 @@ export const router = createBrowserRouter([
             ),
           },
           {
+            path: "all-category",
+            element: (
+              <PrivetRoute>
+                <AdminRoute>
+                  <ChannelAndEvents />
+                </AdminRoute>
+              </PrivetRoute>
+            ),
+          },
+          {
             path: "manage-users",
             element: (
               <PrivetRoute>
                 <AdminRoute>
                   <ManageUsers />
                 </AdminRoute>
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "add-device",
+            element: (
+              <PrivetRoute>
+                <AddDeviceEmail />
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "subscription",
+            element: (
+              <PrivetRoute>
+                <Subscription />
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "profile",
+            element: (
+              <PrivetRoute>
+                <Profile />
               </PrivetRoute>
             ),
           },
