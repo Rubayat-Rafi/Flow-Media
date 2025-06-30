@@ -1,6 +1,5 @@
 require("dotenv").config();
 const client = require("../lib/db_connection/db_connection.js");
-
 exports.categories = async (req, res) => {
   try {
     const db = client.db("flow_media");
@@ -19,7 +18,6 @@ exports.categories = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
-
 exports.allCategorys = async (req, res) => {
   try {
     const db = client.db("flow_media");

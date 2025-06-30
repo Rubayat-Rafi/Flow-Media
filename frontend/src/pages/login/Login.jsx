@@ -13,18 +13,6 @@ const Login = () => {
     const { email, password } = data;
     try {
       await signInUser(email, password);
-      const response = await axios.get(
-        `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
-      );
-      const reqBody = response?.data?.user;
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          email: reqBody?.email,
-          role: reqBody?.role,
-          subscribe: reqBody?.subscribe,
-        })
-      );
       reset();
       alert("sign In successfull");
       // redirect to home page

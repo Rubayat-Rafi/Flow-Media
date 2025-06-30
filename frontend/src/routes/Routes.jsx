@@ -10,7 +10,7 @@ import PrivetRoute from "./PrivetRoute";
 import AdminRoute from "./AdminRoute";
 import PostCategory from "../pages/Dashboard/Admin/PostCategory";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
-
+import AddDeviceEmail from "../pages/AddDeviceEmail/AddDeviceEmail";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -31,6 +31,10 @@ export const router = createBrowserRouter([
       {
         path: "/payment",
         element: <Payment />,
+      },
+      {
+        path: "/add_device/email",
+        element: <AddDeviceEmail />,
       },
       {
         path: "/dashboard",
