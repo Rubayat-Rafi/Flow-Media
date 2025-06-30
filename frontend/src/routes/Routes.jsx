@@ -14,6 +14,7 @@ import AddDeviceEmail from "../pages/Dashboard/User/AddDeviceEmail/AddDeviceEmai
 import ChannelAndEvents from "../pages/Dashboard/Admin/ChannelAndEvents";
 import Subscription from "../pages/Dashboard/User/Subscription/Subscription";
 import Profile from "../pages/Dashboard/Common/Profile";
+
 export const router = createBrowserRouter([
   {
     path: "/",
