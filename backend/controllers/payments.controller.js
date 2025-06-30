@@ -11,8 +11,7 @@ exports.payments = async (req, res) => {
     const { amount, pack, queryEmail, formData } = req.body;
     const plan = pack;
     // const expiryDate = await package.Package({ plan });
-    const expiryDate = new Date(new Date().getTime() + 5 * 60 * 1000);
-
+    const expiryDate = new Date(new Date().getTime() + 2 * 60 * 1000);
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
     const findUser = await usersCollection.findOne({ email: queryEmail });
@@ -49,7 +48,6 @@ exports.payments = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 exports.expiredSubscription = async (req, res) => {
   try {
     const { email } = req.params;
@@ -95,7 +93,6 @@ exports.expiredSubscription = async (req, res) => {
         success: true,
       });
     }
-
     return res
       .status(200)
       .json({ message: "Subscription still active", success: true });
@@ -103,7 +100,6 @@ exports.expiredSubscription = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
 exports.paymentIntendSystem = async (req, res) => {
   const { amount } = req.body;
   try {
@@ -119,13 +115,23 @@ exports.paymentIntendSystem = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-
 exports.addDeveiceEmail = async (req, res) => {
   try {
     const { pack, userEmail, deviceEmail } = req.body;
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
+    const deviceUser = await usersCollection.findOne({ email: deviceEmail });
+    if (deviceUser) {
+      await usersCollection.updateOne(
+        { email: deviceEmail },
+        { $set: { "subscribe": true } }
+      );
+    } else {
+      return res.status(404).json({
+        message: "Device email user not found. Please create an account first.",
+        success: false
+      });
+    }
     const user = await usersCollection.findOne({ email: userEmail });
     if (!user || !user.subscription) {
       return res.status(404).json({ message: "User or subscription not found" });
@@ -134,12 +140,9 @@ exports.addDeveiceEmail = async (req, res) => {
     if (subscription.status !== "active") {
       return res.status(400).json({ message: "Subscription is not active" });
     }
-    // Prevent adding duplicate
     if (subscription.emails.includes(deviceEmail)) {
       return res.status(400).json({ message: "Device email already exists" });
     }
-
-    // Determine max allowed emails
     const maxEmails = pack === "yearly" ? 3 : 2;
 
     if (subscription.emails.length >= maxEmails) {
@@ -147,15 +150,11 @@ exports.addDeveiceEmail = async (req, res) => {
         message: `Maximum ${maxEmails - 1} extra devices allowed for ${pack} plan`,
       });
     }
-
-    // Add device email
     subscription.emails.push(deviceEmail);
-
     const result = await usersCollection.updateOne(
       { email: userEmail },
       { $set: { subscription } }
     );
-
     if (result.modifiedCount > 0) {
       return res.status(200).json({
         message: "Device email added successfully",
@@ -170,56 +169,3 @@ exports.addDeveiceEmail = async (req, res) => {
   }
 };
 
-
-exports.updateAddedEmail = async (req, res) => {
-  try {
-    const { email } = req.params;
-    const db = client.db("flow_media");
-    const usersCollection = db.collection("users");
-    const owner = await usersCollection.findOne({
-      "subscription.emails": email,
-      "subscription.status": "active",
-    });
-    if (!owner) {
-      return res
-        .status(404)
-        .json({ message: "No active subscription found for this email" });
-    }
-    const { pack, details, startDate, endDate } = owner.subscription;
-    const deviceUser = await usersCollection.findOne({ email });
-    if (!deviceUser) {
-      return res
-        .status(404)
-        .json({ message: "User with this email not found in users collection" });
-    }
-    const updatedUser = await usersCollection.updateOne(
-      { email },
-      {
-        $set: {
-          subscribe: true,
-          subscription: {
-            pack,
-            details,
-            startDate,
-            endDate,
-            status: "active",
-            emails: owner.subscription.emails,
-          },
-        },
-      }
-    );
-    if (updatedUser.modifiedCount > 0) {
-      return res.status(200).json({
-        message: "Subscription updated for device email",
-        success: true,
-      });
-    } else {
-      return res.status(400).json({
-        message: "No changes made to the user document",
-        success: false,
-      });
-    }
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};

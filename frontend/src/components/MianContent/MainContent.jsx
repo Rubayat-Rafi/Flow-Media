@@ -61,7 +61,6 @@ const MainContent = () => {
     const interval = setInterval(fetchSubscription, 500);
     return () => clearInterval(interval);
   }, [user?.email]);
-
   return (
     <Subscription
       className={`${
