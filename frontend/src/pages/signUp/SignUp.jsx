@@ -14,17 +14,7 @@ const SignUp = () => {
     try {
       await createUser(email, password);
       await updateUserProfile(name);
-      // Prepare user object for saving
       await saveUser(data);
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          email: data.email,
-          role: "user",
-          subscribe: false,
-        })
-      );
       reset();
       alert("sign up successfull");
       // redirect to home page
