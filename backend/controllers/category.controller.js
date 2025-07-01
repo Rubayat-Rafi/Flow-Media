@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { ObjectId } = require("mongodb");
 const client = require("../lib/db_connection/db_connection.js");
 exports.categories = async (req, res) => {
   try {
@@ -26,5 +27,23 @@ exports.allCategorys = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+exports.categoryDelete = async (req, res) => {
+  const db = client.db("flow_media");
+  const categoryCollection = db.collection("categorys");
+  const id = req.params.id;
+
+  const result = await categoryCollection.deleteOne({ _id: new ObjectId(id) });
+
+  if (result.deletedCount === 0) {
+    return res.status(404).json({ message: "category not found" });
+  }
+  res.status(200).json({ message: "category deleted successfully" });
+
+  try {
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

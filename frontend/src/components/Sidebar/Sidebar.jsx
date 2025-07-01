@@ -16,7 +16,7 @@ const Sidebar = ({ sidebarContent, channels }) => {
     ...filteredChannels,
   ];
   return (
-    <aside className="bg-[var(--secondary)] overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3">
+    <aside className="bg-[var(--secondary)] overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
       {/* <p className="text-lg font-semibold mb-2">
         {sidebarContent ?? "None selected"}
       </p> */}
@@ -67,7 +67,7 @@ const ChannelCard = ({
   // isTopLive,
 }) => (
   <div className="has-scroll">
-    <div className="border-b border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3 bg-[var(--background)] hover:bg-[var(--secondary)]  p-3 rounded-md transition-transform duration-300 ease-in-out">
+    <div className="border-b-2 border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3 bg-[var(--background)] hover:bg-[var(--secondary)]  p-3 rounded-md transition-transform duration-300 ease-in-out">
       <div className="h-8 w-8 overflow-hidden ">
         <img
           src={ch?.channelLogo}

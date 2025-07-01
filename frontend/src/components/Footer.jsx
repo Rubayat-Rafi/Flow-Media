@@ -20,7 +20,7 @@ const Footer = () => {
                 Copyright © {new Date().getFullYear()} Flow Media
               </p>
             </div>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
               <a href="#" className="link_css">
                 Terms And Conditions
               </a>
