@@ -4,6 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Subscription from "../../utils/subscription/Subscription";
+
 const subscriptions = [
   {
     id: 1,
@@ -12,7 +13,7 @@ const subscriptions = [
     device: "2 Devices",
     value: "Best value",
     regularPrice: "$240",
-    offerPrice: "$99.99",
+    offerPrice: "99.99",
     discount: "50% offer",
     url: "/payment/yearly",
   },
@@ -20,25 +21,19 @@ const subscriptions = [
     id: 2,
     name: "Monthly Pass",
     days: "30 days",
-    device: "1 Devices",
-    // value: "Best value",
-    // regularPrice: "$240",
-    offerPrice: "$19.99",
+    device: "1 Device",
+    offerPrice: "19.99",
     url: "/payment/monthly",
   },
   {
-    id: 2,
+    id: 3,
     name: "Weekly Pass",
     days: "7 days",
-    device: "1 Devices",
-    // value: "Best value",
-    // regularPrice: "$240",
-    offerPrice: "$14.99",
+    device: "1 Device",
+    offerPrice: "14.99",
     url: "/payment/weekly",
   },
 ];
-
-// url: ${import.meta.env.PAYMENT_URL}/payment/annual?email=${user?.email},
 
 const MainContent = () => {
   const { user } = useAuth();
@@ -61,15 +56,16 @@ const MainContent = () => {
     const interval = setInterval(fetchSubscription, 500);
     return () => clearInterval(interval);
   }, [user?.email]);
+
   return (
     <Subscription
       className={`${
-        user ? "max-md:h-fit " : "h-full"
-      } w-full  md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10 `}
+        user ? "max-md:h-fit" : "h-full"
+      } w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}
     >
-      <section className=" h-full w-full">
+      <section className="h-full w-full">
         {!user ? (
-          <div className="flex items-center justify-center lg:h-[500px] w-full ">
+          <div className="flex items-center justify-center lg:h-[500px] w-full">
             <div
               className="bg-[var(--background)] rounded-xl p-6"
               style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
@@ -97,16 +93,15 @@ const MainContent = () => {
               <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
               <p className="text-sm">
                 Watch Unlimited BOXING, MMA (PPV INCLUDED), NFL, NCAAF, NCAAB,
-                Rodeo, MLB, NHL, NBA No Blackouts. Instant activation!
+                Rodeo, MLB, NHL, NBA — No Blackouts. Instant activation!
               </p>
               <div className="flex flex-col gap-6 mt-6">
                 {subscriptions.map((subscription, index) => (
                   <a
                     key={index}
                     target="_blank"
-                    href={`${import.meta.env.VITE_PAYMENT_URL}${
-                      subscription.url
-                    }?email=${user?.email}`}
+                    rel="noopener noreferrer"
+                    href={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url}?email=${user?.email}&price=${subscription.offerPrice}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
@@ -128,7 +123,7 @@ const MainContent = () => {
                             {subscription.value}
                           </p>
                         )}
-                        <div className="flex items-end flex-col space-y-2 ">
+                        <div className="flex items-end flex-col space-y-2">
                           <div className="flex items-center space-x-2">
                             {subscription.regularPrice && (
                               <p className="line-through text-sm text-gray-400 group-hover:text-[var(--secondary)]">
@@ -136,16 +131,14 @@ const MainContent = () => {
                               </p>
                             )}
                             <p className="font-semibold text-lg group-hover:text-[var(--background)]">
-                              {subscription.offerPrice}
+                              ${subscription.offerPrice}
                             </p>
                           </div>
-                          <div>
-                            {subscription.discount && (
-                              <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                                {subscription.discount}
-                              </p>
-                            )}
-                          </div>
+                          {subscription.discount && (
+                            <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
+                              {subscription.discount}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>

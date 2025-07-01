@@ -143,7 +143,7 @@ exports.addDeveiceEmail = async (req, res) => {
     if (subscription.emails.includes(deviceEmail)) {
       return res.status(400).json({ message: "Device email already exists" });
     }
-    const maxEmails = pack === "yearly" ? 4 : 3;
+    const maxEmails = pack === "yearly" ? 3 : 2;
 
     if (subscription.emails.length >= maxEmails) {
       return res.status(400).json({
