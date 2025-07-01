@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
 import { saveUser } from "../../api/utils";
+import {toast} from 'react-hot-toast';
 
 const SignUp = () => {
   const { createUser, updateUserProfile } = useAuth();
@@ -16,12 +17,11 @@ const SignUp = () => {
       await updateUserProfile(name);
       await saveUser(data);
       reset();
-      alert("sign up successfull");
+      toast.success("sign up successfull");
       // redirect to home page
       navigate("/");
     } catch (error) {
-      console.error("Error during Sign Up:", error);
-      alert("Sign up failed. please try again later.");
+      toast.error("Sign up failed. please try again later.", error);
     }
   };
 

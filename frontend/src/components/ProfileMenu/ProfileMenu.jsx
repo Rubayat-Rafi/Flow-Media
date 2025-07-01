@@ -1,3 +1,7 @@
+import {toast} from 'react-hot-toast';
+
+
+
 const ProfileMenu = ({ user, signOutUser }) => {
   const links = [
     { name: "Profile", href: "/dashboard/profile" },
@@ -25,7 +29,7 @@ const ProfileMenu = ({ user, signOutUser }) => {
       </div>
       <div>
         <button
-          onClick={()=>{signOutUser(),localStorage.removeItem("user")}}
+          onClick={()=>{signOutUser(),localStorage.removeItem("user"),toast.error('User Logout') }}
           className="w-full text-center bg-red-500 hover:bg-red-600 transition-colors duration-300 ease-linear font-medium py-2 rounded-md cursor-pointer "
         >
           Log Out
