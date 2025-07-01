@@ -3,6 +3,7 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useAuth } from "../../../hooks/useAuth";
 import { Helmet } from "react-helmet";
 import { MdDeleteForever } from "react-icons/md";
+import { toast } from "react-hot-toast";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
@@ -27,14 +28,41 @@ const ManageUsers = () => {
     }
   };
 
-  const handleDeleteUser = async (id) => {
-    try {
-      const res = await axiosSecure.delete(`/api/user/${id}`);
-      alert(res.data.message);
-      refetch();
-    } catch (error) {
-      alert(error.message);
-    }
+  const handleDeleteUser = (id) => {
+    // try {
+    //   const res = await axiosSecure.delete(`/api/user/${id}`);
+    //   alert(res.data.message);
+    //   refetch();
+    // } catch (error) {
+    //   alert(error.message);
+    // }
+
+    toast.custom((t) => (
+      <div className="bg-white p-2 rounded shadow-lg flex flex-col md:flex-row items-center gap-3">
+        <span className="text-[var(--background)]">
+          Are you sure you want to delete?
+        </span>
+        <div className="flex gap-2 mt-2">
+          <button
+            className="bg-red-500 text-white px-2 py-1 rounded"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              await axiosSecure.delete(`/api/user/${id}`);
+              toast.success("Deleted successfully!");
+              refetch();
+            }}
+          >
+            Delete
+          </button>
+          <button
+            className="bg-green-500 px-2 py-1 rounded"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ));
   };
 
   return (
@@ -61,7 +89,7 @@ const ManageUsers = () => {
             <tbody>
               {/* row 1 */}
               {users.map((user, index) => (
-                <tr key={user?.id} >
+                <tr key={user?.id}>
                   <th>{index + 1}</th>
                   <td className="uppercase">{user?.name}</td>
                   <td>{user?.email}</td>

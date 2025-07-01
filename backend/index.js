@@ -14,9 +14,11 @@ app.use(cookieParser());
 async function run() {
   try {
     app.use("/api/user", userRoutes);
-    app.use("/api", categoryRoutes);
-    app.use("/api/payment", paymentRoutes);
     app.use("/api/users", userRoutes);
+    app.use("/api", categoryRoutes);
+    app.use('/api/category', categoryRoutes);
+    app.use("/api/payment", paymentRoutes);
+
     app.get("/", (req, res) => {
       res.send("Flow Media Backend Running");
     });

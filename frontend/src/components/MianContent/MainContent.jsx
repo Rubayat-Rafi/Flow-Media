@@ -65,11 +65,11 @@ const MainContent = () => {
     <Subscription
       className={`${
         user ? "max-md:h-fit " : "h-full"
-      } w-full  md:bg-[var(--secondary)] rounded-md shadow-lg p-8`}
+      } w-full  md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10 `}
     >
       <section className=" h-full w-full">
         {!user ? (
-          <div className="flex items-center justify-center h-full w-full ">
+          <div className="flex items-center justify-center lg:h-[500px] w-full ">
             <div
               className="bg-[var(--background)] rounded-xl p-6"
               style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
