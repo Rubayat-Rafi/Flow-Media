@@ -52,7 +52,7 @@ const MainContent = () => {
         const response = await axios.get(
           `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${user.email}`
         );
-        setSubscription(response?.data?.user?.subscribe);
+        setSubscription(response?.data?.userData?.subscribe);
       } catch (error) {
         console.error("Subscription check failed:", error?.message);
       }
