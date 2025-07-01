@@ -14,6 +14,7 @@ import AddDeviceEmail from "../pages/Dashboard/User/AddDeviceEmail/AddDeviceEmai
 import ChannelAndEvents from "../pages/Dashboard/Admin/ChannelAndEvents";
 import Subscription from "../pages/Dashboard/User/Subscription/Subscription";
 import Profile from "../pages/Dashboard/Common/Profile";
+import RemoveDeviceEmail from "../pages/Dashboard/User/RemoveDeviceEmail/RemoveDeviceEmail";
 
 export const router = createBrowserRouter([
   {
@@ -35,10 +36,6 @@ export const router = createBrowserRouter([
       {
         path: "/payment",
         element: <Payment />,
-      },
-      {
-        path: "/add_device/email",
-        element: <AddDeviceEmail />,
       },
       {
         path: "/dashboard",
@@ -93,6 +90,14 @@ export const router = createBrowserRouter([
             element: (
               <PrivetRoute>
                 <AddDeviceEmail />
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "remove-device",
+            element: (
+              <PrivetRoute>
+                <RemoveDeviceEmail />
               </PrivetRoute>
             ),
           },
