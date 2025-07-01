@@ -54,7 +54,7 @@ const Home = () => {
       <SportsNav onSelectCategory={category} />
       <div className="max-w-[1440px] h-full w-full mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
-        <div className="w-2/8 max-md:w-full">
+        <div className="w-2/8 max-md:w-full ">
           <Sidebar sidebarContent={selectedCategory} channels={categorys} />
         </div>
 

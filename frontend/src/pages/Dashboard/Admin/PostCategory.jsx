@@ -95,7 +95,7 @@ const PostCategory = () => {
                   type="date"
                   register={register}
                 />
-                <InputField label="Team A" name="temaA" register={register} />
+                <InputField label="Team A" name="teamA" register={register} />
                 <InputField label="Team B" name="teamB" register={register} />
                 {/* time  */}
                 <div className="flex flex-col gap-2">

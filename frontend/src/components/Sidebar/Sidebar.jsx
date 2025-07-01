@@ -16,10 +16,10 @@ const Sidebar = ({ sidebarContent, channels }) => {
     ...filteredChannels,
   ];
   return (
-    <aside className="bg-[var(--secondary)] h-[500px] overflow-y-scroll rounded-md shadow-lg overflow-hidden p-3">
-      <p className="text-lg font-semibold mb-2">
+    <aside className="bg-[var(--secondary)] overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3">
+      {/* <p className="text-lg font-semibold mb-2">
         {sidebarContent ?? "None selected"}
-      </p>
+      </p> */}
       <div className="space-y-3">
         {allChannelsToShow?.length > 0 ? (
           allChannelsToShow.map((ch, idx) =>
@@ -66,25 +66,16 @@ const ChannelCard = ({
   // timeZone,
   // isTopLive,
 }) => (
-  <div className="">
-    <div className="border-b py-2 flex items-center justify-between gap-3">
-      <div className="h-6 overflow-hidden">
+  <div className="has-scroll">
+    <div className="border-b border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3 bg-[var(--background)] hover:bg-[var(--secondary)]  p-3 rounded-md transition-transform duration-300 ease-in-out">
+      <div className="h-8 w-8 overflow-hidden ">
         <img
           src={ch?.channelLogo}
           alt={ch?.channelName}
           className="w-full h-full object-cover"
         />
       </div>
-
       <h3 className="font-medium text-sm">{ch?.channelName}</h3>
-      {/* <div className="">
-        {isTopLive && (
-          <p className="text-[10px] text-green-400 font-semibold">
-            LIVE from other category
-          </p>
-        )}
-      </div> */}
-
       <button
         onClick={() => {
           setActiveChannel(ch);
@@ -95,12 +86,12 @@ const ChannelCard = ({
           isActive && url !== ""
             ? "bg-red-500 text-[var(--text)]"
             : "bg-[var(--primary)]"
-        } cursor-pointer px-3 py-1.5 rounded-md text-[var(--background)] font-medium text-sm transform duration-300 ease-linear`}
+        } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transform duration-300 ease-linear`}
       >
         {isActive && url !== "" ? (
           <div className="relative flex items-center justify-center">
             Watching
-            <span className="loading loading-ring loading-xl absolute"></span>
+            {/* <span className="loading loading-ring loading-xl absolute"></span> */}
           </div>
         ) : (
           "Watch"
@@ -117,60 +108,69 @@ const SheduleCard = ({
   dispatch,
   url,
   timeZone,
-  isTopLive,
+  // isTopLive,
 }) => (
-  <div className=" rounded-md hover:border hover:border-orange-500 bg-slate-800 p-2">
-    <h1 className=" text-xl text-orange-600 mb-2">
+  <div className="space-y-2">
+    <p className=" text-[var(--primary)] pl-3">
       {new Date(ch?.matchDate).toLocaleDateString("en-US", {
         weekday: "long",
         month: "long",
         day: "numeric",
       })}
-    </h1>
-    <div className="  flex  justify-between gap-2">
-      <div className="flex-1">
-        <div className="font-medium text-sm flex items-center gap-2">
-          <h1>Shedule for:</h1>
-          <h1>{convertMatchTimeByTimeZone(ch?.matchTime, timeZone)}</h1>
+    </p>
+
+    <div className="flex flex-col gap-2 border border-[var(--background)] bg-[var(--background)] hover:border-[var(--primary)] p-3 rounded-md transition-transform duration-300 ease-linear">
+      <div className="flex  justify-between">
+        <div className="font-medium text-xs flex items-center gap-2">
+          <span>Shedule for</span>
+          <span>{convertMatchTimeByTimeZone(ch?.matchTime, timeZone)}</span>
         </div>
-        <div className=" space-y-2 mt-2">
-          <div className=" flex items-center gap-3">
-            <img className="h-8" src={ch?.team1Image} alt="" />
-            <h4>Marcus</h4>
-          </div>
-          <div className=" flex items-center gap-5">
-            <img className=" h-8" src={ch?.team2Image} alt="" />
-            <h4>Marcus</h4>
-          </div>
-        </div>
-        {isTopLive && (
-          <p className="text-[10px] text-green-400 font-semibold">
-            LIVE from other category
-          </p>
-        )}
+        <button
+          onClick={() => {
+            setActiveChannel(ch);
+            dispatch(addUrl(ch?.matchUrl));
+            dispatch(addVideoFlag(true));
+          }}
+          className={`${
+            isActive && url !== ""
+              ? "bg-red-500 text-[var(--text)]"
+              : "bg-[var(--primary)]"
+          } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transform duration-300 ease-linear`}
+        >
+          {isActive && url !== "" ? (
+            <div className="relative flex items-center justify-center">
+              Watching
+              {/* <span className="loading loading-ring loading-xl absolute"></span> */}
+            </div>
+          ) : (
+            "Watch"
+          )}
+        </button>
       </div>
 
-      <button
-        onClick={() => {
-          setActiveChannel(ch);
-          dispatch(addUrl(ch?.matchUrl));
-          dispatch(addVideoFlag(true));
-        }}
-        className={`${
-          isActive && url !== ""
-            ? "bg-red-500 text-[var(--text)]"
-            : "bg-[var(--primary)]"
-        } cursor-pointer px-3 py-1.5 rounded-md text-[var(--background)] font-medium text-sm transform duration-300 ease-linear`}
-      >
-        {isActive && url !== "" ? (
-          <div className="relative flex items-center justify-center">
-            Watching
-            <span className="loading loading-ring loading-xl absolute"></span>
-          </div>
-        ) : (
-          "Watch"
-        )}
-      </button>
+      <div className=" space-y-2 mt-2">
+        <div className=" flex items-center gap-2">
+          <img
+            className="h-8 w-8 object-cover"
+            src={ch?.team1Image}
+            alt="image"
+          />
+          <h4>{ch?.teamA}</h4>
+        </div>
+        <div className=" flex items-center gap-2">
+          <img
+            className=" h-8 w-8  object-cover"
+            src={ch?.team2Image}
+            alt="image"
+          />
+          <h4>{ch?.teamB}</h4>
+        </div>
+      </div>
+      {/* {isTopLive && (
+        <p className="text-[10px] text-green-400 font-semibold">
+          LIVE from other category
+        </p>
+      )} */}
     </div>
   </div>
 );
