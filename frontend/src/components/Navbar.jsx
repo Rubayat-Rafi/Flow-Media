@@ -5,35 +5,27 @@ import Container from "./Shared/Container";
 import { useLocation } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import ProfileMenu from "./ProfileMenu/ProfileMenu";
-
+import LoadingSpinner from "./Shared/LoadingSpinner";
+import { useDispatch, useSelector } from "react-redux";
+import { addTime, addTimeZone } from "../utils/redux/slices/slice";
+import { UpdateTime } from "./TimeZone/TimeZone";
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const { timeZone, time } = useSelector((state) => state?.Slice);
   const location = useLocation();
-  const [localTime, setLocalTime] = useState("");
   const [clickProfile, setClickProfile] = useState(false);
   const profileBtnRef = useRef(null);
   const menuRef = useRef(null);
   const { user, loading, signOutUser } = useAuth();
 
-  const updateTime = () => {
-    // Format local time as 12-hour with AM/PM
-    const time = new Date();
-    setLocalTime(
-      time.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
-    );
-  };
-
-  // Time update effect (runs once)
   useEffect(() => {
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
+    const update = () => dispatch(addTime(UpdateTime(timeZone)));
+    update();
+    const interval = setInterval(update, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [timeZone]);
 
-  // Click outside effect (runs when clickProfile changes)
+  // Close profile menu on outside click
   useEffect(() => {
     if (!clickProfile) return;
     const handleClickOutside = (event) => {
@@ -49,21 +41,22 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [clickProfile]);
+
   const handleClickProfile = () => setClickProfile((prev) => !prev);
 
-  if (location.pathname === "/login" || location.pathname === "/signup")
+  if (
+    location.pathname === "/login" ||
+    location.pathname === "/signup" ||
+    location.pathname.startsWith("/dashboard")
+  )
     return null;
 
-  if (loading) return <h1>...Loading</h1>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <Container>
-      <nav className="flex items-center justify-between py-4 relative">
+      <nav className="flex items-center justify-between py-6 relative">
         <div className="flex items-center gap-5">
-          {/* logo */}
-          {/* <div className="text-4xl font-black text-[var(--primary)] uppercase">
-            Flow <span className="text-[var(--text)]">Media</span>
-          </div> */}
           <div>
             <img src="/logo.png" className="max-h-[48px]" alt="logo" />
           </div>
@@ -84,10 +77,13 @@ const Navbar = () => {
               />
             </svg>
 
-            {/* Timezone Dropdown */}
-            <select className="bg-[var(--secondary)] text-sm focus:outline-none  p-1 focus:ring-2 focus:ring-[var(--accent)] focus:rounded-md overflow-y-scroll no-scroll ">
+            <select
+              value={timeZone}
+              onChange={(e) => dispatch(addTimeZone(e.target.value))}
+              className="bg-[var(--secondary)] text-sm focus:outline-none p-1 focus:ring-2 focus:ring-[var(--accent)] focus:rounded-md overflow-y-scroll no-scroll"
+            >
               <option value="GMT-11">GMT -11</option>
-              <option value="GMT-10">GGMT -10</option>
+              <option value="GMT-10">GMT -10</option>
               <option value="GMT-9">GMT -9</option>
               <option value="GMT-8">GMT -8</option>
               <option value="GMT-7">GMT -7</option>
@@ -111,17 +107,17 @@ const Navbar = () => {
               <option value="GMT+12">GMT +12</option>
             </select>
 
-            {/* Local Time Display */}
-            <div className=" text-gray-300 font-bold bg-[var(--background)] py-1 px-4 rounded-lg">
-              {localTime}
+            {/* Timezone-adjusted Time */}
+            <div className="text-gray-300 font-bold bg-[var(--background)] py-1 px-4 rounded-lg">
+              {time}
             </div>
           </div>
         </div>
         <div className="flex items-center gap-5">
-          <a href={"/"} className="hover:underline">
-            Why Flow Mdeia?
+          <a href="/" className="hover:underline">
+            Why Flow Media?
           </a>
-          <a href={"/"} className="flex items-center gap-1 hover:underline">
+          <a href="/" className="flex items-center gap-1 hover:underline">
             <IoInformationCircleOutline className="text-2xl" />
             FAQ?
           </a>
@@ -135,6 +131,8 @@ const Navbar = () => {
             </a>
           )}
         </div>
+
+        {/* Profile Menu Dropdown */}
         {clickProfile && user && (
           <div
             ref={menuRef}

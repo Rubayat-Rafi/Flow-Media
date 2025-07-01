@@ -9,7 +9,10 @@ const HlsPlayer = ({ src }) => {
 
   const isMp4 = src.endsWith(".mp4");
   const isM3u8 = src.endsWith(".m3u8");
-  const isEmbed = src.includes("youtube.com") || src.includes("vimeo.com") || src.includes("embed");
+  const isEmbed =
+    src.includes("youtube.com") ||
+    src.includes("vimeo.com") ||
+    src.includes("embed");
 
   useEffect(() => {
     if (isM3u8 && Hls.isSupported()) {
@@ -26,12 +29,15 @@ const HlsPlayer = ({ src }) => {
       return () => {
         hls.destroy();
       };
-    } else if (isM3u8 && videoRef.current?.canPlayType("application/vnd.apple.mpegurl")) {
+    } else if (
+      isM3u8 &&
+      videoRef.current?.canPlayType("application/vnd.apple.mpegurl")
+    ) {
       videoRef.current.src = src;
     } else if (isMp4) {
       videoRef.current.src = src;
     }
-  }, [src]);
+  }, [src, isM3u8, isMp4]);
 
   const handleQualityChange = (levelIndex) => {
     if (hlsInstance) {
@@ -42,10 +48,19 @@ const HlsPlayer = ({ src }) => {
 
   if (isEmbed) {
     return (
-      <div className="w-full aspect-video">
+      <div className="w-full aspect-video ">
+        {/* live status  */}
+        <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+          <div className="inline-grid *:[grid-area:1/1]">
+            <div className="status status-lg status-error animate-ping bg-red-500"></div>
+            <div className="status status-lg status-error bg-red-600"></div>
+          </div>
+          <p className="font-semibold ">Live</p>
+        </div>
+
         <iframe
           src={src}
-          className="w-full h-full border rounded"
+          className="w-full h-full rounded-md"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           title="Embedded Video"

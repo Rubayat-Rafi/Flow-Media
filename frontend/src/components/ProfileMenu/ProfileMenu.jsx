@@ -1,11 +1,11 @@
 const ProfileMenu = ({ user, signOutUser }) => {
   const links = [
-    { name: "Profile", href: "#" },
+    { name: "Profile", href: "/dashboard/profile" },
     { name: "Dadhboard", href: "/dashboard" },
   ];
 
   return (
-    <aside className="bg-[var(--secondary)] shadow-lg rounded-md h-full p-5 space-y-2">
+    <aside className="bg-[var(--secondary)] shadow-lg rounded-md h-full p-5 space-y-2 z-50">
       {/* User Profile */}
       <div className=" bg-[var(--background)] p-4 rounded-md">
         <h1 className="uppercase">{user.displayName}</h1>
@@ -25,7 +25,7 @@ const ProfileMenu = ({ user, signOutUser }) => {
       </div>
       <div>
         <button
-          onClick={signOutUser}
+          onClick={()=>{signOutUser(),localStorage.removeItem("user")}}
           className="w-full text-center bg-red-500 hover:bg-red-600 transition-colors duration-300 ease-linear font-medium py-2 rounded-md cursor-pointer "
         >
           Log Out

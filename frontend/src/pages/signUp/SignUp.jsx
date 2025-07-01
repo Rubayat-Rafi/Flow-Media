@@ -11,11 +11,9 @@ const SignUp = () => {
 
   const handleSignUpFormSubmit = async (data) => {
     const { name, email, password } = data;
-
     try {
       await createUser(email, password);
       await updateUserProfile(name);
-      // Prepare user object for saving
       await saveUser(data);
       reset();
       alert("sign up successfull");

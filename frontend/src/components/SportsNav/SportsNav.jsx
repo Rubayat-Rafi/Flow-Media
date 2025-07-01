@@ -1,29 +1,11 @@
 import { useRef, useState } from "react";
 import Container from "../Shared/Container";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import { MdOutlineLiveTv, MdOutlineSportsMma, MdSportsCricket, MdSportsTennis  } from "react-icons/md";
-import { IoFootball, IoBasketballSharp, IoCarSportSharp  } from "react-icons/io5";
-import { PiBoxingGloveBold } from "react-icons/pi";
-import { GiBaseballGlove , GiBoxingGloveSurprise, GiHockey } from "react-icons/gi";
-
-const categories = [
-  { name: "Channel", Icon: MdOutlineLiveTv },
-  { name: "Football", Icon: IoFootball },
-  { name: "Cricket", Icon: MdSportsCricket },
-  { name: "Basketball", Icon: IoBasketballSharp },
-  { name: "Tennis", Icon: MdSportsTennis },
-  { name: "MMA", Icon: MdOutlineSportsMma  },
-  { name: "Boxing", Icon: PiBoxingGloveBold  },
-  { name: "Racing", Icon: IoCarSportSharp },
-  { name: "Baseball", Icon: GiBaseballGlove  },
-  { name: "Wrestling", Icon: GiBoxingGloveSurprise  },
-  { name: "Hockey", Icon: GiHockey },
-];
+import { Categories } from "../Categories/Categories";
 
 const SportsNav = ({ onSelectCategory }) => {
   const scrollRef = useRef(null);
   const [active, setActive] = useState("Channel");
-
   const handleClick = (category) => {
     setActive(category);
     onSelectCategory(category);
@@ -40,11 +22,11 @@ const SportsNav = ({ onSelectCategory }) => {
 
   return (
     <Container>
-      <div className="relative flex items-center px-10 mt-8">
+      <div className="relative flex items-center px-14 bg-[var(--secondary)] py-4 rounded-md">
         {/* Left Arrow */}
         <button
           onClick={() => scroll("left")}
-          className="absolute left-0 z-10 bg-[var(--secondary)] text-[var(--text)] p-2 rounded-full hover:text-[var(--primary)] shadow-lg transition-colors duration-300 ease-in-out"
+          className="absolute left-3 z-10 bg-[var(--background)] text-[var(--text)] p-2 rounded-full hover:text-[var(--primary)] shadow-lg transition-colors duration-300 ease-in-out"
         >
           <IoIosArrowBack />
         </button>
@@ -56,17 +38,17 @@ const SportsNav = ({ onSelectCategory }) => {
         >
           <div className="flex space-x-4 mx-auto">
             {/* Centered and full width */}
-            {categories.map((cat) => (
+            {Categories.map((cat) => (
               <button
                 key={cat.name}
                 onClick={() => handleClick(cat.name)}
-                className={`px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition duration-200 uppercase cursor-pointer  ${
+                className={`px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition duration-200 uppercase cursor-pointer   " ${
                   active === cat.name
                     ? "bg-[var(--primary)] text-[var(--background)]"
-                    : "bg-[var(--secondary)] "
+                    : "bg-[var(--background)] hover:bg-[var(--primary)] hover:text-[var(--background)]"
                 }`}
               >
-                <cat.Icon className="text-xl" />
+                <cat.Icon className="text-xl hover:text-[var(--background)]" />
                 {cat.name}
               </button>
             ))}
@@ -76,7 +58,7 @@ const SportsNav = ({ onSelectCategory }) => {
         {/* Right Arrow */}
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 z-10 bg-[var(--secondary)] text-[var(--text)] p-2 rounded-full hover:text-[var(--primary)] shadow-lg transition-colors duration-300 ease-in-out"
+          className="absolute right-3 z-10 bg-[var(--background)] text-[var(--text)] p-2 rounded-full hover:text-[var(--primary)] shadow-lg transition-colors duration-300 ease-in-out"
         >
           <IoIosArrowForward />
         </button>
