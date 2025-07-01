@@ -22,11 +22,11 @@ const SportsNav = ({ onSelectCategory }) => {
 
   return (
     <Container>
-      <div className="relative flex items-center px-10">
+      <div className="relative flex items-center px-14 bg-[var(--secondary)] py-4 rounded-md">
         {/* Left Arrow */}
         <button
           onClick={() => scroll("left")}
-          className="absolute left-0 z-10 bg-[var(--secondary)] text-[var(--text)] p-2 rounded-full hover:text-[var(--primary)] shadow-lg transition-colors duration-300 ease-in-out"
+          className="absolute left-3 z-10 bg-[var(--background)] text-[var(--text)] p-2 rounded-full hover:text-[var(--primary)] shadow-lg transition-colors duration-300 ease-in-out"
         >
           <IoIosArrowBack />
         </button>
@@ -45,7 +45,7 @@ const SportsNav = ({ onSelectCategory }) => {
                 className={`px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition duration-200 uppercase cursor-pointer   " ${
                   active === cat.name
                     ? "bg-[var(--primary)] text-[var(--background)]"
-                    : "bg-[var(--secondary)] hover:bg-[var(--primary)] hover:text-[var(--background)]"
+                    : "bg-[var(--background)] hover:bg-[var(--primary)] hover:text-[var(--background)]"
                 }`}
               >
                 <cat.Icon className="text-xl hover:text-[var(--background)]" />
@@ -58,7 +58,7 @@ const SportsNav = ({ onSelectCategory }) => {
         {/* Right Arrow */}
         <button
           onClick={() => scroll("right")}
-          className="absolute right-0 z-10 bg-[var(--secondary)] text-[var(--text)] p-2 rounded-full hover:text-[var(--primary)] shadow-lg transition-colors duration-300 ease-in-out"
+          className="absolute right-3 z-10 bg-[var(--background)] text-[var(--text)] p-2 rounded-full hover:text-[var(--primary)] shadow-lg transition-colors duration-300 ease-in-out"
         >
           <IoIosArrowForward />
         </button>
