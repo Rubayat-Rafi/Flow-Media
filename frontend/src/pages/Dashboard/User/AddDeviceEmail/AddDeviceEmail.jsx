@@ -52,7 +52,7 @@ const AddDeviceEmail = ({ packageType }) => {
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold text-center mb-6">
+      <h2 className="text-xl font-bold text-center mb-6">
         Add Device Email for {pack} Plan
       </h2>
 
