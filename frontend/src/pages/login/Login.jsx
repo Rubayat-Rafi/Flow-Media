@@ -2,7 +2,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import axios from "axios";
+import {toast} from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,12 +14,11 @@ const Login = () => {
     try {
       await signInUser(email, password);
       reset();
-      alert("sign In successfull");
+      toast.success("sign In successfull");
       // redirect to home page
       navigate("/");
     } catch (error) {
-      console.error("Error during Sign Up:", error);
-      alert("Login faild. Please try again Later.");
+      toast.error("Login faild. Please try again Later.", error);
     }
   };
 

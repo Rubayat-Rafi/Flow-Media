@@ -143,7 +143,7 @@ exports.addDeveiceEmail = async (req, res) => {
     if (subscription.emails.includes(deviceEmail)) {
       return res.status(400).json({ message: "Device email already exists" });
     }
-    const maxEmails = pack === "yearly" ? 2 : 1;
+    const maxEmails = pack === "yearly" ? 3 : 2;
 
     if (subscription.emails.length >= maxEmails) {
       return res.status(400).json({
@@ -171,7 +171,7 @@ exports.addDeveiceEmail = async (req, res) => {
   }
 };
 
-exports.cancelDeviceEmail = async (req, res) => {
+exports.removeDeviceEmail = async (req, res) => {
   try {
     const { userEmail, deviceEmail } = req.body;
     const db = client.db("flow_media");

@@ -6,6 +6,6 @@ router.post("/payments", paymentsController.payments);
 router.post("/create-payment-intent", paymentsController.paymentIntendSystem);
 router.get("/subscriptions/expired/:email", paymentsController.expiredSubscription);
 router.post("/add_devices", paymentsController.addDeveiceEmail);
-router.post("/cancel_devices", paymentsController.cancelDeviceEmail);
+router.post("/remove_devices", paymentsController.removeDeviceEmail);
 
 module.exports = router;

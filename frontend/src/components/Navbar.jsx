@@ -60,7 +60,7 @@ const Navbar = () => {
           <div>
             <img src="/logo.png" className="max-h-[48px]" alt="logo" />
           </div>
-          <div className="flex items-center gap-2 py-2 px-4 rounded-md bg-[var(--secondary)]">
+          <div className="hidden  md:flex items-center gap-2 py-2 px-4 rounded-md bg-[var(--secondary)]">
             {/* Clock Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -114,10 +114,10 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex items-center gap-5">
-          <a href="/" className="hover:underline">
+          <a href="/" className="hidden md:block hover:underline">
             Why Flow Media?
           </a>
-          <a href="/" className="flex items-center gap-1 hover:underline">
+          <a href="/" className="hidden md:flex items-center gap-1 hover:underline">
             <IoInformationCircleOutline className="text-2xl" />
             FAQ?
           </a>
