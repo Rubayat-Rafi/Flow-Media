@@ -1,8 +1,13 @@
-import { Calendar } from "react-date-range";
 import { FaUserAlt, FaDollarSign } from "react-icons/fa";
-import { BsFillCartPlusFill, BsFillHouseDoorFill } from "react-icons/bs";
+import { BsFillCartPlusFill } from "react-icons/bs";
+import { MdConnectedTv } from "react-icons/md";
+import useUsers from "../../../hooks/useUsers";
+import useCategory from "../../../hooks/useCategory";
 
 const AdminStatistics = () => {
+  const [users] = useUsers();
+  const [categories] = useCategory();
+
   return (
     <div>
       <div className="mt-12">
@@ -45,14 +50,14 @@ const AdminStatistics = () => {
             <div
               className={`bg-clip-border mx-4 rounded-xl overflow-hidden bg-gradient-to-tr shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center from-pink-600 to-pink-400 text-white shadow-pink-500/40`}
             >
-              <BsFillHouseDoorFill className="w-6 h-6 text-white" />
+              <MdConnectedTv className="w-6 h-6 text-white" />
             </div>
             <div className="p-4 text-right">
               <p className="block antialiased font-sans text-sm leading-normal font-normal text-blue-gray-600">
-                Total Orders
+                Total Channel and Events
               </p>
               <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-                120
+                {categories.length}
               </h4>
             </div>
           </div>
@@ -68,7 +73,7 @@ const AdminStatistics = () => {
                 Total User
               </p>
               <h4 className="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900">
-                10
+                {users.length}
               </h4>
             </div>
           </div>
