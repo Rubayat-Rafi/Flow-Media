@@ -12,15 +12,10 @@ const Home = () => {
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("Channel");
   const [categorys, isLoading] = useCategory();
-
   const [isMounted, setIsMounted] = useState(false);
-
-  // Prevent hydration mismatch by waiting for mount
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  // Fix scroll issue on small screens
   useEffect(() => {
     if (!isMounted) return;
 
@@ -31,7 +26,6 @@ const Home = () => {
         document.body.style.overflow = "auto";
       }
     };
-
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => {
@@ -43,12 +37,9 @@ const Home = () => {
   const category = (selectCategory) => {
     setSelectedCategory(selectCategory);
   };
-
-  // Only render after mount to avoid hydration mismatch
   if (!isMounted || isLoading) {
     return <LoadingSpinner />;
   }
-
   return (
     <section className="space-y-10 py-12">
       <SportsNav onSelectCategory={category} />
