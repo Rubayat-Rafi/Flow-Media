@@ -4,7 +4,9 @@ import { useAuth } from "../../hooks/useAuth";
 import Subscription from "../../utils/subscription/Subscription";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Link } from "react-router";
+
 const subscriptions = [
   {
     id: 1,
@@ -99,7 +101,8 @@ const MainContent = () => {
     },
   });
 
-  const hasTrialUsed = trialData?.used;
+  // const hasTrialUsed = trialData?.used;
+
   return (
     <Subscription
       className={`${
@@ -137,20 +140,20 @@ const MainContent = () => {
               className="bg-[var(--background)] rounded-xl p-6"
               style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
             >
-              <a
-                href="/signup"
+              <Link
+                to="/signup"
                 className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
               >
                 Signup to keep watching
-              </a>
+              </Link>
               <p className="text-base max-md:text-xs text-center mt-4">
                 Already have an account?
-                <a
-                  href="/login"
+                <Link
+                  to="/login"
                   className="text-[var(--primary)] font-medium ml-2"
                 >
                   Log in
-                </a>
+                </Link>
               </p>
             </div>
           </div>
@@ -185,13 +188,9 @@ const MainContent = () => {
               </p>
               <div className="flex flex-col gap-6 mt-6">
                 {subscriptions.map((subscription) => (
-                  <a
+                  <Link
                     key={subscription.id}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`${import.meta.env.VITE_PAYMENT_URL}${
-                      subscription.url
-                    }?email=${user?.email}&price=${subscription.offerPrice}`}
+                    to={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url}?email=${user?.email}&price=${subscription.offerPrice}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
@@ -232,7 +231,7 @@ const MainContent = () => {
                         </div>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 ))}
               </div>
 

@@ -30,7 +30,7 @@ const RemoveDeviceEmail = () => {
       );
 
       setMessage(res.data.message || "Device email removed successfully!");
-      setDeviceEmail(""); // Clear the device email input
+      setDeviceEmail("");
     } catch (err) {
       console.error("Axios Error:", err);
       setMessage(
@@ -51,36 +51,38 @@ const RemoveDeviceEmail = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto p-4 border rounded bg-white shadow">
-      <h2 className="text-xl font-semibold mb-4">Remove Device Email</h2>
-      <form onSubmit={handleRemove} className="space-y-3">
-        <input
-          type="email"
-          placeholder="User Email"
-          value={userEmail}
-          disabled
-          className="w-full border px-3 py-2 rounded bg-gray-100 text-gray-500"
-        />
-        <input
-          type="email"
-          placeholder="Device Email"
-          value={deviceEmail}
-          onChange={(e) => setDeviceEmail(e.target.value)}
-          required
-          className="w-full border px-3 py-2 rounded"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 flex items-center justify-center gap-2"
-        >
-          {loading && <FaSpinner className="animate-spin" />}
-          {loading ? "Removing..." : "Remove Device Email"}
-        </button>
-      </form>
-      {message && (
-        <p className="mt-4 text-center text-sm text-gray-700">{message}</p>
-      )}
+    <div className="h-screen flex flex-col items-center justify-center">
+      <div className="bg-[var(--secondary)] p-6 rounded-lg max-w-md w-full">
+        <h2 className="text-xl font-bold text-center mb-6 uppercase">Remove Your Device</h2>
+        <form onSubmit={handleRemove} className="space-y-4">
+          <input
+            type="email"
+            placeholder="User Email"
+            value={userEmail}
+            disabled
+            className="py-2 px-4 rounded-md w-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-white font-semibold  text-[var(--background)]"
+          />
+          <input
+            type="email"
+            placeholder="Enter device email"
+            value={deviceEmail}
+            onChange={(e) => setDeviceEmail(e.target.value)}
+            required
+            className="py-2 px-4 rounded-md w-full border bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-[var(--background)]"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="primary-btn w-full"
+          >
+            {loading && <FaSpinner className="animate-spin" />}
+            {loading ? "Removing..." : "Remove Device Email"}
+          </button>
+        </form>
+        {message && (
+          <p className="mt-4 text-center text-sm">{message}</p>
+        )}
+      </div>
     </div>
   );
 };
