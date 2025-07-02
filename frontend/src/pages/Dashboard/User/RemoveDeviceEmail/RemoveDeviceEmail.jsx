@@ -30,7 +30,7 @@ const RemoveDeviceEmail = () => {
       );
 
       setMessage(res.data.message || "Device email removed successfully!");
-      setDeviceEmail(""); // Clear the device email input
+      setDeviceEmail(""); 
     } catch (err) {
       console.error("Axios Error:", err);
       setMessage(

@@ -1,21 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { useAuth } from "../../../hooks/useAuth";
+
 import { Helmet } from "react-helmet";
 import { MdDeleteForever } from "react-icons/md";
 import { toast } from "react-hot-toast";
+import useUsers from "../../../hooks/useUsers";
+import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
-  const { user } = useAuth();
-
-  const { data: users = [], refetch } = useQuery({
-    queryKey: ["users", user?.email],
-    queryFn: async () => {
-      const { data } = await axiosSecure.get(`/api/users/${user?.email}`);
-      return data;
-    },
-  });
+  const [users, isLoading, refetch] = useUsers();
 
   const handleRoleChange = async (user, newRole) => {
     try {
@@ -29,14 +22,6 @@ const ManageUsers = () => {
   };
 
   const handleDeleteUser = (id) => {
-    // try {
-    //   const res = await axiosSecure.delete(`/api/user/${id}`);
-    //   alert(res.data.message);
-    //   refetch();
-    // } catch (error) {
-    //   alert(error.message);
-    // }
-
     toast.custom((t) => (
       <div className="bg-white p-2 rounded shadow-lg flex flex-col md:flex-row items-center gap-3">
         <span className="text-[var(--background)]">
@@ -64,6 +49,8 @@ const ManageUsers = () => {
       </div>
     ));
   };
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <>

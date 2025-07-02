@@ -6,9 +6,10 @@ const userRoutes = require("./routes/user.routes.js");
 const categoryRoutes = require("./routes/category.routes.js");
 const paymentRoutes = require("./routes/payments.route.js");
 const freeTrialRoutes = require("./routes/freeTrial.routes.js")
-const client = require("./lib/db_connection/db_connection.js")
+
 const app = express();
 const port = process.env.PORT || 5000;
+
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());

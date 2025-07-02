@@ -50,7 +50,14 @@ const Sidebar = ({ sidebarContent, channels }) => {
             )
           )
         ) : (
-          <p className="text-sm text-gray-400">No channels found.</p>
+          <div className=" flex items-center flex-col text-center justify-center py-6">
+            <h6 className="text-base font-semibold text-gray-400">
+              There are no events today
+            </h6>
+            <p className="text-xs text-gray-400">
+              Come back tomorrow or pick another sport
+            </p>
+          </div>
         )}
       </div>
     </aside>
