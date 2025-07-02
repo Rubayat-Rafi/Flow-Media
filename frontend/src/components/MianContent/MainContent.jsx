@@ -1,9 +1,10 @@
 import HlsPlayer from "../HlsPlayer/HlsPlayer";
 import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import Subscription from "../../utils/subscription/Subscription";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { useState, useEffect } from "react";
 const subscriptions = [
   {
     id: 1,
@@ -12,7 +13,7 @@ const subscriptions = [
     device: "2 Devices",
     value: "Best value",
     regularPrice: "$240",
-    offerPrice: "$99.99",
+    offerPrice: "99.99",
     discount: "50% offer",
     url: "/payment/yearly",
   },
@@ -20,56 +21,118 @@ const subscriptions = [
     id: 2,
     name: "Monthly Pass",
     days: "30 days",
-    device: "1 Devices",
-    // value: "Best value",
-    // regularPrice: "$240",
-    offerPrice: "$19.99",
+    device: "1 Device",
+    offerPrice: "19.99",
     url: "/payment/monthly",
   },
   {
-    id: 2,
+    id: 3,
     name: "Weekly Pass",
     days: "7 days",
-    device: "1 Devices",
-    // value: "Best value",
-    // regularPrice: "$240",
-    offerPrice: "$14.99",
+    device: "1 Device",
+    offerPrice: "14.99",
     url: "/payment/weekly",
   },
 ];
 
-// url: ${import.meta.env.PAYMENT_URL}/payment/annual?email=${user?.email},
+const fetchSubscription = async (email) => {
+  const res = await axios.get(
+    `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
+  );
+  return res?.data?.userData?.subscribe;
+};
+
+const fetchTrialStatus = async () => {
+  const res = await axios.get(
+    `${import.meta.env.VITE_FLOW_MRDIA_API}/api/free-trial/check`
+  );
+  return res.data;
+};
+
+const startTrialRequest = async () => {
+  const res = await axios.post(
+    `${import.meta.env.VITE_FLOW_MRDIA_API}/api/free-trial/start`
+  );
+  return res.data;
+};
 
 const MainContent = () => {
   const { user } = useAuth();
   const { url } = useSelector((state) => state?.Slice);
-  const [subscription, setSubscription] = useState(false);
+  const [trialActive, setTrialActive] = useState(false);
+  const [trialTimeLeft, setTrialTimeLeft] = useState(60);
+  const queryClient = useQueryClient();
+  const {
+    data: subscription,
+    isLoading: subLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["subscription-status", user?.email],
+    queryFn: () => fetchSubscription(user.email),
+    enabled: !!user?.email,
+    refetchInterval: 500,
+  });
 
-  useEffect(() => {
-    if (!user?.email) return;
-    const fetchSubscription = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${user.email}`
-        );
-        setSubscription(response?.data?.userData?.subscribe);
-      } catch (error) {
-        console.error("Subscription check failed:", error?.message);
-      }
-    };
-    fetchSubscription();
-    const interval = setInterval(fetchSubscription, 500);
-    return () => clearInterval(interval);
-  }, [user?.email]);
+  const { data: trialData, isLoading: trialLoading } = useQuery({
+    queryKey: ["free-trial-status"],
+    queryFn: fetchTrialStatus,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+
+  const { mutate: startTrial } = useMutation({
+    mutationFn: startTrialRequest,
+    onSuccess: () => {
+      setTrialActive(true);
+
+      const interval = setInterval(() => {
+        setTrialTimeLeft((prev) => {
+          if (prev === 1) {
+            clearInterval(interval);
+            setTrialActive(false);
+            queryClient.invalidateQueries(["free-trial-status"]);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    },
+  });
+
+  const hasTrialUsed = trialData?.used;
   return (
     <Subscription
       className={`${
-        user ? "max-md:h-fit " : "h-full"
-      } w-full  md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10 `}
+        user ? "max-md:h-fit" : "h-full"
+      } w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}
     >
-      <section className=" h-full w-full">
-        {!user ? (
-          <div className="flex items-center justify-center lg:h-[500px] w-full ">
+      <section className="h-full w-full">
+        {!user &&
+          !trialLoading &&
+          !trialActive &&
+          trialData?.used === false && (
+            <div className="text-center">
+              <button
+                onClick={() => startTrial()}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded mb-4"
+                disabled={trialActive}
+              >
+                Start 1-Minute Free Trial
+              </button>
+              <p className="text-sm text-gray-500">
+                Enjoy free access for 60 seconds.
+              </p>
+            </div>
+          )}
+
+        {!user && trialLoading && (
+          <div className="text-center text-gray-500">
+            Checking free trial...
+          </div>
+        )}
+
+        {!user && trialData?.used && !trialActive && (
+          <div className="flex items-center justify-center lg:h-[500px] w-full">
             <div
               className="bg-[var(--background)] rounded-xl p-6"
               style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
@@ -78,10 +141,10 @@ const MainContent = () => {
                 href="/signup"
                 className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
               >
-                signup to keep watching
+                Signup to keep watching
               </a>
               <p className="text-base max-md:text-xs text-center mt-4">
-                Have an account already?
+                Already have an account?
                 <a
                   href="/login"
                   className="text-[var(--primary)] font-medium ml-2"
@@ -91,22 +154,44 @@ const MainContent = () => {
               </p>
             </div>
           </div>
-        ) : !subscription ? (
+        )}
+
+        {!user && trialActive && (
+          <div className="text-center">
+            <p className="text-lg text-gray-500">
+              Trial expires in: {trialTimeLeft}s
+            </p>
+            <HlsPlayer src={url} />
+          </div>
+        )}
+
+        {user && subLoading && (
+          <div className="text-center text-gray-600">
+            Checking subscription...
+          </div>
+        )}
+        {user && isError && (
+          <div className="text-center text-red-500">
+            Failed to fetch subscription.
+          </div>
+        )}
+        {user && !subscription && !subLoading && (
           <div className="flex items-center justify-center h-full w-full">
             <div className="bg-[var(--background)] rounded-xl p-6">
               <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
               <p className="text-sm">
                 Watch Unlimited BOXING, MMA (PPV INCLUDED), NFL, NCAAF, NCAAB,
-                Rodeo, MLB, NHL, NBA No Blackouts. Instant activation!
+                Rodeo, MLB, NHL, NBA — No Blackouts. Instant activation!
               </p>
               <div className="flex flex-col gap-6 mt-6">
-                {subscriptions.map((subscription, index) => (
+                {subscriptions.map((subscription) => (
                   <a
-                    key={index}
+                    key={subscription.id}
                     target="_blank"
+                    rel="noopener noreferrer"
                     href={`${import.meta.env.VITE_PAYMENT_URL}${
                       subscription.url
-                    }?email=${user?.email}`}
+                    }?email=${user?.email}&price=${subscription.offerPrice}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
@@ -128,7 +213,7 @@ const MainContent = () => {
                             {subscription.value}
                           </p>
                         )}
-                        <div className="flex items-end flex-col space-y-2 ">
+                        <div className="flex items-end flex-col space-y-2">
                           <div className="flex items-center space-x-2">
                             {subscription.regularPrice && (
                               <p className="line-through text-sm text-gray-400 group-hover:text-[var(--secondary)]">
@@ -136,16 +221,14 @@ const MainContent = () => {
                               </p>
                             )}
                             <p className="font-semibold text-lg group-hover:text-[var(--background)]">
-                              {subscription.offerPrice}
+                              ${subscription.offerPrice}
                             </p>
                           </div>
-                          <div>
-                            {subscription.discount && (
-                              <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                                {subscription.discount}
-                              </p>
-                            )}
-                          </div>
+                          {subscription.discount && (
+                            <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
+                              {subscription.discount}
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -159,9 +242,8 @@ const MainContent = () => {
               </p>
             </div>
           </div>
-        ) : (
-          <HlsPlayer src={user ? url : ""} />
         )}
+        {user && subscription && <HlsPlayer src={url} />}
       </section>
     </Subscription>
   );
