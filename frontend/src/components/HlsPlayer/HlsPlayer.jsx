@@ -39,6 +39,10 @@ const HlsPlayer = ({ src }) => {
     }
   }, [src, isM3u8, isMp4]);
 
+
+
+  
+
   const handleQualityChange = (levelIndex) => {
     if (hlsInstance) {
       hlsInstance.currentLevel = levelIndex;

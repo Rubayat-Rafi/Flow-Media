@@ -11,15 +11,15 @@ const MainLayout = () => {
   if (isLoading || loading) return <LoadingSpinner />;
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       <header>
         <Navbar />
       </header>
-      <main className="flex-1">
+      <main className="min-h-[calc(100vh-232px)]">
         <Outlet />
       </main>
       <Footer />
-    </div>
+    </>
   );
 };
 
