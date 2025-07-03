@@ -2,10 +2,15 @@ import { useRef, useState } from "react";
 import Container from "../Shared/Container";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { Categories } from "../Categories/Categories";
-
+import { GetCategory } from "../../utils/get_searchParams/ger_searchParams";
+import { useSearchParams } from "react-router";
 const SportsNav = ({ onSelectCategory }) => {
+  const [searchParams] = useSearchParams();
+  const categoryData = searchParams.get("q");
+  const catAndevent = GetCategory(categoryData);
+  const urlCategory = catAndevent?.categ;
   const scrollRef = useRef(null);
-  const [active, setActive] = useState("Channel");
+  const [active, setActive] = useState(urlCategory || "Channel");
   const handleClick = (category) => {
     setActive(category);
     onSelectCategory(category);
