@@ -60,8 +60,10 @@ const startTrialRequest = async () => {
 
 const MainContent = () => {
   const { user } = useAuth();
+  
   const { url } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
+
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const queryClient = useQueryClient();
   const {
@@ -110,15 +112,18 @@ const MainContent = () => {
       } w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}
     >
       <section className="h-full w-full">
-        {!user &&
-          !trialLoading &&
-          !trialActive &&
-          trialData?.used === false && (
+        {
+        
+        // !user &&
+        //   !trialLoading &&
+        //   !trialActive &&
+          trialData?.used === true && (
             <div className="text-center">
               <button
                 onClick={() => startTrial()}
                 className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded mb-4"
-                disabled={trialActive}
+                // disabled={trialActive}
+                disabled={false}
               >
                 Start 1-Minute Free Trial
               </button>
@@ -159,14 +164,24 @@ const MainContent = () => {
           </div>
         )}
 
-        {!user && trialActive && (
+        {/* {!user && trialActive && (
           <div className="text-center">
             <p className="text-lg text-gray-500">
               Trial expires in: {trialTimeLeft}s
             </p>
             <HlsPlayer src={url} />
           </div>
-        )}
+        )} */}
+        
+      
+          <div className="text-center">
+            <p className="text-lg text-gray-500">
+              Trial expires in: {trialTimeLeft}s
+            </p>
+            <HlsPlayer src={url} />
+          </div>
+        
+      
 
         {user && subLoading && (
           <div className="text-center text-gray-600">

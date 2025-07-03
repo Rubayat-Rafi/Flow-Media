@@ -16,7 +16,7 @@ const Sidebar = ({ sidebarContent, channels }) => {
     ...filteredChannels,
   ];
   return (
-    <aside className="bg-[var(--secondary)] overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
+    <aside className="bg-[var(--secondary)] pt-2 pb-10 overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
       {/* <p className="text-lg font-semibold mb-2">
         {sidebarContent ?? "None selected"}
       </p> */}
