@@ -45,7 +45,8 @@ const Home = () => {
       <SportsNav onSelectCategory={category} />
       <div className="max-w-[1440px] h-full w-full mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-6">
         {/* Sidebar */}
-        <div className="w-2/8 max-md:w-full overflow-hidden">
+
+        <div className="w-2/8 max-md:w-full h-[75vh] ">
           <Sidebar sidebarContent={selectedCategory} channels={categorys} />
         </div>
 
@@ -55,7 +56,7 @@ const Home = () => {
             !hideVideoFlag ? "max-md:hidden" : "max-md:block"
           } w-6/8 max-md:w-full  max-md:fixed z-20 max-md:bg-[var(--secondary)] top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
         >
-          <div className="relative h-full w-full flex items-start justify-center">
+          <div className="relative h-full w-full flex  justify-center">
             <button
               onClick={() => {
                 dispatch(addVideoFlag(false));
