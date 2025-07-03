@@ -41,36 +41,37 @@ const Home = () => {
     return <LoadingSpinner />;
   }
   return (
-    <section className="space-y-10 py-10">
-      <SportsNav onSelectCategory={category} />
-      <div className="max-w-[1440px] h-[70vh] w-full mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col md:flex-row gap-6 ">
-        {/* Sidebar */}
+<section className="space-y-10 pb-10">
+  <SportsNav onSelectCategory={category} />
+  
+  <div className="max-w-[1440px]  mx-auto px-4 md:px-10 xl:px-20 flex items-start flex-col-reverse lg:flex-row gap-6 ">
+    {/* Sidebar - Full width on mobile, 25% on desktop */}
+    <div className="w-full lg:w-1/4">
+      <Sidebar sidebarContent={selectedCategory} channels={categorys} />
+    </div>
 
-        <div className="w-2/8 max-md:w-full ">
-          <Sidebar sidebarContent={selectedCategory} channels={categorys} />
-        </div>
-
-        {/* Main content */}
-        <div
-          className={`${
-            !hideVideoFlag ? "max-md:hidden" : "max-md:block"
-          } w-6/8 max-md:w-full  max-md:fixed z-20 max-md:bg-[var(--secondary)] top-0 left-0 bottom-0 right-0 max-md:flex max-md:items-center max-md:justify-center`}
+    {/* Main content - Hidden on mobile when video is not playing */}
+    <div className={`${!hideVideoFlag ? "hidden md:block" : "block"} 
+        w-full lg:w-3/4 relative`}>
+      
+      {/* Video player area */}
+      <div className="relative h-full w-full flex justify-center items-center">
+        {/* Close button for mobile */}
+        <button
+          onClick={() => {
+            dispatch(addVideoFlag(false));
+            dispatch(addUrl(""));
+          }}
+          className="md:hidden absolute right-4 top-4 z-30 bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition-colors"
         >
-          <div className="relative h-full w-full flex  justify-center">
-            <button
-              onClick={() => {
-                dispatch(addVideoFlag(false));
-                dispatch(addUrl(""));
-              }}
-              className="md:hidden absolute right-5 top-5 px-5 py-1 rounded-md cursor-pointer hover:bg-primary"
-            >
-              Cancel
-            </button>
-            <MainContent />
-          </div>
-        </div>
+          Close
+        </button>
+        
+        <MainContent />
       </div>
-    </section>
+    </div>
+  </div>
+</section>
   );
 };
 

@@ -103,14 +103,12 @@ const MainContent = () => {
   });
 
   // const hasTrialUsed = trialData?.used;
-
-  console.log(events)
-
+  
   return (
     <Subscription
       className={`${
         user ? "max-md:h-fit" : "h-full"
-      } w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}
+      } w-full md:bg-[var(--secondary)] rounded-md shadow-lg  lg:p-8 border border-[var(--text)]/10`}
     >
       <section className="h-full w-full">
         <div className=" flex items-end justify-between">
