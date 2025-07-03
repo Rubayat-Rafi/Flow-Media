@@ -6,7 +6,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router";
-
+import { useSearchParams } from "react-router";
+import useCategory from "../../hooks/useCategory";
+import { GetParams } from "../../utils/get_searchParams/ger_searchParams";
 const subscriptions = [
   {
     id: 1,
@@ -59,12 +61,15 @@ const startTrialRequest = async () => {
 };
 
 const MainContent = () => {
+  const [categorys, isLoading] = useCategory();
   const { user } = useAuth();
   const { url, events } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
-
+  const [searchParams] = useSearchParams();
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const queryClient = useQueryClient();
+  const categoryData = searchParams.get("q");
+  const hlsSrc = GetParams(categoryData, categorys, url);
   const {
     data: subscription,
     isLoading: subLoading,
@@ -87,7 +92,6 @@ const MainContent = () => {
     mutationFn: startTrialRequest,
     onSuccess: () => {
       setTrialActive(true);
-
       const interval = setInterval(() => {
         setTrialTimeLeft((prev) => {
           if (prev === 1) {
@@ -102,86 +106,52 @@ const MainContent = () => {
     },
   });
 
-  // const hasTrialUsed = trialData?.used;
-
   return (
-    <Subscription
-      className={`${
-        user ? "max-md:h-fit" : "h-full"
-      } w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}
-    >
+    <Subscription className={`${user ? "max-md:h-fit" : "h-full"} w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}>
       <section className="h-full w-full">
-        <div className=" flex items-end justify-between">
-          {/* live status */}
+        <div className="flex items-end justify-between">
           <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
             <div className="inline-grid *:[grid-area:1/1]">
               <div className="status status-lg status-error animate-ping bg-red-500"></div>
               <div className="status status-lg status-error bg-red-600"></div>
             </div>
             <div className="font-semibold">
-              {events ? (
-                events?.category === "Channel" ? (
-                  <p>{events?.channelName}</p>
-                ) : (
-                  <p>Live</p>
-                )
+              {events?.category === "Channel" ? (
+                <p>{events?.channelName}</p>
               ) : (
                 <p>Live</p>
               )}
             </div>
           </div>
 
-          <div className="">
-            {/* trial ststus  */}
-            {
-              // !user &&
-              //   !trialLoading &&
-              //   !trialActive &&
-              trialData?.used === true && (
-                <div className="text-end">
-                  <button
-                    onClick={() => startTrial()}
-                    className=""
-                    // disabled={trialActive}
-                    disabled={false}
-                  >
-                    Start Trial
-                  </button>
-                  {/* <p className="text-sm text-gray-500">
-                    Enjoy free access for 60 seconds.
-                  </p> */}
-                </div>
-              )
-            }
+          <div>
+            {trialData?.used === true && (
+              <div className="text-end">
+                <button onClick={() => startTrial()} disabled={false}>
+                  Start Trial
+                </button>
+              </div>
+            )}
 
             <p className="text-lg text-[var(--primary)] font-semibold text-end">
               Trial: {trialTimeLeft}s
             </p>
 
             {!user && trialLoading && (
-              <div className="text-sx text-end ">Checking free trial...</div>
+              <div className="text-sx text-end">Checking free trial...</div>
             )}
           </div>
         </div>
 
         {!user && trialData?.used && !trialActive && (
           <div className="flex items-center justify-center lg:h-[500px] w-full">
-            <div
-              className="bg-[var(--background)] rounded-xl p-6"
-              style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
-            >
-              <Link
-                to="/signup"
-                className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
-              >
+            <div className="bg-[var(--background)] rounded-xl p-6" style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}>
+              <Link to="/signup" className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase">
                 Signup to keep watching
               </Link>
               <p className="text-base max-md:text-xs text-center mt-4">
                 Already have an account?
-                <Link
-                  to="/login"
-                  className="text-[var(--primary)] font-medium ml-2"
-                >
+                <Link to="/login" className="text-[var(--primary)] font-medium ml-2">
                   Log in
                 </Link>
               </p>
@@ -190,14 +160,10 @@ const MainContent = () => {
         )}
 
         {user && subLoading && (
-          <div className="text-center text-gray-600">
-            Checking subscription...
-          </div>
+          <div className="text-center text-gray-600">Checking subscription...</div>
         )}
         {user && isError && (
-          <div className="text-center text-red-500">
-            Failed to fetch subscription.
-          </div>
+          <div className="text-center text-red-500">Failed to fetch subscription.</div>
         )}
         {user && !subscription && !subLoading && (
           <div className="flex items-center justify-center h-full w-full">
@@ -211,11 +177,7 @@ const MainContent = () => {
                 {subscriptions.map((subscription) => (
                   <Link
                     key={subscription.id}
-                    // to={`https://www.pbg4jptrk.com/7XGQTB/7RZT374/?sub3=${user?.email}`}
-                    to={`${import.meta.env.VITE_PAYMENT_URL}${
-                      subscription.url
-                    }?email=${user?.email}&price=${subscription.offerPrice}`}
-                    // https://www.pbg4jptrk.com/7XGQTB/7RZT374/?sub3=rafi@gmail.com
+                    to={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url}?email=${user?.email}&price=${subscription.offerPrice}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
@@ -223,13 +185,9 @@ const MainContent = () => {
                           <h2 className="text-xl font-semibold group-hover:text-[var(--background)]">
                             {subscription.name}
                           </h2>
-                          <p className="text-sm group-hover:text-[var(--secondary)]">
-                            {subscription.days}
-                          </p>
+                          <p className="text-sm group-hover:text-[var(--secondary)]">{subscription.days}</p>
                         </div>
-                        <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">
-                          {subscription.device}
-                        </p>
+                        <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">{subscription.device}</p>
                       </div>
                       <div>
                         {subscription.value && (
@@ -259,20 +217,14 @@ const MainContent = () => {
                   </Link>
                 ))}
               </div>
-
               <p className="mt-4 text-sm">
-                Our subscriptions do not auto-renew. You will need to renew
-                manually if you wish to continue.
+                Our subscriptions do not auto-renew. You will need to renew manually if you wish to continue.
               </p>
             </div>
           </div>
         )}
-        {user && subscription && <HlsPlayer src={url} />}
-        {/* {!user && trialActive && (
-          <>
-            <HlsPlayer src={url} />
-          </>
-        )} */}
+
+        {user && subscription && <HlsPlayer src={hlsSrc} />}
       </section>
     </Subscription>
   );
