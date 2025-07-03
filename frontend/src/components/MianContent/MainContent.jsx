@@ -7,8 +7,6 @@ import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router";
 
-
-
 const subscriptions = [
   {
     id: 1,
@@ -62,8 +60,9 @@ const startTrialRequest = async () => {
 
 const MainContent = () => {
   const { user } = useAuth();
-  const { url } = useSelector((state) => state?.Slice);
+  const { url, events } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
+
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const queryClient = useQueryClient();
   const {
@@ -105,6 +104,8 @@ const MainContent = () => {
 
   // const hasTrialUsed = trialData?.used;
 
+  console.log(events)
+
   return (
     <Subscription
       className={`${
@@ -112,29 +113,48 @@ const MainContent = () => {
       } w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}
     >
       <section className="h-full w-full">
-        {!user &&
-          !trialLoading &&
-          !trialActive &&
-          trialData?.used === false && (
-            <div className="text-center">
-              <button
-                onClick={() => startTrial()}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded mb-4"
-                disabled={trialActive}
-              >
-                Start 1-Minute Free Trial
-              </button>
-              <p className="text-sm text-gray-500">
-                Enjoy free access for 60 seconds.
-              </p>
+        <div className=" flex items-end justify-between">
+          {/* live status */}
+          <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+            <div className="inline-grid *:[grid-area:1/1]">
+              <div className="status status-lg status-error animate-ping bg-red-500"></div>
+              <div className="status status-lg status-error bg-red-600"></div>
             </div>
-          )}
-
-        {!user && trialLoading && (
-          <div className="text-center text-gray-500">
-            Checking free trial...
+            <p className="font-semibold">Live</p>
           </div>
-        )}
+
+          <div className="">
+            {/* trial ststus  */}
+            {
+              // !user &&
+              //   !trialLoading &&
+              //   !trialActive &&
+              trialData?.used === true && (
+                <div className="text-end">
+                  <button
+                    onClick={() => startTrial()}
+                    className=""
+                    // disabled={trialActive}
+                    disabled={false}
+                  >
+                    Start Trial
+                  </button>
+                  {/* <p className="text-sm text-gray-500">
+                    Enjoy free access for 60 seconds.
+                  </p> */}
+                </div>
+              )
+            }
+
+            <p className="text-lg text-[var(--primary)] font-semibold text-end">
+              Trial: {trialTimeLeft}s
+            </p>
+
+            {!user && trialLoading && (
+              <div className="text-sx text-end ">Checking free trial...</div>
+            )}
+          </div>
+        </div>
 
         {!user && trialData?.used && !trialActive && (
           <div className="flex items-center justify-center lg:h-[500px] w-full">
@@ -161,15 +181,6 @@ const MainContent = () => {
           </div>
         )}
 
-        {!user && trialActive && (
-          <div className="text-center">
-            <p className="text-lg text-gray-500">
-              Trial expires in: {trialTimeLeft}s
-            </p>
-            <HlsPlayer src={url} />
-          </div>
-        )}
-
         {user && subLoading && (
           <div className="text-center text-gray-600">
             Checking subscription...
@@ -193,7 +204,9 @@ const MainContent = () => {
                   <Link
                     key={subscription.id}
                     // to={`https://www.pbg4jptrk.com/7XGQTB/7RZT374/?sub3=${user?.email}`}
-                    to={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url}?email=${user?.email}&price=${subscription.offerPrice}`}
+                    to={`${import.meta.env.VITE_PAYMENT_URL}${
+                      subscription.url
+                    }?email=${user?.email}&price=${subscription.offerPrice}`}
                     // https://www.pbg4jptrk.com/7XGQTB/7RZT374/?sub3=rafi@gmail.com
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
@@ -247,6 +260,11 @@ const MainContent = () => {
           </div>
         )}
         {user && subscription && <HlsPlayer src={url} />}
+        {/* {!user && trialActive && (
+          <>
+            <HlsPlayer src={url} />
+          </>
+        )} */}
       </section>
     </Subscription>
   );

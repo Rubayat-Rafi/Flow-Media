@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addUrl, addVideoFlag } from "../../utils/redux/slices/slice";
+import {
+  addEvents,
+  addUrl,
+  addVideoFlag,
+} from "../../utils/redux/slices/slice";
 import { convertMatchTimeByTimeZone } from "../TimeZone/convertMatchTimeByTimeZone";
 const Sidebar = ({ sidebarContent, channels }) => {
   const { url, timeZone } = useSelector((state) => state?.Slice);
@@ -16,7 +20,7 @@ const Sidebar = ({ sidebarContent, channels }) => {
     ...filteredChannels,
   ];
   return (
-    <aside className="bg-[var(--secondary)]  rounded-md shadow-lg  h-full p-3 border border-[var(--text)]/10 ">
+    <aside className="bg-[var(--secondary)] pt-2 pb-10 overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
       {/* <p className="text-lg font-semibold mb-2">
         {sidebarContent ?? "None selected"}
       </p> */}
@@ -86,8 +90,9 @@ const ChannelCard = ({
       <button
         onClick={() => {
           setActiveChannel(ch);
-          dispatch(addUrl(ch?.channelURL));
           dispatch(addVideoFlag(true));
+          dispatch(addUrl(ch?.channelURL));
+          dispatch(addEvents(ch));
         }}
         className={`${
           isActive && url !== ""
@@ -98,7 +103,6 @@ const ChannelCard = ({
         {isActive && url !== "" ? (
           <div className="relative flex items-center justify-center">
             Watching
-            {/* <span className="loading loading-ring loading-xl absolute"></span> */}
           </div>
         ) : (
           "Watch"
@@ -115,7 +119,6 @@ const SheduleCard = ({
   dispatch,
   url,
   timeZone,
-  // isTopLive,
 }) => (
   <div className="space-y-2">
     <p className=" text-[var(--primary)] pl-3">
@@ -135,8 +138,9 @@ const SheduleCard = ({
         <button
           onClick={() => {
             setActiveChannel(ch);
-            dispatch(addUrl(ch?.matchUrl));
             dispatch(addVideoFlag(true));
+            dispatch(addUrl(ch?.matchUrl));
+            dispatch(addEvents(ch));
           }}
           className={`${
             isActive && url !== ""
@@ -147,7 +151,6 @@ const SheduleCard = ({
           {isActive && url !== "" ? (
             <div className="relative flex items-center justify-center">
               Watching
-              {/* <span className="loading loading-ring loading-xl absolute"></span> */}
             </div>
           ) : (
             "Watch"
@@ -173,11 +176,10 @@ const SheduleCard = ({
           <h4>{ch?.teamB}</h4>
         </div>
       </div>
-      {/* {isTopLive && (
-        <p className="text-[10px] text-green-400 font-semibold">
-          LIVE from other category
-        </p>
-      )} */}
+
+
+
+      
     </div>
   </div>
 );
