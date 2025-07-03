@@ -6,7 +6,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router";
-
+import { useSearchParams } from "react-router";
+import useCategory from "../../hooks/useCategory";
+import { GetParams } from "../../utils/get_searchParams/ger_searchParams";
 const subscriptions = [
   {
     id: 1,
@@ -59,12 +61,15 @@ const startTrialRequest = async () => {
 };
 
 const MainContent = () => {
+  const [categorys] = useCategory();
   const { user } = useAuth();
   const { url, events } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
-
+  const [searchParams] = useSearchParams();
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const queryClient = useQueryClient();
+  const categoryData = searchParams.get("q");
+  const hlsSrc = GetParams(categoryData, categorys, url);
   const {
     data: subscription,
     isLoading: subLoading,
@@ -87,7 +92,6 @@ const MainContent = () => {
     mutationFn: startTrialRequest,
     onSuccess: () => {
       setTrialActive(true);
-
       const interval = setInterval(() => {
         setTrialTimeLeft((prev) => {
           if (prev === 1) {
@@ -102,62 +106,45 @@ const MainContent = () => {
     },
   });
 
-  // const hasTrialUsed = trialData?.used;
   return (
     <Subscription
-      className={`${
-        user ? "max-md:h-fit" : "h-full"
-      } w-full md:bg-[var(--secondary)] rounded-md shadow-lg  lg:p-8 border border-[var(--text)]/10`}
+      className={`w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10 h-[600px]`}
     >
       <section className="h-full w-full">
-        <div className=" flex items-center justify-between">
-          {/* live status */}
-          <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
-            <div className="inline-grid *:[grid-area:1/1]">
-              <div className="status status-md lg:status-lg  status-error animate-ping bg-red-500"></div>
-              <div className="status status-md lg:status-lg  status-error bg-red-600"></div>
-            </div>
-            <div className="text-xs lg:text-base lg:font-medium">
-              {events ? (
-                events?.category === "Channel" ? (
+        {user && (
+          <div className="flex items-end justify-between">
+            <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+              <div className="inline-grid *:[grid-area:1/1]">
+                <div className="status status-lg status-error animate-ping bg-red-500"></div>
+                <div className="status status-lg status-error bg-red-600"></div>
+              </div>
+              <div className="font-semibold">
+                {events?.category === "Channel" ? (
                   <p>{events?.channelName}</p>
                 ) : (
                   <p>Live</p>
-                )
-              ) : (
-                <p>Live</p>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-
-          <div className="">
-            {/* trial ststus  */}
-            {
-              !user &&
-                !trialLoading &&
-                !trialActive &&
-              trialData?.used === true && (
+            <div>
+              {trialData?.used === true && (
                 <div className="text-end">
-                  <button
-                    onClick={() => startTrial()}
-                    className=""
-                    // disabled={trialActive}
-                    disabled={false}
-                  >
+                  <button onClick={() => startTrial()} disabled={false}>
                     Start Trial
                   </button>
                 </div>
-              )
-            }
-            <p className=" mr-6 lg:mr-0 text-xs lg:text-base text-[var(--primary)] font-semibold text-end">
-              Trial: {trialTimeLeft}s
-            </p>
+              )}
 
-            {!user && trialLoading && (
-              <div className="text-sx text-end ">Checking free trial...</div>
-            )}
+              <p className="text-lg text-[var(--primary)] font-semibold text-end">
+                Trial: {trialTimeLeft}s
+              </p>
+
+              {!user && trialLoading && (
+                <div className="text-sx text-end">Checking free trial...</div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {!user && trialData?.used && !trialActive && (
           <div className="flex items-center justify-center lg:h-[500px] w-full">
@@ -206,11 +193,9 @@ const MainContent = () => {
                 {subscriptions.map((subscription) => (
                   <Link
                     key={subscription.id}
-                    // to={`https://www.pbg4jptrk.com/7XGQTB/7RZT374/?sub3=${user?.email}`}
                     to={`${import.meta.env.VITE_PAYMENT_URL}${
                       subscription.url
                     }?email=${user?.email}&price=${subscription.offerPrice}`}
-                    // https://www.pbg4jptrk.com/7XGQTB/7RZT374/?sub3=rafi@gmail.com
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
@@ -254,7 +239,6 @@ const MainContent = () => {
                   </Link>
                 ))}
               </div>
-
               <p className="mt-4 text-sm">
                 Our subscriptions do not auto-renew. You will need to renew
                 manually if you wish to continue.
@@ -262,12 +246,8 @@ const MainContent = () => {
             </div>
           </div>
         )}
-        {user && subscription && <HlsPlayer src={url} />}
-        {!user && trialActive && (
-          <>
-            <HlsPlayer src={url} />
-          </>
-        )}
+
+        {user && subscription && <HlsPlayer src={hlsSrc} />}
       </section>
     </Subscription>
   );

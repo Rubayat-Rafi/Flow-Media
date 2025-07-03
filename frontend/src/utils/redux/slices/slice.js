@@ -3,7 +3,7 @@ const Slice = createSlice({
   name: "Slice",
   initialState: {
     url: "",
-    events: {},
+    events: null,
     usbscribe: false,
     hideVideoFlag: false,
     timeZone: "GMT+6",
