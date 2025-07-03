@@ -9,6 +9,7 @@ import { Link } from "react-router";
 import { useSearchParams } from "react-router";
 import useCategory from "../../hooks/useCategory";
 import { GetParams } from "../../utils/get_searchParams/ger_searchParams";
+
 const subscriptions = [
   {
     id: 1,
@@ -65,11 +66,13 @@ const MainContent = () => {
   const { user } = useAuth();
   const { url, events } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
-  const [searchParams] = useSearchParams();
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
+  const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
+
   const categoryData = searchParams.get("q");
   const hlsSrc = GetParams(categoryData, categorys, url);
+
   const {
     data: subscription,
     isLoading: subLoading,
@@ -107,18 +110,16 @@ const MainContent = () => {
   });
 
   return (
-    <Subscription
-      className={`w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10 h-[600px]`}
-    >
+    <Subscription className="w-full lg:bg-[var(--secondary)] rounded-md shadow-lg lg:p-8 lg:border border-[var(--text)]/10 lg:h-[600px]">
       <section className="h-full w-full">
         {user && (
           <div className="flex items-end justify-between">
-            <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+            <div className=" max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
               <div className="inline-grid *:[grid-area:1/1]">
                 <div className="status status-lg status-error animate-ping bg-red-500"></div>
                 <div className="status status-lg status-error bg-red-600"></div>
               </div>
-              <div className="font-semibold">
+              <div className="font-semibold max-lg:text-sm">
                 {events?.category === "Channel" ? (
                   <p>{events?.channelName}</p>
                 ) : (
@@ -126,28 +127,35 @@ const MainContent = () => {
                 )}
               </div>
             </div>
-            <div>
-              {trialData?.used === true && (
-                <div className="text-end">
-                  <button onClick={() => startTrial()} disabled={false}>
-                    Start Trial
-                  </button>
-                </div>
+
+            <div className="text-end">
+              {/* Trial Button only when user has no subscription and trial is available */}
+              {!subscription && trialData?.used === false && !trialActive && (
+                <button
+                  onClick={() => startTrial()}
+                  className="bg-[var(--primary)] px-3 py-1 rounded-md text-[var(--background)] font-medium"
+                >
+                  Start Trial
+                </button>
               )}
 
-              <p className="text-lg text-[var(--primary)] font-semibold text-end">
-                Trial: {trialTimeLeft}s
-              </p>
+              {/* Trial Countdown */}
+              {trialActive && (
+                <p className="text-lg max-lg:text-xs text-[var(--primary)] font-semibold text-end">
+                  Trial: {trialTimeLeft}s
+                </p>
+              )}
 
               {!user && trialLoading && (
-                <div className="text-sx text-end">Checking free trial...</div>
+                <div className="text-sm text-end">Checking free trial...</div>
               )}
             </div>
           </div>
         )}
 
+        {/* Guest user message */}
         {!user && trialData?.used && !trialActive && (
-          <div className="flex items-center justify-center lg:h-[500px] w-full">
+          <div className="flex h-full items-center justify-center lg:h-[500px] w-full">
             <div
               className="bg-[var(--background)] rounded-xl p-6"
               style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
@@ -171,6 +179,7 @@ const MainContent = () => {
           </div>
         )}
 
+        {/* Subscription loading/error states */}
         {user && subLoading && (
           <div className="text-center text-gray-600">
             Checking subscription...
@@ -181,7 +190,9 @@ const MainContent = () => {
             Failed to fetch subscription.
           </div>
         )}
-        {user && !subscription && !subLoading && (
+
+        {/* No subscription plans */}
+        {user && !subscription && !subLoading && !trialActive && (
           <div className="flex items-center justify-center h-full w-full">
             <div className="bg-[var(--background)] rounded-xl p-6">
               <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
@@ -247,7 +258,50 @@ const MainContent = () => {
           </div>
         )}
 
-        {user && subscription && <HlsPlayer src={hlsSrc} />}
+        {/* Player shown when subscription exists */}
+        <div className=" h-full max-lg:flex max-lg:flex-col max-lg:justify-center">
+          <div className=" lg:hidden w-fit  bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+            <div className="inline-grid *:[grid-area:1/1]">
+              <div className="status status-lg status-error animate-ping bg-red-500"></div>
+              <div className="status status-lg status-error bg-red-600"></div>
+            </div>
+            <div className="font-semibold max-lg:text-sm">
+              {events?.category === "Channel" ? (
+                <p>{events?.channelName}</p>
+              ) : (
+                <p>Live</p>
+              )}
+            </div>
+          </div>
+          <div className=" h-full">
+            {user && (subscription || trialActive) ? (
+              <HlsPlayer src={hlsSrc} />
+            ) : (
+              <div className="flex h-full items-center justify-center lg:h-[500px] w-full">
+                <div
+                  className="bg-[var(--background)] rounded-xl p-6"
+                  style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
+                >
+                  <Link
+                    to="/signup"
+                    className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
+                  >
+                    Signup to keep watching
+                  </Link>
+                  <p className="text-base max-md:text-xs text-center mt-4">
+                    Already have an account?
+                    <Link
+                      to="/login"
+                      className="text-[var(--primary)] font-medium ml-2"
+                    >
+                      Log in
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </section>
     </Subscription>
   );

@@ -50,7 +50,7 @@ const SportsNav = ({ onSelectCategory }) => {
                 className={`px-2 py-1 md:px-4 md:py-2 rounded md:rounded-md font-semibold flex items-center gap-1 md:gap-2 transition duration-200 uppercase cursor-pointer text-sm md:text-base" ${
                   active === cat.name
                     ? "bg-[var(--primary)] text-[var(--background)]"
-                    : "bg-[var(--background)] hover:bg-[var(--primary)] hover:text-[var(--background)]"
+                    : "hover:bg-[var(--primary)] hover:text-[var(--background)]"
                 }`}
               >
                 <cat.Icon className="text-lg  md:text-xl hover:text-[var(--background)]" />
