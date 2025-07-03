@@ -104,8 +104,6 @@ const MainContent = () => {
 
   // const hasTrialUsed = trialData?.used;
 
-  console.log(events)
-
   return (
     <Subscription
       className={`${
@@ -120,7 +118,17 @@ const MainContent = () => {
               <div className="status status-lg status-error animate-ping bg-red-500"></div>
               <div className="status status-lg status-error bg-red-600"></div>
             </div>
-            <p className="font-semibold">Live</p>
+            <div className="font-semibold">
+              {events ? (
+                events?.category === "Channel" ? (
+                  <p>{events?.channelName}</p>
+                ) : (
+                  <p>Live</p>
+                )
+              ) : (
+                <p>Live</p>
+              )}
+            </div>
           </div>
 
           <div className="">
