@@ -63,6 +63,7 @@ const HlsPlayer = ({ src }) => {
           className="w-full h-full rounded-md"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
+          autoPlay
           title="Embedded Video"
         ></iframe>
       </div>
