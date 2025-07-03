@@ -103,7 +103,6 @@ const MainContent = () => {
   });
 
   // const hasTrialUsed = trialData?.used;
-  
   return (
     <Subscription
       className={`${
@@ -111,22 +110,32 @@ const MainContent = () => {
       } w-full md:bg-[var(--secondary)] rounded-md shadow-lg  lg:p-8 border border-[var(--text)]/10`}
     >
       <section className="h-full w-full">
-        <div className=" flex items-end justify-between">
+        <div className=" flex items-center justify-between">
           {/* live status */}
           <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
             <div className="inline-grid *:[grid-area:1/1]">
-              <div className="status status-lg status-error animate-ping bg-red-500"></div>
-              <div className="status status-lg status-error bg-red-600"></div>
+              <div className="status status-md lg:status-lg  status-error animate-ping bg-red-500"></div>
+              <div className="status status-md lg:status-lg  status-error bg-red-600"></div>
             </div>
-            <p className="font-semibold">Live</p>
+            <div className="text-xs lg:text-base lg:font-medium">
+              {events ? (
+                events?.category === "Channel" ? (
+                  <p>{events?.channelName}</p>
+                ) : (
+                  <p>Live</p>
+                )
+              ) : (
+                <p>Live</p>
+              )}
+            </div>
           </div>
 
           <div className="">
             {/* trial ststus  */}
             {
-              // !user &&
-              //   !trialLoading &&
-              //   !trialActive &&
+              !user &&
+                !trialLoading &&
+                !trialActive &&
               trialData?.used === true && (
                 <div className="text-end">
                   <button
@@ -137,14 +146,10 @@ const MainContent = () => {
                   >
                     Start Trial
                   </button>
-                  {/* <p className="text-sm text-gray-500">
-                    Enjoy free access for 60 seconds.
-                  </p> */}
                 </div>
               )
             }
-
-            <p className="text-lg text-[var(--primary)] font-semibold text-end">
+            <p className=" mr-6 lg:mr-0 text-xs lg:text-base text-[var(--primary)] font-semibold text-end">
               Trial: {trialTimeLeft}s
             </p>
 
@@ -258,11 +263,11 @@ const MainContent = () => {
           </div>
         )}
         {user && subscription && <HlsPlayer src={url} />}
-        {/* {!user && trialActive && (
+        {!user && trialActive && (
           <>
             <HlsPlayer src={url} />
           </>
-        )} */}
+        )}
       </section>
     </Subscription>
   );

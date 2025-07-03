@@ -20,7 +20,7 @@ const Sidebar = ({ sidebarContent, channels }) => {
     ...filteredChannels,
   ];
   return (
-    <aside className="bg-[var(--secondary)] pt-2 pb-10 overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
+    <aside className="bg-[var(--secondary)] max-h-[600px] overflow-y-scroll rounded-md shadow-lg overflow-hidden  p-3 border border-[var(--text)]/10">
       {/* <p className="text-lg font-semibold mb-2">
         {sidebarContent ?? "None selected"}
       </p> */}
@@ -79,14 +79,16 @@ const ChannelCard = ({
 }) => (
   <div className="">
     <div className="border-b-2 border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3 bg-[var(--background)] hover:bg-[var(--secondary)]  p-3 rounded-md transition-transform duration-300 ease-in-out">
-      <div className="h-8 w-8 ">
-        <img
-          src={ch?.channelLogo}
-          alt={ch?.channelName}
-          className="w-full h-full object-cover"
-        />
+      <div className="space-x-3 flex items-center">
+        <div className="h-8 w-8 ">
+          <img
+            src={ch?.channelLogo}
+            alt={ch?.channelName}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <h3 className="font-medium text-sm">{ch?.channelName}</h3>
       </div>
-      <h3 className="font-medium text-sm">{ch?.channelName}</h3>
       <button
         onClick={() => {
           setActiveChannel(ch);
@@ -176,10 +178,6 @@ const SheduleCard = ({
           <h4>{ch?.teamB}</h4>
         </div>
       </div>
-
-
-
-      
     </div>
   </div>
 );
