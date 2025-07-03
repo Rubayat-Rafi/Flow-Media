@@ -83,7 +83,7 @@ const ChannelCard = ({
   const isWatching = url === ch?.channelURL || ch?.channelName === urlName;
   return (
     <div className="">
-      <div className="border-b-2 border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3 bg-[var(--background)] hover:bg-[var(--secondary)]  p-3 rounded-md transition-transform duration-300 ease-in-out">
+      <div className="border-b-2 border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3   p-3 rounded-md transition-transform duration-300 ease-in-out">
         <div className="space-x-3 flex items-center">
           <div className="h-8 w-8 ">
             <img
@@ -113,7 +113,6 @@ const ChannelCard = ({
   );
 };
 
-
 const SheduleCard = ({
   ch,
   setActiveChannel,
@@ -134,7 +133,7 @@ const SheduleCard = ({
         })}
       </p>
 
-      <div className="flex flex-col gap-2 border border-[var(--background)] bg-[var(--background)] hover:border-[var(--primary)] p-3 rounded-md transition duration-300 ease-in-out">
+      <div className="flex flex-col gap-2 border border-[var(--background)]  hover:border-[var(--primary)] p-3 rounded-md transition duration-300 ease-in-out">
         <div className="flex justify-between">
           <div className="font-medium text-xs flex items-center gap-2">
             <span>Schedule for</span>

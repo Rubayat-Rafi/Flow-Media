@@ -6,15 +6,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { addVideoFlag, addUrl } from "../../utils/redux/slices/slice";
 import useCategory from "../../hooks/useCategory";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
-// import { RxCross2 } from "react-icons/rx";
+import { useSearchParams } from "react-router";
 
 const Home = () => {
   const { hideVideoFlag } = useSelector((state) => state?.Slice);
+  const { events } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("Channel");
   const [categorys, isLoading] = useCategory();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -23,7 +25,7 @@ const Home = () => {
     if (!isMounted) return;
 
     const handleResize = () => {
-      if (window.innerWidth < 768 && hideVideoFlag) {
+      if (window.innerWidth < 1024 && hideVideoFlag) {
         document.body.style.overflow = "hidden";
       } else {
         document.body.style.overflow = "auto";
@@ -40,6 +42,19 @@ const Home = () => {
   const category = (selectCategory) => {
     setSelectedCategory(selectCategory);
   };
+
+  const handleClose = () => {
+    dispatch(addVideoFlag(false));
+    dispatch(addUrl(""));
+    // Remove all query parameters except 'q'
+    const q = events?.category;
+    const newParams = new URLSearchParams();
+    if (q) {
+      newParams.set("q", q);
+    }
+    setSearchParams(newParams);
+  };
+
   if (!isMounted || isLoading) {
     return <LoadingSpinner />;
   }
@@ -62,11 +77,8 @@ const Home = () => {
         >
           <div className="relative  w-full flex justify-center ">
             <button
-              onClick={() => {
-                dispatch(addVideoFlag(false));
-                dispatch(addUrl(""));
-              }}
-              className="lg:hidden absolute right-0 -top-10 p-2   rounded-full cursor-pointer hover:bg-primary bg-[var(--primary)]"
+              onClick={handleClose}
+              className="lg:hidden hover:bg-red-600 absolute right-0 -top-10 p-2   rounded-full cursor-pointer  bg-[var(--primary)]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
