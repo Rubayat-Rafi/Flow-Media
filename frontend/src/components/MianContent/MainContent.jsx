@@ -7,6 +7,8 @@ import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router";
 
+
+
 const subscriptions = [
   {
     id: 1,
@@ -190,7 +192,9 @@ const MainContent = () => {
                 {subscriptions.map((subscription) => (
                   <Link
                     key={subscription.id}
+                    // to={`https://www.pbg4jptrk.com/7XGQTB/7RZT374/?sub3=${user?.email}`}
                     to={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url}?email=${user?.email}&price=${subscription.offerPrice}`}
+                    // https://www.pbg4jptrk.com/7XGQTB/7RZT374/?sub3=rafi@gmail.com
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
