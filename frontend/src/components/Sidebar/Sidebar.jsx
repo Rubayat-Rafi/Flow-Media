@@ -30,7 +30,7 @@ const Sidebar = ({ sidebarContent, channels }) => {
   ];
 
   return (
-    <aside className="bg-[var(--secondary)] pt-2 pb-10 overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
+    <aside className="bg-[var(--secondary)] max-h-[600px]  overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
       <div className="space-y-3">
         {allChannelsToShow?.length > 0 ? (
           allChannelsToShow.map((ch, idx) =>
@@ -81,34 +81,38 @@ const ChannelCard = ({
   navigate,
 }) => {
   const isWatching = url === ch?.channelURL || ch?.channelName === urlName;
-
   return (
-    <div className="border-b-2 border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3 bg-[var(--background)] hover:bg-[var(--secondary)] p-3 rounded-md transition-transform duration-300 ease-in-out">
-      <div className="h-8 w-8">
-        <img
-          src={ch?.channelLogo}
-          alt={ch?.channelName}
-          className="w-full h-full object-cover"
-        />
+    <div className="">
+      <div className="border-b-2 border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3 bg-[var(--background)] hover:bg-[var(--secondary)]  p-3 rounded-md transition-transform duration-300 ease-in-out">
+        <div className="space-x-3 flex items-center">
+          <div className="h-8 w-8 ">
+            <img
+              src={ch?.channelLogo}
+              alt={ch?.channelName}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <h3 className="font-medium text-sm">{ch?.channelName}</h3>
+        </div>
+        <button
+          onClick={() => {
+            setActiveChannel(ch);
+            dispatch(addVideoFlag(true));
+            dispatch(addUrl(ch?.channelURL));
+            dispatch(addEvents(ch));
+            navigate(`/?q=${ch.category}+${ch?.channelName}`);
+          }}
+          className={`${
+            isWatching ? "bg-red-500 text-[var(--text)]" : "bg-[var(--primary)]"
+          } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
+        >
+          {isWatching ? "Watching" : "Watch"}
+        </button>
       </div>
-      <h3 className="font-medium text-sm">{ch?.channelName}</h3>
-      <button
-        onClick={() => {
-          setActiveChannel(ch);
-          dispatch(addVideoFlag(true));
-          dispatch(addUrl(ch?.channelURL));
-          dispatch(addEvents(ch));
-          navigate(`/?q=${ch.category}+${ch?.channelName}`);
-        }}
-        className={`${
-          isWatching ? "bg-red-500 text-[var(--text)]" : "bg-[var(--primary)]"
-        } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
-      >
-        {isWatching ? "Watching" : "Watch"}
-      </button>
     </div>
   );
 };
+
 
 const SheduleCard = ({
   ch,

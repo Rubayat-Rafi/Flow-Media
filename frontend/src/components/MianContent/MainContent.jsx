@@ -61,7 +61,7 @@ const startTrialRequest = async () => {
 };
 
 const MainContent = () => {
-  const [categorys, isLoading] = useCategory();
+  const [categorys] = useCategory();
   const { user } = useAuth();
   const { url, events } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
@@ -107,51 +107,63 @@ const MainContent = () => {
   });
 
   return (
-    <Subscription className={`${user ? "max-md:h-fit" : "h-full"} w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}>
+    <Subscription
+      className={`w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10 h-[600px]`}
+    >
       <section className="h-full w-full">
-        <div className="flex items-end justify-between">
-          <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
-            <div className="inline-grid *:[grid-area:1/1]">
-              <div className="status status-lg status-error animate-ping bg-red-500"></div>
-              <div className="status status-lg status-error bg-red-600"></div>
+        {user && (
+          <div className="flex items-end justify-between">
+            <div className="bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+              <div className="inline-grid *:[grid-area:1/1]">
+                <div className="status status-lg status-error animate-ping bg-red-500"></div>
+                <div className="status status-lg status-error bg-red-600"></div>
+              </div>
+              <div className="font-semibold">
+                {events?.category === "Channel" ? (
+                  <p>{events?.channelName}</p>
+                ) : (
+                  <p>Live</p>
+                )}
+              </div>
             </div>
-            <div className="font-semibold">
-              {events?.category === "Channel" ? (
-                <p>{events?.channelName}</p>
-              ) : (
-                <p>Live</p>
+            <div>
+              {trialData?.used === true && (
+                <div className="text-end">
+                  <button onClick={() => startTrial()} disabled={false}>
+                    Start Trial
+                  </button>
+                </div>
+              )}
+
+              <p className="text-lg text-[var(--primary)] font-semibold text-end">
+                Trial: {trialTimeLeft}s
+              </p>
+
+              {!user && trialLoading && (
+                <div className="text-sx text-end">Checking free trial...</div>
               )}
             </div>
           </div>
-
-          <div>
-            {trialData?.used === true && (
-              <div className="text-end">
-                <button onClick={() => startTrial()} disabled={false}>
-                  Start Trial
-                </button>
-              </div>
-            )}
-
-            <p className="text-lg text-[var(--primary)] font-semibold text-end">
-              Trial: {trialTimeLeft}s
-            </p>
-
-            {!user && trialLoading && (
-              <div className="text-sx text-end">Checking free trial...</div>
-            )}
-          </div>
-        </div>
+        )}
 
         {!user && trialData?.used && !trialActive && (
           <div className="flex items-center justify-center lg:h-[500px] w-full">
-            <div className="bg-[var(--background)] rounded-xl p-6" style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}>
-              <Link to="/signup" className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase">
+            <div
+              className="bg-[var(--background)] rounded-xl p-6"
+              style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
+            >
+              <Link
+                to="/signup"
+                className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
+              >
                 Signup to keep watching
               </Link>
               <p className="text-base max-md:text-xs text-center mt-4">
                 Already have an account?
-                <Link to="/login" className="text-[var(--primary)] font-medium ml-2">
+                <Link
+                  to="/login"
+                  className="text-[var(--primary)] font-medium ml-2"
+                >
                   Log in
                 </Link>
               </p>
@@ -160,10 +172,14 @@ const MainContent = () => {
         )}
 
         {user && subLoading && (
-          <div className="text-center text-gray-600">Checking subscription...</div>
+          <div className="text-center text-gray-600">
+            Checking subscription...
+          </div>
         )}
         {user && isError && (
-          <div className="text-center text-red-500">Failed to fetch subscription.</div>
+          <div className="text-center text-red-500">
+            Failed to fetch subscription.
+          </div>
         )}
         {user && !subscription && !subLoading && (
           <div className="flex items-center justify-center h-full w-full">
@@ -177,7 +193,9 @@ const MainContent = () => {
                 {subscriptions.map((subscription) => (
                   <Link
                     key={subscription.id}
-                    to={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url}?email=${user?.email}&price=${subscription.offerPrice}`}
+                    to={`${import.meta.env.VITE_PAYMENT_URL}${
+                      subscription.url
+                    }?email=${user?.email}&price=${subscription.offerPrice}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
@@ -185,9 +203,13 @@ const MainContent = () => {
                           <h2 className="text-xl font-semibold group-hover:text-[var(--background)]">
                             {subscription.name}
                           </h2>
-                          <p className="text-sm group-hover:text-[var(--secondary)]">{subscription.days}</p>
+                          <p className="text-sm group-hover:text-[var(--secondary)]">
+                            {subscription.days}
+                          </p>
                         </div>
-                        <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">{subscription.device}</p>
+                        <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">
+                          {subscription.device}
+                        </p>
                       </div>
                       <div>
                         {subscription.value && (
@@ -218,7 +240,8 @@ const MainContent = () => {
                 ))}
               </div>
               <p className="mt-4 text-sm">
-                Our subscriptions do not auto-renew. You will need to renew manually if you wish to continue.
+                Our subscriptions do not auto-renew. You will need to renew
+                manually if you wish to continue.
               </p>
             </div>
           </div>
