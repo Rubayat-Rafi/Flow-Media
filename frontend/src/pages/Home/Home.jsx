@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import SportsNav from "../../components/SportsNav/SportsNav";
-import MainContent from "../../components/MianContent/MainContent";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addVideoFlag,
@@ -12,10 +11,9 @@ import useCategory from "../../hooks/useCategory";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 import { useSearchParams } from "react-router";
 import { GetCategory } from "../../utils/get_searchParams/ger_searchParams";
-
+import MainContent from "../../components/MianContent/MainContent";
 const Home = () => {
   const { hideVideoFlag } = useSelector((state) => state?.Slice);
-
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("Channel");
   const [categorys, isLoading] = useCategory();
@@ -23,18 +21,16 @@ const Home = () => {
   const [isMounted, setIsMounted] = useState(false);
   const categoryData = searchParams.get("q");
   const reqParams = GetCategory(categoryData);
-
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
   useEffect(() => {
     if (!isMounted) return;
-
     const handleResize = () => {
-      if (window.innerWidth < 1024 && hideVideoFlag) {
+      if (window.innerWidth < 1024) {
         document.body.style.overflow = "hidden";
       } else {
+        dispatch(addVideoFlag(false));
         document.body.style.overflow = "auto";
       }
     };
@@ -52,14 +48,15 @@ const Home = () => {
 
   const handleClose = () => {
     dispatch(addVideoFlag(false));
-    dispatch(addUrl(""));
-    dispatch(addDefaultUrl(""));
     const q = reqParams?.categ;
     const newParams = new URLSearchParams();
     if (q) {
       newParams.set("q", q);
     }
     setSearchParams(newParams);
+
+    dispatch(addUrl(""));
+    dispatch(addDefaultUrl(""));
   };
 
   if (!isMounted || isLoading) {
@@ -78,42 +75,35 @@ const Home = () => {
         {/* Main content */}
 
         <div
-          className={`${
-            !hideVideoFlag ? "hidden" : "block"
-          } w-full fixed right-0 flex items-center justify-center left-0 top-0 bottom-0 z-20 h-screen  lg:hidden  px-2`}
+          className={` ${
+            !hideVideoFlag ? " max-lg:hidden" : "block"
+          } lg:w-6/8 max-lg:fixed top-0 left-0 right-0 z-50 relative h-full flex items-center justify-center bg-black/50 backdrop-blur-xs  bottom-0 `}
         >
+          <div className="">
+            <button
+              onClick={handleClose}
+              className=" lg:hidden  hover:bg-red-600 absolute right-5 top-5 p-2   rounded-full cursor-pointer  bg-[var(--primary)]"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
           <div
-            className={` w-full  relative h-full flex items-center justify-center bg-black/50 backdrop-blur-xs `}
+            className={` w-full flex items-center justify-center  z-20  px-2`}
           >
             <div className="  w-full flex justify-center ">
-              <button
-                onClick={handleClose}
-                className="  hover:bg-red-600 absolute right-5 top-5 p-2   rounded-full cursor-pointer  bg-[var(--primary)]"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
               <MainContent />
             </div>
-          </div>
-        </div>
-        {/* ------------------------------ */}
-
-        <div
-          className={`lg:w-6/8 max-lg:hidden w-full  bg-black/50 backdrop-blur-xs flex items-center justify-center  px-2`}
-        >
-          <div className=" w-full flex justify-center ">
-            <MainContent />
           </div>
         </div>
       </div>

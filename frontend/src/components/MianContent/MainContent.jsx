@@ -64,7 +64,7 @@ const MainContent = () => {
   const dispatch = useDispatch();
   const [categorys] = useCategory();
   const { user } = useAuth();
-  const { url, events, defaultUrl, hideVideoFlag,videoFlag } = useSelector(
+  const { url, events, defaultUrl, hideVideoFlag, videoFlag } = useSelector(
     (state) => state?.Slice
   );
 
