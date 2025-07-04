@@ -20,12 +20,12 @@ const PlayerPlate = ({hlsSrc}) => {
       </div>
 
         {/* Add the countdown component */}
-        {events?.matchTime && events?.matchDate && (
+        {/* {events?.matchTime && events?.matchDate && (
           <MatchCountdown
             matchTime={events.matchTime}
             matchDate={events.matchDate}
           />
-        )}
+        )} */}
 
       <HlsPlayer src={hlsSrc} />
     </div>
