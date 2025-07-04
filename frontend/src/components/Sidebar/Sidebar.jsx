@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router";
 import { GetCategory } from "../../utils/get_searchParams/ger_searchParams";
@@ -91,15 +91,9 @@ const ChannelCard = ({
   const isWatching = url === ch?.channelURL || ch?.channelName === urlName;
   return (
     <div className="">
-      <div
-        className={`border-b-2 py-4 flex items-center justify-between gap-3 p-3 rounded-md transition-all duration-300 ease-in-out ${
-          isWatching || (categoryData === undefined && index === 0 && user)
-            ? "border-[var(--primary)] " // Active state
-            : "border-[var(--text)]/20 hover:border-[var(--primary)]" // Inactive state
-        }`}
-      >
+      <div className="border-b-2 border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3   p-3 rounded-md transition-transform duration-300 ease-in-out">
         <div className="space-x-3 flex items-center">
-          <div className="h-8 w-8">
+          <div className="h-8 w-8 ">
             <img
               src={ch?.channelLogo}
               alt={ch?.channelName}
@@ -117,14 +111,22 @@ const ChannelCard = ({
             navigate(`/?q=${ch.category}+${ch?.channelName}`);
           }}
           className={`${
-            isWatching || (categoryData === undefined && index === 0 && user)
+            isWatching
               ? "bg-red-500 text-[var(--text)]"
+              : categoryData == undefined && index === 0
+              ? !user
+                ? "bg-[var(--primary)]"
+                : "bg-red-500 text-[var(--text)]"
               : "bg-[var(--primary)]"
           } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
         >
-          {isWatching || (categoryData === undefined && index === 0 && user)
+          {isWatching
             ? "Watching"
-            : "Watch"}
+            : categoryData == undefined && index === 0
+            ? !user
+              ? "watch"
+              : "Watching"
+            : "watch"}
         </button>
       </div>
     </div>
@@ -140,25 +142,6 @@ const SheduleCard = ({
   navigate,
   urlName,
 }) => {
-  const [isLive, setIsLive] = useState(false);
-
-  useEffect(() => {
-    const checkLiveStatus = () => {
-      const matchDateTime = `${ch?.matchDate}T${ch?.matchTime}`;
-      const matchStart = new Date(matchDateTime).getTime();
-      const now = new Date().getTime();
-      setIsLive(now >= matchStart);
-    };
-
-    // Check immediately
-    checkLiveStatus();
-
-    // Set up interval to check every minute
-    const interval = setInterval(checkLiveStatus, 60000);
-
-    return () => clearInterval(interval);
-  }, [ch?.matchTime, ch?.matchDate]);
-
   const isWatching = url === ch?.matchUrl || ch?._id === urlName;
   return (
     <div className="space-y-2">
@@ -170,28 +153,11 @@ const SheduleCard = ({
         })}
       </p>
 
-      <div
-        className={`flex flex-col gap-2 border p-3 rounded-md transition-all duration-300 ease-in-out ${
-          isWatching
-            ? "border-[var(--primary)] border-2 "
-            : "border-[var(--background)] hover:border-[var(--primary)]"
-        }`}
-      >
+      <div className="flex flex-col gap-2 border border-[var(--background)]  hover:border-[var(--primary)] p-3 rounded-md transition duration-300 ease-in-out">
         <div className="flex justify-between">
           <div className="font-medium text-xs flex items-center gap-2">
-            {isLive ? (
-              <>
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span className="text-green-500">Live</span>
-              </>
-            ) : (
-              <>
-                <span>Schedule for</span>
-                <span>
-                  {convertMatchTimeByTimeZone(ch?.matchTime, timeZone)}
-                </span>
-              </>
-            )}
+            <span>Schedule for</span>
+            <span>{convertMatchTimeByTimeZone(ch?.matchTime, timeZone)}</span>
           </div>
           <button
             onClick={() => {
@@ -216,7 +182,7 @@ const SheduleCard = ({
             <img
               className="h-8 w-8 object-cover"
               src={ch?.team1Image}
-              alt={ch?.teamA || "Team 1"}
+              alt="team1"
             />
             <h4>{ch?.teamA}</h4>
           </div>
@@ -224,7 +190,7 @@ const SheduleCard = ({
             <img
               className="h-8 w-8 object-cover"
               src={ch?.team2Image}
-              alt={ch?.teamB || "Team 2"}
+              alt="team2"
             />
             <h4>{ch?.teamB}</h4>
           </div>
