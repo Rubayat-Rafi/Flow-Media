@@ -4,6 +4,7 @@ import Subscription from "../../utils/subscription/Subscription";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { FaPlay } from "react-icons/fa";
 import { Link } from "react-router";
 import { useSearchParams } from "react-router";
 import useCategory from "../../hooks/useCategory";
@@ -176,9 +177,10 @@ const MainContent = () => {
                 {trialData?.used === false && !trialActive && (
                   <button
                     onClick={() => startTrial()}
-                    className="bg-[var(--primary)] text-white px-4 py-2 lg:py-3 w-full rounded-md font-medium hover:bg-opacity-90   md:min-w-md cursor-pointer transition"
+                    className="bg-[var(--primary)] flex gap-2 items-center text-white px-4 py-2 lg:py-3 w-full rounded-md font-medium hover:bg-opacity-90   md:min-w-md cursor-pointer transition"
                   >
-                    Start Free Trial
+                    <FaPlay  className="text-2xl" />
+                    Watch Now 
                   </button>
                 )}
 

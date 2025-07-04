@@ -1,13 +1,14 @@
 import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import useRole from "../hooks/useRole";
+import LoadingSpinner from "../components/Shared/LoadingSpinner";
 const PrivetRoute = ({ children }) => {
   const { user, loading: authLoading } = useAuth();
   const location = useLocation();
   const [role, roleLoading] = useRole();
   const loading = authLoading || roleLoading;
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner/>
   }
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
