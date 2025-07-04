@@ -13,7 +13,6 @@ const MatchCountdown = ({ matchTime, matchDate }) => {
       const matchStart = new Date(matchDateTime).getTime();
       const now = new Date().getTime();
       const diff = matchStart - now;
-
       if (diff <= 0) {
         setIsLive(true);
         return null;
