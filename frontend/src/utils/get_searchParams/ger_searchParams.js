@@ -1,0 +1,20 @@
+export const GetParams = (categoryData, categorys, defaultUrl) => {
+  if (!categoryData || !categorys?.length) return defaultUrl;
+  const firstSpaceIndex = categoryData.indexOf(" ");
+  const categ = categoryData.substring(0, firstSpaceIndex);
+  const eventName = categoryData.substring(firstSpaceIndex + 1);
+  const filterData1 = categorys.find(
+    (item) => item?.category === categ && item?.channelName === eventName
+  );
+  const filterData2 = categorys.find(
+    (item) => item?.category === categ && item?._id === eventName
+  );
+  return filterData1?.channelURL || filterData2?.matchUrl || defaultUrl;
+};
+export const GetCategory = (categoryData) => {
+  if (!categoryData) return null;
+  const firstSpaceIndex = categoryData.indexOf(" ");
+  const categ = categoryData.substring(0, firstSpaceIndex);
+  const eventName = categoryData.substring(firstSpaceIndex + 1);
+  return { categ, eventName };
+};

@@ -37,15 +37,10 @@ const ChannelAndEvents = () => {
       </div>
     ));
   };
-
   const channels = categories.filter(
     (channel) => channel.category === "Channel"
   );
-
   const events = categories.filter((event) => event.category !== "Channel");
-
-  console.log(events);
-
   return (
     <div className="space-y-12">
       <h4 className="text-start uppercase font-semibold text-2xl mt-10">

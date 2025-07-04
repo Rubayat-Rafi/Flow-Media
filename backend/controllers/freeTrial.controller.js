@@ -9,9 +9,7 @@ exports.checkStatus = async (req, res) => {
     const ip =
       req.headers["x-forwarded-for"]?.split(",")[0] ||
       req.connection.remoteAddress;
-
     const trial = await freeTrialCollection.findOne({ ip });
-
     if (trial) {
       return res.status(200).json({ used: true });
     } else {

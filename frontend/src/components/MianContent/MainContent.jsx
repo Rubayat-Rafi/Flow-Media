@@ -4,9 +4,15 @@ import { useAuth } from "../../hooks/useAuth";
 import Subscription from "../../utils/subscription/Subscription";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
-
+import { useSearchParams } from "react-router";
+import useCategory from "../../hooks/useCategory";
+import { GetParams } from "../../utils/get_searchParams/ger_searchParams";
+import LoginPalate from "../LoginPalate/LoginPalate";
+import PlayerPlate from "../PlayerPlate/PlayerPlate";
+import { useDispatch } from "react-redux";
+import { addDefaultUrl } from "../../utils/redux/slices/slice";
 const subscriptions = [
   {
     id: 1,
@@ -36,34 +42,42 @@ const subscriptions = [
     url: "/payment/weekly",
   },
 ];
-
 const fetchSubscription = async (email) => {
   const res = await axios.get(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
   );
   return res?.data?.userData?.subscribe;
 };
-
 const fetchTrialStatus = async () => {
   const res = await axios.get(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/free-trial/check`
   );
   return res.data;
 };
-
 const startTrialRequest = async () => {
   const res = await axios.post(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/free-trial/start`
   );
   return res.data;
 };
-
 const MainContent = () => {
+  const dispatch = useDispatch();
+  const [categorys] = useCategory();
   const { user } = useAuth();
-  const { url } = useSelector((state) => state?.Slice);
+  const { url, events, defaultUrl, hideVideoFlag,videoFlag } = useSelector(
+    (state) => state?.Slice
+  );
+
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
+  const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
+  const channelDataFilter = categorys?.filter(
+    (item) => item?.category === "Channel"
+  );
+  const categoryData = searchParams.get("q");
+  const hlsSrc = GetParams(categoryData, categorys, url) || defaultUrl;
+
   const {
     data: subscription,
     isLoading: subLoading,
@@ -81,12 +95,10 @@ const MainContent = () => {
     retry: false,
     refetchOnWindowFocus: false,
   });
-
   const { mutate: startTrial } = useMutation({
     mutationFn: startTrialRequest,
     onSuccess: () => {
       setTrialActive(true);
-
       const interval = setInterval(() => {
         setTrialTimeLeft((prev) => {
           if (prev === 1) {
@@ -101,73 +113,72 @@ const MainContent = () => {
     },
   });
 
-  // const hasTrialUsed = trialData?.used;
+  useEffect(() => {
+    if (channelDataFilter.length > 0 && channelDataFilter[0]?.channelURL) {
+      dispatch(addDefaultUrl(channelDataFilter[0].channelURL));
+    }
+  }, [channelDataFilter, dispatch]);
 
   return (
-    <Subscription
-      className={`${
-        user ? "max-md:h-fit" : "h-full"
-      } w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}
-    >
+    <Subscription className="w-full lg:bg-[var(--secondary)] rounded-md shadow-lg lg:p-8 lg:border border-[var(--text)]/10 lg:h-[600px]">
       <section className="h-full w-full">
-        {!user &&
-          !trialLoading &&
-          !trialActive &&
-          trialData?.used === false && (
-            <div className="text-center">
-              <button
-                onClick={() => startTrial()}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded mb-4"
-                disabled={trialActive}
-              >
-                Start 1-Minute Free Trial
-              </button>
-              <p className="text-sm text-gray-500">
-                Enjoy free access for 60 seconds.
-              </p>
-            </div>
-          )}
+        {!user && (
+          <div className="flex items-end justify-between">
+            {subscription && (
+              <div className=" max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+                <div className="inline-grid *:[grid-area:1/1]">
+                  <div className="status status-lg status-error animate-ping bg-red-500"></div>
+                  <div className="status status-lg status-error bg-red-600"></div>
+                </div>
+                <div className="font-semibold max-lg:text-sm">
+                  {events?.category === "Channel" ? (
+                    <p>{events?.channelName}</p>
+                  ) : (
+                    <p>Live</p>
+                  )}
+                </div>
+              </div>
+            )}
 
-        {!user && trialLoading && (
-          <div className="text-center text-gray-500">
-            Checking free trial...
-          </div>
-        )}
-
-        {!user && trialData?.used && !trialActive && (
-          <div className="flex items-center justify-center lg:h-[500px] w-full">
-            <div
-              className="bg-[var(--background)] rounded-xl p-6"
-              style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
-            >
-              <Link
-                to="/signup"
-                className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
-              >
-                Signup to keep watching
-              </Link>
-              <p className="text-base max-md:text-xs text-center mt-4">
-                Already have an account?
-                <Link
-                  to="/login"
-                  className="text-[var(--primary)] font-medium ml-2"
+            <div className="text-end">
+              {/* Trial Button only when user has no subscription and trial is available */}
+              {!subscription && trialData?.used === false && !trialActive && (
+                <button
+                  onClick={() => startTrial()}
+                  className="bg-[var(--primary)] px-3 py-1 rounded-md text-[var(--background)] font-medium"
                 >
-                  Log in
-                </Link>
-              </p>
+                  Start Trial
+                </button>
+              )}
+
+              {/* Trial Countdown */}
+              {trialActive && (
+                <p className="text-lg max-lg:text-xs text-[var(--primary)] font-semibold text-end">
+                  Trial: {trialTimeLeft}s
+                </p>
+              )}
+
+              {!user && trialLoading && (
+                <div className="text-sm text-end">Checking free trial...</div>
+              )}
             </div>
           </div>
         )}
 
-        {!user && trialActive && (
-          <div className="text-center">
-            <p className="text-lg text-gray-500">
-              Trial expires in: {trialTimeLeft}s
-            </p>
-            <HlsPlayer src={url} />
-          </div>
+        {/* Guest user message */}
+        {!user ? (
+          !trialActive ? (
+            <LoginPalate />
+          ) : (
+            <PlayerPlate hlsSrc={hlsSrc} />
+          )
+        ) : !subscription ? (
+          !user && <LoginPalate />
+        ) : (
+          <PlayerPlate hlsSrc={hlsSrc} />
         )}
 
+        {/* Subscription loading/error states */}
         {user && subLoading && (
           <div className="text-center text-gray-600">
             Checking subscription...
@@ -178,7 +189,9 @@ const MainContent = () => {
             Failed to fetch subscription.
           </div>
         )}
-        {user && !subscription && !subLoading && (
+
+        {/* No subscription plans */}
+        {user && !subscription && !subLoading && !trialActive && (
           <div className="flex items-center justify-center h-full w-full">
             <div className="bg-[var(--background)] rounded-xl p-6">
               <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
@@ -190,7 +203,9 @@ const MainContent = () => {
                 {subscriptions.map((subscription) => (
                   <Link
                     key={subscription.id}
-                    to={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url}?email=${user?.email}&price=${subscription.offerPrice}`}
+                    to={`${import.meta.env.VITE_PAYMENT_URL}${
+                      subscription.url
+                    }?email=${user?.email}&price=${subscription.offerPrice}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
@@ -234,7 +249,6 @@ const MainContent = () => {
                   </Link>
                 ))}
               </div>
-
               <p className="mt-4 text-sm">
                 Our subscriptions do not auto-renew. You will need to renew
                 manually if you wish to continue.
@@ -242,7 +256,6 @@ const MainContent = () => {
             </div>
           </div>
         )}
-        {user && subscription && <HlsPlayer src={url} />}
       </section>
     </Subscription>
   );

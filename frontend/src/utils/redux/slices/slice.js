@@ -3,8 +3,11 @@ const Slice = createSlice({
   name: "Slice",
   initialState: {
     url: "",
+    defaultUrl: "",
+    events: null,
     usbscribe: false,
     hideVideoFlag: false,
+    videoFlag: false,
     timeZone: "GMT+6",
     time: "",
   },
@@ -24,9 +27,23 @@ const Slice = createSlice({
     addTime: (state, action) => {
       state.time = action.payload;
     },
+    addEvents: (state, action) => {
+      state.events = action.payload;
+    },
+    addDefaultUrl: (state, action) => {
+      state.defaultUrl = action.payload;
+    },
+    
   },
 });
 
-export const { addUrl, addSubscription, addVideoFlag, addTimeZone, addTime } =
-  Slice.actions;
+export const {
+  addUrl,
+  addSubscription,
+  addVideoFlag,
+  addTimeZone,
+  addTime,
+  addEvents,
+  addDefaultUrl,
+} = Slice.actions;
 export default Slice.reducer;
