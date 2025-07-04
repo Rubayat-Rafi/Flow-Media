@@ -64,9 +64,7 @@ const MainContent = () => {
   const dispatch = useDispatch();
   const [categorys] = useCategory();
   const { user } = useAuth();
-  const { url, events, defaultUrl, hideVideoFlag, videoFlag } = useSelector(
-    (state) => state?.Slice
-  );
+  const { url, events, defaultUrl } = useSelector((state) => state?.Slice);
 
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
@@ -75,9 +73,9 @@ const MainContent = () => {
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );
+  
   const categoryData = searchParams.get("q");
   const hlsSrc = GetParams(categoryData, categorys, url) || defaultUrl;
-
   const {
     data: subscription,
     isLoading: subLoading,
