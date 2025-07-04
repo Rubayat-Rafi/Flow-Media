@@ -14,7 +14,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("Channel");
   const [categorys, isLoading] = useCategory();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [setSearchParams] = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {

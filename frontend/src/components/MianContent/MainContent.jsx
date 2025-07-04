@@ -70,8 +70,13 @@ const MainContent = () => {
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
 
+  const channelDataFilter = categorys?.filter(
+    (item) => item?.category === "Channel"
+  );
+
   const categoryData = searchParams.get("q");
-  const hlsSrc = GetParams(categoryData, categorys, url);
+  const hlsSrc =
+    GetParams(categoryData, categorys, url) || channelDataFilter[0]?.channelURL;
 
   const {
     data: subscription,
@@ -90,7 +95,6 @@ const MainContent = () => {
     retry: false,
     refetchOnWindowFocus: false,
   });
-
   const { mutate: startTrial } = useMutation({
     mutationFn: startTrialRequest,
     onSuccess: () => {
@@ -108,11 +112,11 @@ const MainContent = () => {
       }, 1000);
     },
   });
-
+  console.log(subscription);
   return (
     <Subscription className="w-full lg:bg-[var(--secondary)] rounded-md shadow-lg lg:p-8 lg:border border-[var(--text)]/10 lg:h-[600px]">
       <section className="h-full w-full">
-        {user && (
+        {!user && (
           <div className="flex items-end justify-between">
             <div className=" max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
               <div className="inline-grid *:[grid-area:1/1]">
@@ -154,28 +158,63 @@ const MainContent = () => {
         )}
 
         {/* Guest user message */}
-        {!user && trialData?.used && !trialActive && (
-          <div className="flex h-full items-center justify-center lg:h-[500px] w-full">
-            <div
-              className="bg-[var(--background)] rounded-xl p-6"
-              style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
-            >
-              <Link
-                to="/signup"
-                className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
+        {!user ? (
+          !trialActive ? (
+            <div className="  flex h-full items-center justify-center lg:h-[500px] w-full">
+              <div
+                className="bg-[var(--background)] rounded-xl p-6"
+                style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
               >
-                Signup to keep watching
-              </Link>
-              <p className="text-base max-md:text-xs text-center mt-4">
-                Already have an account?
                 <Link
-                  to="/login"
-                  className="text-[var(--primary)] font-medium ml-2"
+                  to="/signup"
+                  className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
                 >
-                  Log in
+                  Signup to keep watching
                 </Link>
-              </p>
+                <p className="text-base max-md:text-xs text-center mt-4">
+                  Already have an account?
+                  <Link
+                    to="/login"
+                    className="text-[var(--primary)] font-medium ml-2"
+                  >
+                    Log in
+                  </Link>
+                </p>
+              </div>
             </div>
+          ) : (
+            <div className=" h-full">
+              <HlsPlayer src={hlsSrc} />
+            </div>
+          )
+        ) : !subscription ? (
+          !user && (
+            <div className=" flex h-full items-center justify-center lg:h-[500px] w-full">
+              <div
+                className="bg-[var(--background)] rounded-xl p-6"
+                style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
+              >
+                <Link
+                  to="/signup"
+                  className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
+                >
+                  Signup to keep watching
+                </Link>
+                <p className="text-base max-md:text-xs text-center mt-4">
+                  Already have an account?
+                  <Link
+                    to="/login"
+                    className="text-[var(--primary)] font-medium ml-2"
+                  >
+                    Log in
+                  </Link>
+                </p>
+              </div>
+            </div>
+          )
+        ) : (
+          <div className=" h-full">
+            <HlsPlayer src={hlsSrc} />
           </div>
         )}
 
@@ -259,49 +298,7 @@ const MainContent = () => {
         )}
 
         {/* Player shown when subscription exists */}
-        <div className=" h-full max-lg:flex max-lg:flex-col max-lg:justify-center">
-          <div className=" lg:hidden w-fit  bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
-            <div className="inline-grid *:[grid-area:1/1]">
-              <div className="status status-lg status-error animate-ping bg-red-500"></div>
-              <div className="status status-lg status-error bg-red-600"></div>
-            </div>
-            <div className="font-semibold max-lg:text-sm">
-              {events?.category === "Channel" ? (
-                <p>{events?.channelName}</p>
-              ) : (
-                <p>Live</p>
-              )}
-            </div>
-          </div>
-          <div className=" h-full">
-            {user && (subscription || trialActive) ? (
-              <HlsPlayer src={hlsSrc} />
-            ) : (
-              <div className="flex h-full items-center justify-center lg:h-[500px] w-full">
-                <div
-                  className="bg-[var(--background)] rounded-xl p-6"
-                  style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
-                >
-                  <Link
-                    to="/signup"
-                    className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
-                  >
-                    Signup to keep watching
-                  </Link>
-                  <p className="text-base max-md:text-xs text-center mt-4">
-                    Already have an account?
-                    <Link
-                      to="/login"
-                      className="text-[var(--primary)] font-medium ml-2"
-                    >
-                      Log in
-                    </Link>
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+
       </section>
     </Subscription>
   );
