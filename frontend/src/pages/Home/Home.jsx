@@ -77,12 +77,12 @@ const Home = () => {
         <div
           className={` ${
             !hideVideoFlag ? " max-lg:hidden" : "block"
-          } lg:w-6/8 max-lg:fixed top-0 left-0 right-0 z-20 relative h-full flex items-center justify-center bg-black/50 backdrop-blur-xs  bottom-0 `}
+          } lg:w-6/8 max-lg:fixed top-0 left-0 right-0 z-20 relative h-full flex items-center justify-center max-lg:bg-black/50 backdrop-blur-xs  bottom-0 `}
         >
-          <div className="">
+
             <button
               onClick={handleClose}
-              className=" lg:hidden  hover:bg-red-600 absolute right-5 top-5 p-2   rounded-full cursor-pointer  bg-[var(--primary)]"
+              className=" lg:hidden hover:bg-red-600 absolute right-5 top-5 p-2  rounded-full cursor-pointer  bg-[var(--primary)]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -97,13 +97,11 @@ const Home = () => {
                 />
               </svg>
             </button>
-          </div>
+
           <div
-            className={` w-full flex items-center justify-center  z-20  px-2`}
+            className={`w-full flex items-center justify-center z-20 max-lg:px-2`}
           >
-            <div className="  w-full flex justify-center ">
               <MainContent />
-            </div>
           </div>
         </div>
       </div>

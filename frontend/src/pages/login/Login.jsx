@@ -18,6 +18,7 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       toast.error("Login faild. Please try again Later.", error);
+      navigate("/signup");
     }
   };
 

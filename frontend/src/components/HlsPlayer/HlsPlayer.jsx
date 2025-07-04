@@ -108,12 +108,12 @@ const HlsPlayer = ({ src }) => {
       />
 
       {levels.length > 0 && (
-        <div className="absolute -bottom-11 right-0 bg-opacity-70 text-white p-2 rounded">
+        <div className="absolute -bottom-8 right-0 text-xs lg:text-sm py-2 ">
           <label className="mr-2">Quality:</label>
           <select
             value={selectedLevel}
             onChange={(e) => handleQualityChange(parseInt(e.target.value))}
-            className="bg-[var(--secondary)] text-white p-1 rounded"
+            className=" bg-[var(--secondary)]  "
           >
             <option value={-1}>Auto</option>
             {levels.map((level, i) => (
@@ -128,7 +128,7 @@ const HlsPlayer = ({ src }) => {
       {!isPlaying && (
         <button
           onClick={() => videoRef.current.play()}
-          className="absolute inset-0 m-auto w-16 h-16 bg-black bg-opacity-50 rounded-full flex items-center justify-center"
+          className="absolute inset-0 m-auto w-16 h-16 bg-[var(--secondary)] bg-opacity-50 rounded-full flex items-center justify-center"
         >
           <svg
             className="w-10 h-10 text-white"

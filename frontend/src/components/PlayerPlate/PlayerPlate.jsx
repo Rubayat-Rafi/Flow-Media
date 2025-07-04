@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import HlsPlayer from "../HlsPlayer/HlsPlayer";
+import MatchCountdown from "../MatchCountdown/MatchCountdown";
 const PlayerPlate = ({hlsSrc}) => {
       const {events } = useSelector((state) => state?.Slice);
   return (
@@ -17,6 +18,15 @@ const PlayerPlate = ({hlsSrc}) => {
           )}
         </div>
       </div>
+
+        {/* Add the countdown component */}
+        {events?.matchTime && events?.matchDate && (
+          <MatchCountdown
+            matchTime={events.matchTime}
+            matchDate={events.matchDate}
+          />
+        )}
+
       <HlsPlayer src={hlsSrc} />
     </div>
   );
