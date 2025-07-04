@@ -8,8 +8,10 @@ import {
   addVideoFlag,
 } from "../../utils/redux/slices/slice";
 import { convertMatchTimeByTimeZone } from "../TimeZone/convertMatchTimeByTimeZone";
+import { useAuth } from "../../hooks/useAuth";
 
 const Sidebar = ({ sidebarContent, channels }) => {
+  const { user } = useAuth();
   const { url, timeZone } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,11 +40,14 @@ const Sidebar = ({ sidebarContent, channels }) => {
               <ChannelCard
                 key={idx}
                 ch={ch}
+                index={idx}
                 setActiveChannel={setActiveChannel}
                 dispatch={dispatch}
                 url={url}
                 navigate={navigate}
                 urlName={urlName}
+                user={user}
+                categoryData={categoryData}
               />
             ) : (
               <SheduleCard
@@ -78,7 +83,10 @@ const ChannelCard = ({
   setActiveChannel,
   dispatch,
   url,
+  index,
   navigate,
+  categoryData,
+  user,
 }) => {
   const isWatching = url === ch?.channelURL || ch?.channelName === urlName;
   return (
@@ -103,10 +111,22 @@ const ChannelCard = ({
             navigate(`/?q=${ch.category}+${ch?.channelName}`);
           }}
           className={`${
-            isWatching ? "bg-red-500 text-[var(--text)]" : "bg-[var(--primary)]"
+            isWatching
+              ? "bg-red-500 text-[var(--text)]"
+              : categoryData == undefined && index === 0
+              ? !user
+                ? "bg-[var(--primary)]"
+                : "bg-red-500 text-[var(--text)]"
+              : "bg-[var(--primary)]"
           } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
         >
-          {isWatching ? "Watching" : "Watch"}
+          {isWatching
+            ? "Watching"
+            : categoryData == undefined && index === 0
+            ? !user
+              ? "watch"
+              : "Watching"
+            : "watch"}
         </button>
       </div>
     </div>

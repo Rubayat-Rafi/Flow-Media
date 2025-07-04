@@ -77,7 +77,7 @@ const Home = () => {
         <div
           className={` ${
             !hideVideoFlag ? " max-lg:hidden" : "block"
-          } lg:w-6/8 max-lg:fixed top-0 left-0 right-0 z-50 relative h-full flex items-center justify-center bg-black/50 backdrop-blur-xs  bottom-0 `}
+          } lg:w-6/8 max-lg:fixed top-0 left-0 right-0 z-20 relative h-full flex items-center justify-center bg-black/50 backdrop-blur-xs  bottom-0 `}
         >
           <div className="">
             <button
