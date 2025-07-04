@@ -3,19 +3,26 @@ import Sidebar from "../../components/Sidebar/Sidebar";
 import SportsNav from "../../components/SportsNav/SportsNav";
 import MainContent from "../../components/MianContent/MainContent";
 import { useDispatch, useSelector } from "react-redux";
-import { addVideoFlag, addUrl } from "../../utils/redux/slices/slice";
+import {
+  addVideoFlag,
+  addUrl,
+  addDefaultUrl,
+} from "../../utils/redux/slices/slice";
 import useCategory from "../../hooks/useCategory";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 import { useSearchParams } from "react-router";
+import { GetCategory } from "../../utils/get_searchParams/ger_searchParams";
 
 const Home = () => {
   const { hideVideoFlag } = useSelector((state) => state?.Slice);
-  const { events } = useSelector((state) => state?.Slice);
+
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("Channel");
   const [categorys, isLoading] = useCategory();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
+  const categoryData = searchParams.get("q");
+  const reqParams = GetCategory(categoryData);
 
   useEffect(() => {
     setIsMounted(true);
@@ -37,7 +44,7 @@ const Home = () => {
       document.body.style.overflow = "auto";
       window.removeEventListener("resize", handleResize);
     };
-  }, [hideVideoFlag, isMounted]);
+  }, [hideVideoFlag, dispatch, isMounted]);
 
   const category = (selectCategory) => {
     setSelectedCategory(selectCategory);
@@ -46,8 +53,8 @@ const Home = () => {
   const handleClose = () => {
     dispatch(addVideoFlag(false));
     dispatch(addUrl(""));
-    // Remove all query parameters except 'q'
-    const q = events?.category;
+    dispatch(addDefaultUrl(""));
+    const q = reqParams?.categ;
     const newParams = new URLSearchParams();
     if (q) {
       newParams.set("q", q);
@@ -58,7 +65,6 @@ const Home = () => {
   if (!isMounted || isLoading) {
     return <LoadingSpinner />;
   }
-
   return (
     <section className="space-y-6 pb-10">
       <SportsNav onSelectCategory={category} />
@@ -70,29 +76,43 @@ const Home = () => {
         </div>
 
         {/* Main content */}
+
         <div
           className={`${
-            !hideVideoFlag ? "max-lg:hidden" : "max-lg:block"
-          } w-full lg:w-6/8 relative  max-lg:w-full max-lg:fixed z-20 max-lg:bg-black/50 backdrop-blur-xs top-0 left-0 bottom-0 right-0 max-lg:flex max-lg:items-center max-lg:justify-center max-lg:h-screen max-lg:px-2`}
+            !hideVideoFlag ? "hidden" : "block"
+          } w-full fixed right-0 flex items-center justify-center left-0 top-0 bottom-0 z-20 h-screen  lg:hidden  px-2`}
         >
-          <div className="relative  w-full flex justify-center ">
-            <button
-              onClick={handleClose}
-              className="lg:hidden hover:bg-red-600 absolute right-0 -top-10 p-2   rounded-full cursor-pointer  bg-[var(--primary)]"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+          <div
+            className={` w-full  relative h-full flex items-center justify-center bg-black/50 backdrop-blur-xs `}
+          >
+            <div className="  w-full flex justify-center ">
+              <button
+                onClick={handleClose}
+                className="  hover:bg-red-600 absolute right-5 top-5 p-2   rounded-full cursor-pointer  bg-[var(--primary)]"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+              <MainContent />
+            </div>
+          </div>
+        </div>
+        {/* ------------------------------ */}
+
+        <div
+          className={`lg:w-6/8 max-lg:hidden w-full  bg-black/50 backdrop-blur-xs flex items-center justify-center  px-2`}
+        >
+          <div className=" w-full flex justify-center ">
             <MainContent />
           </div>
         </div>

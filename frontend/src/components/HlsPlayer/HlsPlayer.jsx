@@ -49,7 +49,7 @@ const HlsPlayer = ({ src }) => {
 
         if (playPromise !== undefined) {
           playPromise.catch((error) => {
-            console.log("Auto-play prevented:", error);
+         
             // Show play button or handle error
           });
         }

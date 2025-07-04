@@ -4,12 +4,15 @@ import { useAuth } from "../../hooks/useAuth";
 import Subscription from "../../utils/subscription/Subscription";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { useSearchParams } from "react-router";
 import useCategory from "../../hooks/useCategory";
 import { GetParams } from "../../utils/get_searchParams/ger_searchParams";
-
+import LoginPalate from "../LoginPalate/LoginPalate";
+import PlayerPlate from "../PlayerPlate/PlayerPlate";
+import { useDispatch } from "react-redux";
+import { addDefaultUrl } from "../../utils/redux/slices/slice";
 const subscriptions = [
   {
     id: 1,
@@ -39,39 +42,41 @@ const subscriptions = [
     url: "/payment/weekly",
   },
 ];
-
 const fetchSubscription = async (email) => {
   const res = await axios.get(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
   );
   return res?.data?.userData?.subscribe;
 };
-
 const fetchTrialStatus = async () => {
   const res = await axios.get(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/free-trial/check`
   );
   return res.data;
 };
-
 const startTrialRequest = async () => {
   const res = await axios.post(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/free-trial/start`
   );
   return res.data;
 };
-
 const MainContent = () => {
+  const dispatch = useDispatch();
   const [categorys] = useCategory();
   const { user } = useAuth();
-  const { url, events } = useSelector((state) => state?.Slice);
+  const { url, events, defaultUrl, hideVideoFlag,videoFlag } = useSelector(
+    (state) => state?.Slice
+  );
+
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
-
+  const channelDataFilter = categorys?.filter(
+    (item) => item?.category === "Channel"
+  );
   const categoryData = searchParams.get("q");
-  const hlsSrc = GetParams(categoryData, categorys, url);
+  const hlsSrc = GetParams(categoryData, categorys, url) || defaultUrl;
 
   const {
     data: subscription,
@@ -90,7 +95,6 @@ const MainContent = () => {
     retry: false,
     refetchOnWindowFocus: false,
   });
-
   const { mutate: startTrial } = useMutation({
     mutationFn: startTrialRequest,
     onSuccess: () => {
@@ -109,24 +113,32 @@ const MainContent = () => {
     },
   });
 
+  useEffect(() => {
+    if (channelDataFilter.length > 0 && channelDataFilter[0]?.channelURL) {
+      dispatch(addDefaultUrl(channelDataFilter[0].channelURL));
+    }
+  }, [channelDataFilter, dispatch]);
+
   return (
     <Subscription className="w-full lg:bg-[var(--secondary)] rounded-md shadow-lg lg:p-8 lg:border border-[var(--text)]/10 lg:h-[600px]">
       <section className="h-full w-full">
-        {user && (
+        {!user && (
           <div className="flex items-end justify-between">
-            <div className=" max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
-              <div className="inline-grid *:[grid-area:1/1]">
-                <div className="status status-lg status-error animate-ping bg-red-500"></div>
-                <div className="status status-lg status-error bg-red-600"></div>
+            {subscription && (
+              <div className=" max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+                <div className="inline-grid *:[grid-area:1/1]">
+                  <div className="status status-lg status-error animate-ping bg-red-500"></div>
+                  <div className="status status-lg status-error bg-red-600"></div>
+                </div>
+                <div className="font-semibold max-lg:text-sm">
+                  {events?.category === "Channel" ? (
+                    <p>{events?.channelName}</p>
+                  ) : (
+                    <p>Live</p>
+                  )}
+                </div>
               </div>
-              <div className="font-semibold max-lg:text-sm">
-                {events?.category === "Channel" ? (
-                  <p>{events?.channelName}</p>
-                ) : (
-                  <p>Live</p>
-                )}
-              </div>
-            </div>
+            )}
 
             <div className="text-end">
               {/* Trial Button only when user has no subscription and trial is available */}
@@ -154,29 +166,16 @@ const MainContent = () => {
         )}
 
         {/* Guest user message */}
-        {!user && trialData?.used && !trialActive && (
-          <div className="flex h-full items-center justify-center lg:h-[500px] w-full">
-            <div
-              className="bg-[var(--background)] rounded-xl p-6"
-              style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
-            >
-              <Link
-                to="/signup"
-                className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
-              >
-                Signup to keep watching
-              </Link>
-              <p className="text-base max-md:text-xs text-center mt-4">
-                Already have an account?
-                <Link
-                  to="/login"
-                  className="text-[var(--primary)] font-medium ml-2"
-                >
-                  Log in
-                </Link>
-              </p>
-            </div>
-          </div>
+        {!user ? (
+          !trialActive ? (
+            <LoginPalate />
+          ) : (
+            <PlayerPlate hlsSrc={hlsSrc} />
+          )
+        ) : !subscription ? (
+          !user && <LoginPalate />
+        ) : (
+          <PlayerPlate hlsSrc={hlsSrc} />
         )}
 
         {/* Subscription loading/error states */}
@@ -257,51 +256,6 @@ const MainContent = () => {
             </div>
           </div>
         )}
-
-        {/* Player shown when subscription exists */}
-        <div className=" h-full max-lg:flex max-lg:flex-col max-lg:justify-center">
-          <div className=" lg:hidden w-fit  bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
-            <div className="inline-grid *:[grid-area:1/1]">
-              <div className="status status-lg status-error animate-ping bg-red-500"></div>
-              <div className="status status-lg status-error bg-red-600"></div>
-            </div>
-            <div className="font-semibold max-lg:text-sm">
-              {events?.category === "Channel" ? (
-                <p>{events?.channelName}</p>
-              ) : (
-                <p>Live</p>
-              )}
-            </div>
-          </div>
-          <div className=" h-full">
-            {user && (subscription || trialActive) ? (
-              <HlsPlayer src={hlsSrc} />
-            ) : (
-              <div className="flex h-full items-center justify-center lg:h-[500px] w-full">
-                <div
-                  className="bg-[var(--background)] rounded-xl p-6"
-                  style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
-                >
-                  <Link
-                    to="/signup"
-                    className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
-                  >
-                    Signup to keep watching
-                  </Link>
-                  <p className="text-base max-md:text-xs text-center mt-4">
-                    Already have an account?
-                    <Link
-                      to="/login"
-                      className="text-[var(--primary)] font-medium ml-2"
-                    >
-                      Log in
-                    </Link>
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
       </section>
     </Subscription>
   );
