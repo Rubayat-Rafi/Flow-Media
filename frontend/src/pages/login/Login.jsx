@@ -2,7 +2,7 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import {toast} from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,7 +15,6 @@ const Login = () => {
       await signInUser(email, password);
       reset();
       toast.success("sign In successfull");
-      // redirect to home page
       navigate("/");
     } catch (error) {
       toast.error("Login faild. Please try again Later.", error);
