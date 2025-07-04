@@ -7,14 +7,15 @@ const HlsPlayer = ({ src }) => {
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(-1);
   const [isPlaying, setIsPlaying] = useState(false);
-  
+
   // Detect video type
   const isMp4 = src.endsWith(".mp4");
   const isM3u8 = src.endsWith(".m3u8");
-  const isEmbed = src.includes("youtube.com") || 
-                 src.includes("vimeo.com") || 
-                 src.includes("embed") || 
-                 src.includes("player.php");
+  const isEmbed =
+    src.includes("youtube.com") ||
+    src.includes("vimeo.com") ||
+    src.includes("embed") ||
+    src.includes("player.php");
 
   useEffect(() => {
     if (isM3u8 && Hls.isSupported()) {
@@ -23,16 +24,16 @@ const HlsPlayer = ({ src }) => {
         maxBufferLength: 10,
         maxBufferSize: 60 * 1000 * 1000,
       });
-      
+
       setHlsInstance(hls);
       hls.loadSource(src);
       hls.attachMedia(videoRef.current);
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         setLevels(hls.levels);
-        
+
         // Find and set 720p as default if available
-        const level720 = hls.levels.findIndex(level => level.height === 720);
+        const level720 = hls.levels.findIndex((level) => level.height === 720);
         if (level720 !== -1) {
           hls.currentLevel = level720;
           setSelectedLevel(level720);
@@ -45,10 +46,10 @@ const HlsPlayer = ({ src }) => {
         // Auto-play with muted audio to bypass browser restrictions
         videoRef.current.muted = true;
         const playPromise = videoRef.current.play();
-        
+
         if (playPromise !== undefined) {
-          playPromise.catch(error => {
-            console.log("Auto-play prevented:", error);
+          playPromise.catch((error) => {
+         
             // Show play button or handle error
           });
         }
@@ -57,15 +58,18 @@ const HlsPlayer = ({ src }) => {
       return () => {
         hls.destroy();
       };
-    } else if (isM3u8 && videoRef.current?.canPlayType("application/vnd.apple.mpegurl")) {
+    } else if (
+      isM3u8 &&
+      videoRef.current?.canPlayType("application/vnd.apple.mpegurl")
+    ) {
       // For Safari and other browsers with native HLS support
       videoRef.current.src = src;
       videoRef.current.muted = true;
-      videoRef.current.play().catch(e => console.log("Auto-play error:", e));
+      videoRef.current.play().catch((e) => console.log("Auto-play error:", e));
     } else if (isMp4) {
       videoRef.current.src = src;
       videoRef.current.muted = true;
-      videoRef.current.play().catch(e => console.log("Auto-play error:", e));
+      videoRef.current.play().catch((e) => console.log("Auto-play error:", e));
     }
   }, [src, isM3u8, isMp4]);
 
@@ -92,24 +96,24 @@ const HlsPlayer = ({ src }) => {
 
   return (
     <div className="w-full relative">
-      <video 
-        ref={videoRef} 
-        controls 
-        autoPlay 
+      <video
+        ref={videoRef}
+        controls
+        autoPlay
         muted
         playsInline
         className="w-full aspect-video bg-black"
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
-      
+
       {levels.length > 0 && (
-        <div className="absolute bottom-16 right-4 bg-black bg-opacity-70 text-white p-2 rounded">
+        <div className="absolute -bottom-8 right-0 text-xs lg:text-sm py-2 ">
           <label className="mr-2">Quality:</label>
           <select
             value={selectedLevel}
             onChange={(e) => handleQualityChange(parseInt(e.target.value))}
-            className="bg-[var(--secondary)] text-white p-1 rounded"
+            className=" bg-[var(--secondary)]  "
           >
             <option value={-1}>Auto</option>
             {levels.map((level, i) => (
@@ -120,14 +124,18 @@ const HlsPlayer = ({ src }) => {
           </select>
         </div>
       )}
-      
+
       {!isPlaying && (
-        <button 
+        <button
           onClick={() => videoRef.current.play()}
-          className="absolute inset-0 m-auto w-16 h-16 bg-black bg-opacity-50 rounded-full flex items-center justify-center"
+          className="absolute inset-0 m-auto w-16 h-16 bg-[var(--secondary)] bg-opacity-50 rounded-full flex items-center justify-center"
         >
-          <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+          <svg
+            className="w-10 h-10 text-white"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
           </svg>
         </button>
       )}

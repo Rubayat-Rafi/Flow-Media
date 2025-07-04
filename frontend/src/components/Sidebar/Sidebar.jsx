@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router";
 import { GetCategory } from "../../utils/get_searchParams/ger_searchParams";
@@ -8,8 +8,10 @@ import {
   addVideoFlag,
 } from "../../utils/redux/slices/slice";
 import { convertMatchTimeByTimeZone } from "../TimeZone/convertMatchTimeByTimeZone";
+import { useAuth } from "../../hooks/useAuth";
 
 const Sidebar = ({ sidebarContent, channels }) => {
+  const { user } = useAuth();
   const { url, timeZone } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,11 +40,14 @@ const Sidebar = ({ sidebarContent, channels }) => {
               <ChannelCard
                 key={idx}
                 ch={ch}
+                index={idx}
                 setActiveChannel={setActiveChannel}
                 dispatch={dispatch}
                 url={url}
                 navigate={navigate}
                 urlName={urlName}
+                user={user}
+                categoryData={categoryData}
               />
             ) : (
               <SheduleCard
@@ -78,14 +83,23 @@ const ChannelCard = ({
   setActiveChannel,
   dispatch,
   url,
+  index,
   navigate,
+  categoryData,
+  user,
 }) => {
   const isWatching = url === ch?.channelURL || ch?.channelName === urlName;
   return (
     <div className="">
-      <div className="border-b-2 border-[var(--text)]/20 hover:border-[var(--primary)] py-4 flex items-center justify-between gap-3 bg-[var(--background)] hover:bg-[var(--secondary)]  p-3 rounded-md transition-transform duration-300 ease-in-out">
+      <div
+        className={`border-b-2 py-4 flex items-center justify-between gap-3 p-3 rounded-md transition-all duration-300 ease-in-out ${
+          isWatching || (categoryData === undefined && index === 0 && user)
+            ? "border-[var(--primary)] " // Active state
+            : "border-[var(--text)]/20 hover:border-[var(--primary)]" // Inactive state
+        }`}
+      >
         <div className="space-x-3 flex items-center">
-          <div className="h-8 w-8 ">
+          <div className="h-8 w-8">
             <img
               src={ch?.channelLogo}
               alt={ch?.channelName}
@@ -103,16 +117,19 @@ const ChannelCard = ({
             navigate(`/?q=${ch.category}+${ch?.channelName}`);
           }}
           className={`${
-            isWatching ? "bg-red-500 text-[var(--text)]" : "bg-[var(--primary)]"
+            isWatching || (categoryData === undefined && index === 0 && user)
+              ? "bg-red-500 text-[var(--text)]"
+              : "bg-[var(--primary)]"
           } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
         >
-          {isWatching ? "Watching" : "Watch"}
+          {isWatching || (categoryData === undefined && index === 0 && user)
+            ? "Watching"
+            : "Watch"}
         </button>
       </div>
     </div>
   );
 };
-
 
 const SheduleCard = ({
   ch,
@@ -123,6 +140,25 @@ const SheduleCard = ({
   navigate,
   urlName,
 }) => {
+  const [isLive, setIsLive] = useState(false);
+
+  useEffect(() => {
+    const checkLiveStatus = () => {
+      const matchDateTime = `${ch?.matchDate}T${ch?.matchTime}`;
+      const matchStart = new Date(matchDateTime).getTime();
+      const now = new Date().getTime();
+      setIsLive(now >= matchStart);
+    };
+
+    // Check immediately
+    checkLiveStatus();
+
+    // Set up interval to check every minute
+    const interval = setInterval(checkLiveStatus, 60000);
+
+    return () => clearInterval(interval);
+  }, [ch?.matchTime, ch?.matchDate]);
+
   const isWatching = url === ch?.matchUrl || ch?._id === urlName;
   return (
     <div className="space-y-2">
@@ -134,11 +170,28 @@ const SheduleCard = ({
         })}
       </p>
 
-      <div className="flex flex-col gap-2 border border-[var(--background)] bg-[var(--background)] hover:border-[var(--primary)] p-3 rounded-md transition duration-300 ease-in-out">
+      <div
+        className={`flex flex-col gap-2 border p-3 rounded-md transition-all duration-300 ease-in-out ${
+          isWatching
+            ? "border-[var(--primary)] border-2 "
+            : "border-[var(--background)] hover:border-[var(--primary)]"
+        }`}
+      >
         <div className="flex justify-between">
           <div className="font-medium text-xs flex items-center gap-2">
-            <span>Schedule for</span>
-            <span>{convertMatchTimeByTimeZone(ch?.matchTime, timeZone)}</span>
+            {isLive ? (
+              <>
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span className="text-green-500">Live</span>
+              </>
+            ) : (
+              <>
+                <span>Schedule for</span>
+                <span>
+                  {convertMatchTimeByTimeZone(ch?.matchTime, timeZone)}
+                </span>
+              </>
+            )}
           </div>
           <button
             onClick={() => {
@@ -163,7 +216,7 @@ const SheduleCard = ({
             <img
               className="h-8 w-8 object-cover"
               src={ch?.team1Image}
-              alt="team1"
+              alt={ch?.teamA || "Team 1"}
             />
             <h4>{ch?.teamA}</h4>
           </div>
@@ -171,7 +224,7 @@ const SheduleCard = ({
             <img
               className="h-8 w-8 object-cover"
               src={ch?.team2Image}
-              alt="team2"
+              alt={ch?.teamB || "Team 2"}
             />
             <h4>{ch?.teamB}</h4>
           </div>

@@ -3,7 +3,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 const Subscription = ({ children, className }) => {
   const { user } = useAuth();
-  const { data, error, isLoading } = useQuery({
+  const { error } = useQuery({
     queryKey: ["subscriptionCheck", user?.email],
     queryFn: async () => {
       if (!user?.email) return;

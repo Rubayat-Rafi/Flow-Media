@@ -1,31 +1,36 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import SportsNav from "../../components/SportsNav/SportsNav";
-import MainContent from "../../components/MianContent/MainContent";
 import { useDispatch, useSelector } from "react-redux";
-import { addVideoFlag, addUrl } from "../../utils/redux/slices/slice";
+import {
+  addVideoFlag,
+  addUrl,
+  addDefaultUrl,
+} from "../../utils/redux/slices/slice";
 import useCategory from "../../hooks/useCategory";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
-// import { RxCross2 } from "react-icons/rx";
-
+import { useSearchParams } from "react-router";
+import { GetCategory } from "../../utils/get_searchParams/ger_searchParams";
+import MainContent from "../../components/MianContent/MainContent";
 const Home = () => {
   const { hideVideoFlag } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("Channel");
   const [categorys, isLoading] = useCategory();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
+  const categoryData = searchParams.get("q");
+  const reqParams = GetCategory(categoryData);
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
   useEffect(() => {
     if (!isMounted) return;
-
     const handleResize = () => {
-      if (window.innerWidth < 768 && hideVideoFlag) {
+      if (window.innerWidth < 1024) {
         document.body.style.overflow = "hidden";
       } else {
+        dispatch(addVideoFlag(false));
         document.body.style.overflow = "auto";
       }
     };
@@ -35,15 +40,28 @@ const Home = () => {
       document.body.style.overflow = "auto";
       window.removeEventListener("resize", handleResize);
     };
-  }, [hideVideoFlag, isMounted]);
+  }, [hideVideoFlag, dispatch, isMounted]);
 
   const category = (selectCategory) => {
     setSelectedCategory(selectCategory);
   };
+
+  const handleClose = () => {
+    dispatch(addVideoFlag(false));
+    const q = reqParams?.categ;
+    const newParams = new URLSearchParams();
+    if (q) {
+      newParams.set("q", q);
+    }
+    setSearchParams(newParams);
+
+    dispatch(addUrl(""));
+    dispatch(addDefaultUrl(""));
+  };
+
   if (!isMounted || isLoading) {
     return <LoadingSpinner />;
   }
-
   return (
     <section className="space-y-6 pb-10">
       <SportsNav onSelectCategory={category} />
@@ -55,18 +73,16 @@ const Home = () => {
         </div>
 
         {/* Main content */}
+
         <div
-          className={`${
-            !hideVideoFlag ? "max-lg:hidden" : "max-lg:block"
-          } w-full lg:w-6/8 relative  max-lg:w-full max-lg:fixed z-20 max-lg:bg-black/50 backdrop-blur-xs top-0 left-0 bottom-0 right-0 max-lg:flex max-lg:items-center max-lg:justify-center max-lg:h-screen max-lg:px-2`}
+          className={` ${
+            !hideVideoFlag ? " max-lg:hidden" : "block"
+          } lg:w-6/8 max-lg:fixed top-0 left-0 right-0 z-20 relative h-full flex items-center justify-center max-lg:bg-black/50 backdrop-blur-xs  bottom-0 `}
         >
-          <div className="relative w-full flex justify-center items-center">
+
             <button
-              onClick={() => {
-                dispatch(addVideoFlag(false));
-                dispatch(addUrl(""));
-              }}
-              className="lg:hidden absolute right-0 -top-10 p-2  rounded-full cursor-pointer bg-[var(--primary)] hover:bg-red-600"
+              onClick={handleClose}
+              className=" lg:hidden hover:bg-red-600 absolute right-5 top-5 p-2  rounded-full cursor-pointer  bg-[var(--primary)]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +97,11 @@ const Home = () => {
                 />
               </svg>
             </button>
-            <MainContent />
+
+          <div
+            className={`w-full flex items-center justify-center z-20 max-lg:px-2`}
+          >
+              <MainContent />
           </div>
         </div>
       </div>
