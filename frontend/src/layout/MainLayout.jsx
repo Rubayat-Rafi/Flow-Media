@@ -8,7 +8,7 @@ import LoadingSpinner from "../components/Shared/LoadingSpinner";
 const MainLayout = () => {
   const { loading } = useAuth();
   const [, isLoading] = useRole();
-  // if (isLoading || loading) return <LoadingSpinner />;
+  if (isLoading || loading) return <LoadingSpinner />;
 
   return (
     <>
