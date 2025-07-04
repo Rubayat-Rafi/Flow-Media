@@ -60,13 +60,13 @@ const Home = () => {
             !hideVideoFlag ? "max-lg:hidden" : "max-lg:block"
           } w-full lg:w-6/8 relative  max-lg:w-full max-lg:fixed z-20 max-lg:bg-black/50 backdrop-blur-xs top-0 left-0 bottom-0 right-0 max-lg:flex max-lg:items-center max-lg:justify-center max-lg:h-screen max-lg:px-2`}
         >
-          <div className="relative  w-full flex justify-center ">
+          <div className="relative w-full flex justify-center items-center">
             <button
               onClick={() => {
                 dispatch(addVideoFlag(false));
                 dispatch(addUrl(""));
               }}
-              className="lg:hidden absolute right-0 -top-10 p-2   rounded-full cursor-pointer hover:bg-primary bg-[var(--primary)]"
+              className="lg:hidden absolute right-0 -top-10 p-2  rounded-full cursor-pointer bg-[var(--primary)] hover:bg-red-600"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
