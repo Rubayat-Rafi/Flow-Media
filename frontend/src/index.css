@@ -77,12 +77,12 @@ body {
     background: var(--accent);
   } */
 
-.has-scroll {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
-}
-.has-scroll::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
-}
+  .has-scroll {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .has-scroll::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
 }
