@@ -22,6 +22,7 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
   const handleUpdateEvent = async (data) => {
     try {
       const res = await axiosSecure.patch(`/api/update/${event?._id}`, data);
+      setEventModal(false);
       toast.success(res?.data?.message);
       refetch();
     } catch (error) {
