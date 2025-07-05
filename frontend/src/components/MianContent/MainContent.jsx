@@ -80,7 +80,6 @@ const MainContent = () => {
   const {
     data: subscription,
     isLoading: subLoading,
-    isError,
   } = useQuery({
     queryKey: ["subscription-status", user?.email],
     queryFn: () => fetchSubscription(user.email),
@@ -146,21 +145,14 @@ const MainContent = () => {
         {/* Modified guest user section */}
         {!user ? (
           trialActive ? (
-            <div>
-              <div className="bg-red-600 text-[var(--bakground)] inline-flex p-1 rounded absolute right-6 top-16 z-10 w-10 h-10  items-center justify-center">
-                {trialTimeLeft}s
-              </div>
-              <div className="relative">
-                <PlayerPlate hlsSrc={hlsSrc} />
-              </div>
-            </div>
+                <PlayerPlate user={user} trialActive={trialActive} trialTimeLeft={trialTimeLeft} hlsSrc={hlsSrc} />
           ) : (
             // Show trial options instead of login for new users
             <div className="flex flex-col items-center justify-center h-full p-4">
               <div
                 className={`${
                   trialData?.used === false &&
-                  "rounded-xl p-4 md:p-6 text-center bg-[var(--background)]  "
+                  "rounded-xl p-4 md:p-6 text-center bg-[var(--background)] max-w-md md:min-w-md  shadow-md shadow-[#dd8f3c]"
                 } `}
               >
                 {trialData?.used === false && (
@@ -177,9 +169,9 @@ const MainContent = () => {
                 {trialData?.used === false && !trialActive && (
                   <button
                     onClick={() => startTrial()}
-                    className="bg-[var(--primary)] flex gap-2 items-center text-white px-4 py-2 lg:py-3 w-full rounded-md font-medium hover:bg-opacity-90   md:min-w-md cursor-pointer transition"
+                    className="bg-[var(--primary)] flex gap-2 items-center justify-center text-white  px-4 py-2 lg:py-3 w-full rounded-md font-medium hover:bg-opacity-90  cursor-pointer transition"
                   >
-                    <FaPlay  className="text-2xl" />
+                    <FaPlay  className="text-xl" />
                     Watch Now 
                   </button>
                 )}
