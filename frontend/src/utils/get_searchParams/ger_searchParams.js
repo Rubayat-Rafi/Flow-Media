@@ -7,9 +7,16 @@ export const GetParams = (categoryData, categorys, defaultUrl) => {
     (item) => item?.category === categ && item?.channelName === eventName
   );
   const filterData2 = categorys.find(
-    (item) => item?.category === categ && item?._id === eventName
+    (item) =>
+      item?.category === categ &&
+      item?._id === eventName &&
+      item?.countdown == false
   );
-  return filterData1?.channelURL || filterData2?.matchUrl || defaultUrl;
+  return {
+    channel_url: filterData1?.channelURL,
+    match_url: filterData2?.matchUrl,
+    defaultUrl,
+  };
 };
 export const GetCategory = (categoryData) => {
   if (!categoryData) return null;

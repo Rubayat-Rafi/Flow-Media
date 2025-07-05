@@ -56,7 +56,7 @@ const ChannelAndEvents = () => {
       {/* channels  */}
       {channels && (
         <div className="grid grid-cols-1 lg:grid-cols-2  xl:grid-cols-3 gap-6">
-          {channels.map((channel) => (
+          {channels?.map((channel) => (
             <div
               key={channel._id}
               className="bg-[var(--secondary)] p-6 rounded-lg  border border-[var(--text)]/20 overflow-hidden"
