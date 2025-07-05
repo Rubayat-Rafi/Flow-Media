@@ -13,11 +13,11 @@ const ChannelUpdate = ({ channel, closeModal }) => {
 
   const handleUpdateChannel = (data) => {
     console.log(data);
-
-
-
-    
   };
+
+
+
+  
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center h-screen px-4">
