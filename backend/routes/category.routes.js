@@ -6,5 +6,7 @@ router.post("/category", categoryController.categories);
 router.get("/categorys", categoryController.allCategorys);
 router.delete("/delete/:id", categoryController.categoryDelete);
 router.patch("/update/:id", categoryController.updateCategory);
+router.get('/countdown/:id', categoryController.countDown);
+
 
 module.exports = router;
