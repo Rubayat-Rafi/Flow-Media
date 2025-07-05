@@ -57,7 +57,7 @@ const Navbar = () => {
     <Container>
       <nav className="flex items-center justify-between py-6 relative">
         <div className="flex items-center gap-5">
-          <Link href='/'>
+          <Link href='/' className="outline-none">
             <img src="/logo.png" className="max-h-[48px]" alt="logo" />
           </Link>
           <div className="hidden  lg:flex items-center gap-2 py-2 px-4 rounded-md bg-[var(--secondary)]">
