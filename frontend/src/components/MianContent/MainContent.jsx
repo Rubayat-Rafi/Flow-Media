@@ -65,7 +65,7 @@ const MainContent = () => {
   const dispatch = useDispatch();
   const [categorys] = useCategory();
   const { user } = useAuth();
-  const { url, events, defaultUrl } = useSelector((state) => state?.Slice);
+  const { url, events } = useSelector((state) => state?.Slice);
 
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
@@ -76,7 +76,7 @@ const MainContent = () => {
   );
 
   const categoryData = searchParams.get("q");
-  const hlsSrc = GetParams(categoryData, categorys, url) || defaultUrl;
+  const hlsSrc = GetParams(categoryData, categorys, url)
   const {
     data: subscription,
     isLoading: subLoading,
