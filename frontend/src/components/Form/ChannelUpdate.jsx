@@ -1,8 +1,11 @@
 import { IoClose } from "react-icons/io5";
 import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
-const ChannelUpdate = ({ channel, closeModal }) => {
-  const { register, handleSubmit, reset } = useForm({
+const ChannelUpdate = ({ refetch, channel, closeModal }) => {
+  const axiosSecure = useAxiosSecure();
+  const { register, handleSubmit } = useForm({
     defaultValues: {
       category: channel?.category,
       channelName: channel?.channelName,
@@ -11,13 +14,16 @@ const ChannelUpdate = ({ channel, closeModal }) => {
     },
   });
 
-  const handleUpdateChannel = (data) => {
-    console.log(data);
+  const handleUpdateChannel = async (data) => {
+    try {
+      const res = await axiosSecure.patch(`/api/update/${channel?._id}`, data);
+      refetch();
+      closeModal(false);
+      toast.success(res?.data?.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
-
-
-
-  
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center h-screen px-4">
@@ -46,7 +52,7 @@ const ChannelUpdate = ({ channel, closeModal }) => {
             <input
               type="text"
               name="category"
-              className="py-2 px-4 rounded-md w-full border bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-gray-800"
+              className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)] "
               defaultValue={channel?.category}
               disabled
             />
@@ -61,7 +67,7 @@ const ChannelUpdate = ({ channel, closeModal }) => {
               type="text"
               name="channelName"
               {...register("channelName")}
-              className="py-2 px-4 rounded-md w-full border bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-gray-800"
+              className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)] "
               defaultValue={channel?.channelName}
             />
           </div>
@@ -75,7 +81,7 @@ const ChannelUpdate = ({ channel, closeModal }) => {
               type="text"
               name="channelLogo"
               {...register("channelLogo")}
-              className="py-2 px-4 rounded-md w-full border bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-gray-800"
+              className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)] "
               defaultValue={channel?.channelLogo}
             />
           </div>
@@ -89,7 +95,7 @@ const ChannelUpdate = ({ channel, closeModal }) => {
               type="text"
               name="channelURL"
               {...register("channelURL")}
-              className="py-2 px-4 rounded-md w-full border bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] text-gray-800"
+              className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)] "
               defaultValue={channel?.channelURL}
             />
           </div>

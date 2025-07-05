@@ -27,7 +27,7 @@ const Sidebar = () => {
       <div className="flex justify-between md:hidden bg-[var(--secondary)]">
         <div>
           <div className="block cursor-pointer p-4 font-bold outline-none">
-            <Link to="/">
+            <Link to="/" className="outline-none">
               <img
                 // className='hidden md:block'
                 src={logo}
