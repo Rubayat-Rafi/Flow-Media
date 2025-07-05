@@ -1,7 +1,7 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 
 const Login = () => {
@@ -19,7 +19,7 @@ const Login = () => {
     } catch (error) {
       toast.error("Login faild. Please try again Later.", error);
       navigate("/signup");
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -34,13 +34,13 @@ const Login = () => {
     >
       <div className="absolute inset-0 bg-[var(--background)]/80 pointer-events-none z-10"></div>
       <div className="absolute top-[10%] left-[5%] z-20">
-        <Link
+        <a
           className=" text-[var(--primary)]  font-semibold  flex items-center gap-2 hover:underline"
           href="/"
         >
           <FaArrowLeftLong />
           Back to Home
-        </Link>
+        </a>
       </div>
 
       {/* Logo */}

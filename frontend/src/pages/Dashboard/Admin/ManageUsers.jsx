@@ -5,10 +5,12 @@ import { MdDeleteForever } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import useUsers from "../../../hooks/useUsers";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
+import { useAuth } from "../../../hooks/useAuth";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
   const [users, isLoading, refetch] = useUsers();
+  const { deleteUserAccount } = useAuth();
 
   const handleRoleChange = async (user, newRole) => {
     try {
@@ -33,6 +35,7 @@ const ManageUsers = () => {
             onClick={async () => {
               toast.dismiss(t.id);
               await axiosSecure.delete(`/api/user/${id}`);
+              await deleteUserAccount();
               toast.success("Deleted successfully!");
               refetch();
             }}
