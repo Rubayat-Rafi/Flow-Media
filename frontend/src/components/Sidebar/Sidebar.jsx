@@ -92,11 +92,19 @@ const ChannelCard = ({
   return (
     <div className="">
       <div
-        className={`border-b-2 py-4 flex items-center justify-between gap-3 p-3 rounded-md transition-all duration-300 ease-in-out ${
-          isWatching || (categoryData === undefined && index === 0 && user)
-            ? "border-[var(--primary)] " // Active state
-            : "border-[var(--text)]/20 hover:border-[var(--primary)]" // Inactive state
-        }`}
+        className={`border-b-2 py-4 flex items-center justify-between gap-3 p-3 rounded-md transition-all duration-300 ease-in-out
+          
+          ${
+            isWatching
+              ? "border-[var(--primary)] "
+              : categoryData == undefined && index === 0
+              ? !user
+                ? "border-[var(--text)]/20 hover:border-[var(--primary)]"
+                : "border-[var(--primary)] "
+              : "border-[var(--text)]/20 hover:border-[var(--primary)]"
+          }
+        
+          `}
       >
         <div className="space-x-3 flex items-center">
           <div className="h-8 w-8">
@@ -117,8 +125,12 @@ const ChannelCard = ({
             navigate(`/?q=${ch.category}+${ch?.channelName}`);
           }}
           className={`${
-            isWatching || (categoryData === undefined && index === 0 && user)
+            isWatching
               ? "bg-red-500 text-[var(--text)]"
+              : categoryData == undefined && index === 0
+              ? !user
+                ? "bg-[var(--primary)]"
+                : "bg-red-500 text-[var(--text)]"
               : "bg-[var(--primary)]"
           } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
         >
