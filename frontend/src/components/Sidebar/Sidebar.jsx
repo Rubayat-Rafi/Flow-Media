@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router";
-import { GetCategory } from "../../utils/get_searchParams/ger_searchParams";
+import { GetCategory } from "../../utils/get_searchParams/get_searchParams";
 import {
   addEvents,
   addUrl,
@@ -9,8 +9,7 @@ import {
 } from "../../utils/redux/slices/slice";
 import { convertMatchTimeByTimeZone } from "../TimeZone/convertMatchTimeByTimeZone";
 import { useAuth } from "../../hooks/useAuth";
-
-const Sidebar = ({ sidebarContent, channels }) => {
+const Sidebar = ({ channels }) => {
   const { user } = useAuth();
   const { url, timeZone } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
@@ -19,20 +18,17 @@ const Sidebar = ({ sidebarContent, channels }) => {
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("q");
   const catAndevent = GetCategory(categoryData);
-  const urlName = catAndevent?.eventName;
-  const filteredChannels = channels?.filter(
-    (ch) => ch.category === sidebarContent
-  );
-  const isActiveOutside =
-    activeChannel && activeChannel.category !== sidebarContent;
-
+  const event_name = catAndevent?.eventName || null;
+  const cat = catAndevent?.categ || "Channel";
+  const filteredChannels = channels?.filter((ch) => ch.category === cat);
+  const isActiveOutside = activeChannel && activeChannel.category !== cat;
   const allChannelsToShow = [
     ...(isActiveOutside ? [activeChannel] : []),
     ...filteredChannels,
   ];
 
   return (
-    <aside className="bg-[var(--secondary)] max-h-[600px]  overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
+    <aside className="bg-[var(--secondary)] max-h-[600px] overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
       <div className="space-y-3">
         {allChannelsToShow?.length > 0 ? (
           allChannelsToShow.map((ch, idx) =>
@@ -45,7 +41,7 @@ const Sidebar = ({ sidebarContent, channels }) => {
                 dispatch={dispatch}
                 url={url}
                 navigate={navigate}
-                urlName={urlName}
+                event_name={event_name}
                 user={user}
                 categoryData={categoryData}
               />
@@ -58,7 +54,7 @@ const Sidebar = ({ sidebarContent, channels }) => {
                 url={url}
                 timeZone={timeZone}
                 navigate={navigate}
-                urlName={urlName}
+                event_name={event_name}
               />
             )
           )
@@ -79,7 +75,7 @@ const Sidebar = ({ sidebarContent, channels }) => {
 
 const ChannelCard = ({
   ch,
-  urlName,
+  event_name,
   setActiveChannel,
   dispatch,
   url,
@@ -88,23 +84,21 @@ const ChannelCard = ({
   categoryData,
   user,
 }) => {
-  const isWatching = url === ch?.channelURL || ch?.channelName === urlName;
+  const isWatching = url === ch?.channelURL || ch?.channelName === event_name;
   return (
     <div className="">
       <div
         className={`border-b-2 py-4 flex items-center justify-between gap-3 p-3 rounded-md transition-all duration-300 ease-in-out
-          
           ${
             isWatching
-              ? "border-[var(--primary)] "
+              ? "border-[var(--primary)]"
               : categoryData == undefined && index === 0
               ? !user
                 ? "border-[var(--text)]/20 hover:border-[var(--primary)]"
-                : "border-[var(--primary)] "
+                : "border-[var(--primary)]"
               : "border-[var(--text)]/20 hover:border-[var(--primary)]"
           }
-        
-          `}
+        `}
       >
         <div className="space-x-3 flex items-center">
           <div className="h-8 w-8">
@@ -122,7 +116,7 @@ const ChannelCard = ({
             dispatch(addVideoFlag(true));
             dispatch(addUrl(ch?.channelURL));
             dispatch(addEvents(ch));
-            navigate(`/?q=${ch.category}+${ch?.channelName}`);
+            navigate(`/?q=${ch.category}+${ch?._id}`);
           }}
           className={`${
             isWatching
@@ -154,7 +148,7 @@ const SheduleCard = ({
   url,
   timeZone,
   navigate,
-  urlName,
+  event_name,
 }) => {
   const [isLive, setIsLive] = useState(false);
 
@@ -166,16 +160,14 @@ const SheduleCard = ({
       setIsLive(now >= matchStart);
     };
 
-    // Check immediately
     checkLiveStatus();
-
-    // Set up interval to check every minute
     const interval = setInterval(checkLiveStatus, 60000);
 
     return () => clearInterval(interval);
   }, [ch?.matchTime, ch?.matchDate]);
 
-  const isWatching = url === ch?.matchUrl || ch?._id === urlName;
+  const isWatching = url === ch?.matchUrl || ch?._id === event_name;
+
   return (
     <div className="space-y-2">
       <p className="text-[var(--primary)] pl-3">
@@ -189,7 +181,7 @@ const SheduleCard = ({
       <div
         className={`flex flex-col gap-2 border p-3 rounded-md transition-all duration-300 ease-in-out ${
           isWatching
-            ? "border-[var(--primary)] border-2 "
+            ? "border-[var(--primary)] border-2"
             : "border-[var(--background)] hover:border-[var(--primary)]"
         }`}
       >

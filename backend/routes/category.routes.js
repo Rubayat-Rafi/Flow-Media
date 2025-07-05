@@ -7,6 +7,7 @@ router.get("/categorys", categoryController.allCategorys);
 router.delete("/delete/:id", categoryController.categoryDelete);
 router.patch("/update/:id", categoryController.updateCategory);
 router.get('/countdown/:id', categoryController.countDown);
+router.get('/find_for_play/:id', categoryController.findForPlay);
 
 
 module.exports = router;

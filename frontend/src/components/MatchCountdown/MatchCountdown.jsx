@@ -36,7 +36,7 @@ const MatchCountdown = ({ matchTime, matchDate, matchId }) => {
             await axios.get(
               `${import.meta.env.VITE_FLOW_MRDIA_API}/api/countdown/${matchId}`
             );
-            setHasUpdated(true); // prevent duplicate API call
+            setHasUpdated(true);
           } catch (err) {
             console.error("Failed to update countdown in backend:", err);
           }
