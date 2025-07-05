@@ -2,20 +2,20 @@ import { useRef, useState } from "react";
 import Container from "../Shared/Container";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { Categories } from "../Categories/Categories";
-import { GetCategory } from "../../utils/get_searchParams/ger_searchParams";
+import { GetCategory } from "../../utils/get_searchParams/get_searchParams";
 import { useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 const SportsNav = ({ onSelectCategory }) => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const categoryData = searchParams.get("q");
   const catAndevent = GetCategory(categoryData);
-  const urlCategory = catAndevent?.categ;
   const scrollRef = useRef(null);
-  const [active, setActive] = useState(urlCategory || "Channel");
+  const [active, setActive] = useState(catAndevent?.categ || "Channel");
   const handleClick = (category) => {
     setActive(category);
     onSelectCategory(category);
   };
-
   const scroll = (direction) => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({
@@ -46,7 +46,9 @@ const SportsNav = ({ onSelectCategory }) => {
             {Categories.map((cat) => (
               <button
                 key={cat.name}
-                onClick={() => handleClick(cat.name)}
+                onClick={() => {
+                  navigate(`/?q=${cat.name}`), handleClick(cat.name);
+                }}
                 className={`px-2 py-1 md:px-4 md:py-2 rounded md:rounded-md font-semibold flex items-center gap-1 md:gap-2 transition duration-200 uppercase cursor-pointer text-sm md:text-base" ${
                   active === cat.name
                     ? "bg-[var(--primary)] text-[var(--background)]"

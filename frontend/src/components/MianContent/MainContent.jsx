@@ -8,7 +8,7 @@ import { FaPlay } from "react-icons/fa";
 import { Link } from "react-router";
 import { useSearchParams } from "react-router";
 import useCategory from "../../hooks/useCategory";
-import { GetParams } from "../../utils/get_searchParams/ger_searchParams";
+import { GetParams } from "../../utils/get_searchParams/get_searchParams";
 import LoginPalate from "../LoginPalate/LoginPalate";
 import PlayerPlate from "../PlayerPlate/PlayerPlate";
 import { useDispatch } from "react-redux";
@@ -66,21 +66,20 @@ const MainContent = () => {
   const [categorys] = useCategory();
   const { user } = useAuth();
   const { url, events } = useSelector((state) => state?.Slice);
-
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const [searchParams] = useSearchParams();
+
+  const categoryData = searchParams.get("q");
+  const hlsSrc = GetParams(categoryData, categorys, url);
   const queryClient = useQueryClient();
+
+  
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );
 
-  const categoryData = searchParams.get("q");
-  const hlsSrc = GetParams(categoryData, categorys, url)
-  const {
-    data: subscription,
-    isLoading: subLoading,
-  } = useQuery({
+  const { data: subscription, isLoading: subLoading } = useQuery({
     queryKey: ["subscription-status", user?.email],
     queryFn: () => fetchSubscription(user.email),
     enabled: !!user?.email,
@@ -145,7 +144,12 @@ const MainContent = () => {
         {/* Modified guest user section */}
         {!user ? (
           trialActive ? (
-                <PlayerPlate user={user} trialActive={trialActive} trialTimeLeft={trialTimeLeft} hlsSrc={hlsSrc} />
+            <PlayerPlate
+              user={user}
+              trialActive={trialActive}
+              trialTimeLeft={trialTimeLeft}
+              hlsSrc={hlsSrc}
+            />
           ) : (
             // Show trial options instead of login for new users
             <div className="flex flex-col items-center justify-center h-full p-4">
@@ -171,8 +175,8 @@ const MainContent = () => {
                     onClick={() => startTrial()}
                     className="bg-[var(--primary)] flex gap-2 items-center justify-center text-white  px-4 py-2 lg:py-3 w-full rounded-md font-medium hover:bg-opacity-90  cursor-pointer transition"
                   >
-                    <FaPlay  className="text-xl" />
-                    Watch Now 
+                    <FaPlay className="text-xl" />
+                    Watch Now
                   </button>
                 )}
 
