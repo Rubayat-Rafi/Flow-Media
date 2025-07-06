@@ -1,18 +1,14 @@
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-
 import { Helmet } from "react-helmet";
 import { MdDeleteForever } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import useUsers from "../../../hooks/useUsers";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
-import { useAuth } from "../../../hooks/useAuth";
 import axios from "axios";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
   const [users, isLoading, refetch] = useUsers();
-  const { deleteUserAccount } = useAuth();
-
   const handleRoleChange = async (user, newRole) => {
     try {
       await axiosSecure.patch(`/api/users/role/${user._id}`, { role: newRole });
@@ -81,7 +77,7 @@ const ManageUsers = () => {
             <tbody>
               {/* row 1 */}
               {users.map((user, index) => (
-                <tr key={user?.id}>
+                <tr key={index}>
                   <th>{index + 1}</th>
                   <td className="uppercase">{user?.name}</td>
                   <td>{user?.email}</td>

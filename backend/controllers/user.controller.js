@@ -110,7 +110,6 @@ exports.deleteUser = async (req, res) => {
     const db = client.db("flow_media");
     const users = db.collection("users");
     const uid = req.params.id;
-
     await admin.auth().deleteUser(uid);
     const result = await users.findOneAndDelete({ uid });
     if (!result) {
