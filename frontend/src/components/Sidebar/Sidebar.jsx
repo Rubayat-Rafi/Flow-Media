@@ -133,7 +133,9 @@ const ChannelCard = ({
         >
           {isWatching
             ? "Watching"
-            : categoryData == undefined && index === 0
+            :  categoryData?.categ === null &&
+                categoryData?.eventName === null &&
+                index === 0
             ? !user
               ? "watch"
               : "Watching"
