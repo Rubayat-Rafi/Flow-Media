@@ -11,7 +11,7 @@ import LoginPalate from "../LoginPalate/LoginPalate";
 import PlayerPlate from "../PlayerPlate/PlayerPlate";
 import { useDispatch } from "react-redux";
 import { addDefaultUrl } from "../../utils/redux/slices/slice";
-
+import { useSearchParams } from "react-router";
 const subscriptions = [
   {
     id: 1,
@@ -70,6 +70,9 @@ const MainContent = () => {
   const { events } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("q");
+  const categoryId = searchParams.get("id");
 
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
@@ -115,23 +118,19 @@ const MainContent = () => {
   return (
     <Subscription className="w-full lg:bg-[var(--secondary)] rounded-md shadow-lg lg:p-5 lg:border border-[var(--text)]/10 lg:h-[600px]">
       <section className="h-full w-full">
-        {!user && (
-          <div>
-            {subscription && (
-              <div className=" max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
-                <div className="inline-grid *:[grid-area:1/1]">
-                  <div className="status status-lg status-error animate-ping bg-red-500"></div>
-                  <div className="status status-lg status-error bg-red-600"></div>
-                </div>
-                <div className="font-semibold max-lg:text-sm">
-                  {events?.category === "Channel" ? (
-                    <p>{events?.channelName}</p>
-                  ) : (
-                    <p>Live</p>
-                  )}
-                </div>
-              </div>
-            )}
+        {category === null && categoryId == null && (
+          <div className=" max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+            <div className="inline-grid *:[grid-area:1/1]">
+              <div className="status status-lg status-error animate-ping bg-red-500"></div>
+              <div className="status status-lg status-error bg-red-600"></div>
+            </div>
+            <div className="font-semibold max-lg:text-sm">
+              {events?.category === "Channel" ? (
+                <p>{events?.channelName}</p>
+              ) : (
+                <p>Live</p>
+              )}
+            </div>
           </div>
         )}
 
@@ -197,9 +196,9 @@ const MainContent = () => {
                 {subscriptions.map((subs) => (
                   <Link
                     key={subs?.id}
-                    to={`${import.meta.env.VITE_PAYMENT_URL}${
-                      subs.url
-                    }?email=${user?.email}&price=${subs.offerPrice}`}
+                    to={`${import.meta.env.VITE_PAYMENT_URL}${subs.url}?email=${
+                      user?.email
+                    }&price=${subs.offerPrice}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
