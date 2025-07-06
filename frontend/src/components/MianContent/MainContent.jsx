@@ -83,6 +83,7 @@ const MainContent = () => {
     queryFn: fetchTrialStatus,
     retry: false,
     refetchOnWindowFocus: false,
+    refetchInterval: 5000,
   });
 
   const { mutate: startTrial } = useMutation({
