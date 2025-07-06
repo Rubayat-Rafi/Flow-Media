@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
 import { saveUser } from "../../api/utils";
-import {toast} from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 
 const SignUp = () => {
   const { createUser, updateUserProfile } = useAuth();
@@ -13,7 +13,9 @@ const SignUp = () => {
   const handleSignUpFormSubmit = async (data) => {
     const { name, email, password } = data;
     try {
-      await createUser(email, password);
+      const userCredential = await createUser(email, password);
+      const uid = userCredential?.user?.uid;
+      data.uid = uid;
       await updateUserProfile(name);
       await saveUser(data);
       reset();

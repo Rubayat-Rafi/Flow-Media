@@ -1,17 +1,14 @@
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-
 import { Helmet } from "react-helmet";
 import { MdDeleteForever } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import useUsers from "../../../hooks/useUsers";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
-import { useAuth } from "../../../hooks/useAuth";
+import axios from "axios";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
   const [users, isLoading, refetch] = useUsers();
-  const { deleteUserAccount } = useAuth();
-
   const handleRoleChange = async (user, newRole) => {
     try {
       await axiosSecure.patch(`/api/users/role/${user._id}`, { role: newRole });
@@ -23,7 +20,7 @@ const ManageUsers = () => {
     }
   };
 
-  const handleDeleteUser = (id) => {
+  const handleDeleteUser = (uid) => {
     toast.custom((t) => (
       <div className="bg-white p-2 rounded shadow-lg flex flex-col md:flex-row items-center gap-3">
         <span className="text-[var(--background)]">
@@ -34,8 +31,9 @@ const ManageUsers = () => {
             className="bg-red-500 text-white px-2 py-1 rounded"
             onClick={async () => {
               toast.dismiss(t.id);
-              await axiosSecure.delete(`/api/user/${id}`);
-              await deleteUserAccount();
+              await axios.delete(
+                `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/${uid}`
+              );
               toast.success("Deleted successfully!");
               refetch();
             }}
@@ -79,7 +77,7 @@ const ManageUsers = () => {
             <tbody>
               {/* row 1 */}
               {users.map((user, index) => (
-                <tr key={user?.id}>
+                <tr key={index}>
                   <th>{index + 1}</th>
                   <td className="uppercase">{user?.name}</td>
                   <td>{user?.email}</td>
@@ -97,7 +95,7 @@ const ManageUsers = () => {
                   </td>
                   <td>
                     <button
-                      onClick={() => handleDeleteUser(user?._id)}
+                      onClick={() => handleDeleteUser(user?.uid)}
                       className="bg-red-500 hover:bg-red-600 py-1.5 px-4 cursor-pointer"
                     >
                       <MdDeleteForever className="text-xl" />
