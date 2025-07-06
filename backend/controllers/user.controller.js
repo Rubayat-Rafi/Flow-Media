@@ -80,13 +80,13 @@ exports.allUserData = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-  const db = client.db("flow_media");
-  const usersCollection = db.collection("users");
-  const id = req.params.id;
-  const { role } = req.body;
-  const updateDoc = { $set: { role } };
 
   try {
+    const db = client.db("flow_media");
+    const usersCollection = db.collection("users");
+    const id = req.params.id;
+    const { role } = req.body;
+    const updateDoc = { $set: { role } };
     const result = await usersCollection.updateOne(
       { _id: new ObjectId(id) },
       updateDoc

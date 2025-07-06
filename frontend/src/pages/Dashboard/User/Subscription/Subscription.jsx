@@ -1,9 +1,10 @@
-
+import useUsers from "../../../../hooks/useUsers";
 
 const Subscription = () => {
+  const [users] = useUsers();
 
+  console.log(users)
 
-  
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="text-center">

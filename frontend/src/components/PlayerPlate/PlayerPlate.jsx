@@ -2,10 +2,10 @@ import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import HlsPlayer from "../HlsPlayer/HlsPlayer";
 import MatchCountdown from "../MatchCountdown/MatchCountdown";
-import {  useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import axios from "axios";
 
-const PlayerPlate = () => {
+const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
   const { events, defaultUrl } = useSelector((state) => state?.Slice);
   const [searchParams] = useSearchParams();
   const category = searchParams.get("q");
@@ -13,7 +13,7 @@ const PlayerPlate = () => {
 
   const {
     data: liveData,
-    isLoading,
+    // isLoading,
     isError,
   } = useQuery({
     queryKey: ["livePlay", categoryId],
@@ -40,10 +40,15 @@ const PlayerPlate = () => {
   const showChannelStream = events?.category === "Channel";
   const showDefaultStream = !events;
 
+  if (isError)
+    return (
+      <div className="flex items-center justify-center"> Server Problem </div>
+    );
+
   return (
     <div className="h-full">
       {/* Top Bar */}
-      {events && (
+      {/* {events && (
         <div className="max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
           <div className="inline-grid *:[grid-area:1/1]">
             <div className="status status-lg status-error animate-ping bg-red-500"></div>
@@ -57,7 +62,7 @@ const PlayerPlate = () => {
             )}
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Countdown Timer */}
       {showCountdown && (
@@ -67,25 +72,34 @@ const PlayerPlate = () => {
           matchId={events?._id}
         />
       )}
-
-      {/* Match Streaming */}
-      {showMatchStream && (
+      
+      {showMatchStream ? (
         <HlsPlayer
-          src={
-            shouldShowLiveMatchFromAPI
-              ? liveData.matchUrl
-              :  defaultUrl
-          }
+          src={shouldShowLiveMatchFromAPI ? liveData.matchUrl : defaultUrl}
+          user={user}
+          trialActive={trialActive}
+          trialTimeLeft={trialTimeLeft}
+          events={events}
         />
+      ) : showChannelStream ? (
+        <HlsPlayer
+          src={liveData?.channelURL || defaultUrl}
+          user={user}
+          trialActive={trialActive}
+          trialTimeLeft={trialTimeLeft}
+          events={events}
+        />
+      ) : (
+        showDefaultStream && (
+          <HlsPlayer
+            src={defaultUrl}
+            user={user}
+            trialActive={trialActive}
+            trialTimeLeft={trialTimeLeft}
+            events={events}
+          />
+        )
       )}
-
-      {/* Channel Streaming */}
-      {showChannelStream && (
-        <HlsPlayer src={liveData?.channelURL || defaultUrl} />
-      )}
-
-      {/* Fallback */}
-      {showDefaultStream && <HlsPlayer src={defaultUrl} />}
     </div>
   );
 };

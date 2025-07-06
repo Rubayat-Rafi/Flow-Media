@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 
-const HlsPlayer = ({ src }) => {
+const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
   const videoRef = useRef(null);
   const [hlsInstance, setHlsInstance] = useState(null);
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(-1);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   // Detect video type
   const isMp4 = src.endsWith(".mp4");
@@ -48,8 +47,7 @@ const HlsPlayer = ({ src }) => {
         const playPromise = videoRef.current.play();
 
         if (playPromise !== undefined) {
-          playPromise.catch((error) => {
-         
+          playPromise.catch(() => {
             // Show play button or handle error
           });
         }
@@ -82,64 +80,71 @@ const HlsPlayer = ({ src }) => {
 
   if (isEmbed) {
     return (
-      <div className="w-full aspect-video">
-        <iframe
-          src={src}
-          className="w-full h-full rounded-md"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title="Embedded Video"
-        />
-      </div>
+      <>
+        <div className="w-full aspect-video relative">
+
+      
+
+          <iframe
+            src={src}
+            className="w-full h-full bg-[var(--background)]"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            autoPlay
+            title="Embedded Video"
+          />
+          {!user && trialActive && (
+            <div className="bg-red-600 w-6 h-6 lg:w-10 lg:h-10 text-xs lg:text-sm  z-20 flex items-center justify-center absolute right-0 top-0 ">
+              {trialTimeLeft}s
+            </div>
+          )}
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="w-full relative">
-      <video
-        ref={videoRef}
-        controls
-        autoPlay
-        muted
-        playsInline
-        className="w-full aspect-video bg-black"
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-      />
+    <>
+      <div className="w-full relative">
 
-      {levels.length > 0 && (
-        <div className="absolute -bottom-8 right-0 text-xs lg:text-sm py-2 ">
-          <label className="mr-2">Quality:</label>
-          <select
-            value={selectedLevel}
-            onChange={(e) => handleQualityChange(parseInt(e.target.value))}
-            className=" bg-[var(--secondary)]  "
-          >
-            <option value={-1}>Auto</option>
-            {levels.map((level, i) => (
-              <option key={i} value={i}>
-                {level.height}p
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
 
-      {!isPlaying && (
-        <button
-          onClick={() => videoRef.current.play()}
-          className="absolute inset-0 m-auto w-16 h-16 bg-[var(--secondary)] bg-opacity-50 rounded-full flex items-center justify-center"
-        >
-          <svg
-            className="w-10 h-10 text-white"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-          </svg>
-        </button>
-      )}
-    </div>
+
+        <video
+          ref={videoRef}
+          controls
+          autoPlay
+          muted
+          playsInline
+          className="w-full aspect-video bg-[var(--background)] relative"
+        />
+
+        {!user && trialActive && (
+          <div className="bg-red-600 lg:w-10 lg:h-10 z-20 flex items-center justify-center absolute right-0 top-0 ">
+            {trialTimeLeft}s
+          </div>
+        )}
+
+
+        {levels.length > 0 && (
+          <div className="absolute -bottom-8 right-0 text-xs lg:text-sm py-2 ">
+            <label className="mr-2">Quality:</label>
+            <select
+              value={selectedLevel}
+              onChange={(e) => handleQualityChange(parseInt(e.target.value))}
+              className=" bg-[var(--secondary)]  "
+            >
+              <option value={-1}>Auto</option>
+              {levels.map((level, i) => (
+                <option key={i} value={i}>
+                  {level.height}p
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+      </div>
+    </>
   );
 };
 

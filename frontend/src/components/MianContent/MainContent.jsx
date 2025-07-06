@@ -94,7 +94,6 @@ const MainContent = () => {
           if (prev === 1) {
             clearInterval(interval);
             setTrialActive(false);
-            queryClient.invalidateQueries(["free-trial-status"]);
             return 0;
           }
           return prev - 1;
@@ -113,7 +112,7 @@ const MainContent = () => {
     <Subscription className="w-full lg:bg-[var(--secondary)] rounded-md shadow-lg lg:p-5 lg:border border-[var(--text)]/10 lg:h-[600px]">
       <section className="h-full w-full">
         {/* ... (keep your existing trial button and countdown code) ... */}
-        {!user && (
+        {/* {!user && (
           <div>
             {subscription && (
               <div className=" max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
@@ -131,11 +130,11 @@ const MainContent = () => {
               </div>
             )}
           </div>
-        )}
+        )} */}
 
         {/* Modified guest user section */}
-        {!user ? (
-          trialActive ? (
+        {user ? (
+          !trialActive ? (
             <PlayerPlate
               user={user}
               trialActive={trialActive}

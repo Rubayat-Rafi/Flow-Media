@@ -61,7 +61,7 @@ const ManageUsers = () => {
         <title>Manage Users</title>
       </Helmet>
       <div className="mt-10">
-        <h4 className="text-2xl font-bold text-center mb-8">User data</h4>
+        <h4 className="text-2xl font-bold mb-8 uppercase">User data</h4>
 
         <div className="overflow-x-auto rounded-box  border-base-content/5 bg-[var(--secondary)]">
           <table className="table border">
