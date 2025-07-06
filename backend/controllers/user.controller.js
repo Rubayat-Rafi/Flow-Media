@@ -19,6 +19,7 @@ exports.registerUser = async (req, res) => {
       "subscription.emails": email,
       "subscription.status": "active",
     });
+
     const isSubscribed = Boolean(subscriptionOwner);
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = {
@@ -27,6 +28,7 @@ exports.registerUser = async (req, res) => {
       password: hashedPassword,
       role: "user",
       subscribe: isSubscribed,
+      revenue: [],
       timestamp: Date.now(),
     };
     const result = await usersCollection.insertOne(newUser);

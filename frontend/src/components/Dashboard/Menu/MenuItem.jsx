@@ -1,8 +1,6 @@
 import { NavLink } from "react-router";
 
-const MenuItem = ({ address, label, icon: Icon  }) => {
-
-
+const MenuItem = ({ address, label, icon: Icon }) => {
   return (
     <NavLink
       to={address}

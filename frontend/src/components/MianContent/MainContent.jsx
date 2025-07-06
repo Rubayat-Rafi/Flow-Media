@@ -41,24 +41,28 @@ const subscriptions = [
     url: "/payment/weekly",
   },
 ];
+
 const fetchSubscription = async (email) => {
   const res = await axios.get(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
   );
   return res?.data?.userData?.subscribe;
 };
+
 const fetchTrialStatus = async () => {
   const res = await axios.get(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/free-trial/check`
   );
   return res.data;
 };
+
 const startTrialRequest = async () => {
   const res = await axios.post(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/free-trial/start`
   );
   return res.data;
 };
+
 const MainContent = () => {
   const dispatch = useDispatch();
   const [categorys] = useCategory();
@@ -94,7 +98,6 @@ const MainContent = () => {
           if (prev === 1) {
             clearInterval(interval);
             setTrialActive(false);
-            queryClient.invalidateQueries(["free-trial-status"]);
             return 0;
           }
           return prev - 1;
@@ -112,7 +115,6 @@ const MainContent = () => {
   return (
     <Subscription className="w-full lg:bg-[var(--secondary)] rounded-md shadow-lg lg:p-5 lg:border border-[var(--text)]/10 lg:h-[600px]">
       <section className="h-full w-full">
-        {/* ... (keep your existing trial button and countdown code) ... */}
         {!user && (
           <div>
             {subscription && (
@@ -133,7 +135,6 @@ const MainContent = () => {
           </div>
         )}
 
-        {/* Modified guest user section */}
         {!user ? (
           trialActive ? (
             <PlayerPlate
@@ -142,7 +143,6 @@ const MainContent = () => {
               trialTimeLeft={trialTimeLeft}
             />
           ) : (
-            // Show trial options instead of login for new users
             <div className="flex flex-col items-center justify-center h-full p-4">
               <div
                 className={`${
@@ -181,12 +181,11 @@ const MainContent = () => {
               </div>
             </div>
           )
-        ) : (
-          subscription && <PlayerPlate />
-        )}
-
-        {/* No subscription plans */}
-        {user && !subscription && !subLoading && !trialActive && (
+        ) : subscription === "active" ? (
+          <PlayerPlate />
+        ) : (subscription === "expired" || subscription === false) &&
+          !subLoading &&
+          !trialActive ? (
           <div className="flex items-center justify-center h-full w-full">
             <div className="bg-[var(--background)] rounded-xl p-6">
               <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
@@ -195,47 +194,47 @@ const MainContent = () => {
                 Rodeo, MLB, NHL, NBA — No Blackouts. Instant activation!
               </p>
               <div className="flex flex-col gap-6 mt-6">
-                {subscriptions.map((subscription) => (
+                {subscriptions.map((subs) => (
                   <Link
-                    key={subscription.id}
+                    key={subs?.id}
                     to={`${import.meta.env.VITE_PAYMENT_URL}${
-                      subscription.url
-                    }?email=${user?.email}&price=${subscription.offerPrice}`}
+                      subs.url
+                    }?email=${user?.email}&price=${subs.offerPrice}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
                         <div className="flex items-center gap-6">
                           <h2 className="text-xl font-semibold group-hover:text-[var(--background)]">
-                            {subscription.name}
+                            {subs.name}
                           </h2>
                           <p className="text-sm group-hover:text-[var(--secondary)]">
-                            {subscription.days}
+                            {subs.days}
                           </p>
                         </div>
                         <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">
-                          {subscription.device}
+                          {subs.device}
                         </p>
                       </div>
                       <div>
-                        {subscription.value && (
+                        {subs.value && (
                           <p className="uppercase text-center absolute -top-3 bg-[var(--primary)] text-xs p-1 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                            {subscription.value}
+                            {subs.value}
                           </p>
                         )}
                         <div className="flex items-end flex-col space-y-2">
                           <div className="flex items-center space-x-2">
-                            {subscription.regularPrice && (
+                            {subs.regularPrice && (
                               <p className="line-through text-sm text-gray-400 group-hover:text-[var(--secondary)]">
-                                {subscription.regularPrice}
+                                {subs.regularPrice}
                               </p>
                             )}
                             <p className="font-semibold text-lg group-hover:text-[var(--background)]">
-                              ${subscription.offerPrice}
+                              ${subs.offerPrice}
                             </p>
                           </div>
-                          {subscription.discount && (
+                          {subs.discount && (
                             <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                              {subscription.discount}
+                              {subs.discount}
                             </p>
                           )}
                         </div>
@@ -250,7 +249,7 @@ const MainContent = () => {
               </p>
             </div>
           </div>
-        )}
+        ) : null}
       </section>
     </Subscription>
   );

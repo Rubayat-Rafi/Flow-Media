@@ -6,10 +6,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const package = require("../utils/subscriptions/packages/packages.js");
 exports.payments = async (req, res) => {
   try {
-    const { amount, pack, queryEmail, formData } = req.body;
+    const { pack, queryEmail, formData } = req.body;
     const plan = pack;
     const expiryDate = await package.Package({ plan });
-    // const expiryDate = new Date(new Date().getTime() + 2 * 60 * 1000);
+    // const expiryDate = new Date(Date.now() + 2 * 60 * 1000);
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
     const findUser = await usersCollection.findOne({ email: queryEmail });
@@ -22,12 +22,22 @@ exports.payments = async (req, res) => {
         status: "active",
         emails: [findUser?.email],
       };
+
+      const newRevenueEntry = {
+        amount: formData?.amount / 100,
+        plan: pack,
+        date: new Date(),
+      };
+
       const updatedUser = await usersCollection.updateOne(
         { email: queryEmail },
         {
           $set: {
-            subscribe: true,
+            subscribe: "active",
             subscription: subscription,
+          },
+          $push: {
+            revenue: newRevenueEntry,
           },
         }
       );
@@ -71,7 +81,7 @@ exports.expiredSubscription = async (req, res) => {
         { email },
         {
           $set: {
-            subscribe: false,
+            subscribe: "expired",
             subscription,
           },
         }
@@ -81,7 +91,7 @@ exports.expiredSubscription = async (req, res) => {
         { email: { $in: linkedEmails } },
         {
           $set: {
-            subscribe: false,
+            subscribe: "expired",
           },
         }
       );
@@ -122,7 +132,7 @@ exports.addDeveiceEmail = async (req, res) => {
     if (deviceUser) {
       await usersCollection.updateOne(
         { email: deviceEmail },
-        { $set: { subscribe: true } }
+        { $set: { subscribe: "active" } }
       );
     } else {
       return res.status(404).json({
@@ -198,7 +208,7 @@ exports.removeDeviceEmail = async (req, res) => {
     );
     const updateDevice = await usersCollection.updateOne(
       { email: deviceEmail },
-      { $set: { subscribe: false } }
+      { $set: { subscribe: "expired" } }
     );
     if (
       updateSubscription.modifiedCount > 0 ||
