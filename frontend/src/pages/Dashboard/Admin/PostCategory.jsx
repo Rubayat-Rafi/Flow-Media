@@ -43,7 +43,7 @@ const PostCategory = () => {
 
   return (
     <div className="max-w-[1440px] mt-10">
-      <h4 className="text-2xl font-bold text-center mb-8">
+      <h4 className="text-2xl font-bold text-center mb-8 uppercase">
         Post Channel & Event
       </h4>
       <div className="max-w-[800px] mx-auto bg-[var(--secondary)] p-6 rounded-md">
