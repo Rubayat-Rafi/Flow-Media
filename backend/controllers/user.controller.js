@@ -53,7 +53,7 @@ exports.userRole = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.send({ role: user.role, userData:user });
+    res.send({ role: user.role, userData: user });
   } catch (err) {
     res.status(500).json({ message: "Role Not Found", error: err.message });
   }
@@ -103,18 +103,25 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-  const db = client.db("flow_media");
-  const usersCollection = db.collection("users");
-  const id = req.params.id;
   try {
-    const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: "User not found" });
+    const db = client.db("flow_media");
+    const users = db.collection("users");
+    const email = req.params.id;
+    const result = await users.findOneAndDelete({ email });
+    if (!result) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "User deleted successfully", success: true });
     }
-    res.status(200).json({ message: "User deleted successfully" });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to delete user", error: error.message });
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to delete user",
+      error: err.message,
+      success: false,
+    });
   }
 };
