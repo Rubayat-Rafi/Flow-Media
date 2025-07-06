@@ -1,14 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
-
-const HlsPlayer = ({ src }) => {
+import { useSelector } from "react-redux";
+const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
   const videoRef = useRef(null);
   const [hlsInstance, setHlsInstance] = useState(null);
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(-1);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  // Detect video type
+  const { events } = useSelector((state) => state?.Slice);
   const isMp4 = src.endsWith(".mp4");
   const isM3u8 = src.endsWith(".m3u8");
   const isEmbed =
@@ -49,7 +47,6 @@ const HlsPlayer = ({ src }) => {
 
         if (playPromise !== undefined) {
           playPromise.catch((error) => {
-         
             // Show play button or handle error
           });
         }
@@ -82,63 +79,94 @@ const HlsPlayer = ({ src }) => {
 
   if (isEmbed) {
     return (
-      <div className="w-full aspect-video">
-        <iframe
-          src={src}
-          className="w-full h-full rounded-md"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title="Embedded Video"
-        />
+      <div className="">
+        {src && (
+          <div className="max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+            <div className="inline-grid *:[grid-area:1/1]">
+              <div className="status status-lg status-error animate-ping bg-red-500"></div>
+              <div className="status status-lg status-error bg-red-600"></div>
+            </div>
+            <div className="font-semibold max-lg:text-sm">
+              {events?.category === "Channel" ? (
+                <p>{events?.channelName}</p>
+              ) : (
+                <p>Live</p>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className=" relative w-full aspect-video">
+          <iframe
+            src={src}
+            className="w-full h-full bg-[var(--background)"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            autoPlay
+            title="Embedded Video"
+          />
+
+          {!user && trialActive && (
+            <div className="bg-red-600 w-6 h-6 lg:w-10 lg:h-10 text-xs lg:text-sm  z-20 flex items-center justify-center absolute right-0 top-0 ">
+              {trialTimeLeft}s
+            </div>
+          )}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full relative">
-      <video
-        ref={videoRef}
-        controls
-        autoPlay
-        muted
-        playsInline
-        className="w-full aspect-video bg-black"
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-      />
-
-      {levels.length > 0 && (
-        <div className="absolute -bottom-8 right-0 text-xs lg:text-sm py-2 ">
-          <label className="mr-2">Quality:</label>
-          <select
-            value={selectedLevel}
-            onChange={(e) => handleQualityChange(parseInt(e.target.value))}
-            className=" bg-[var(--secondary)]  "
-          >
-            <option value={-1}>Auto</option>
-            {levels.map((level, i) => (
-              <option key={i} value={i}>
-                {level.height}p
-              </option>
-            ))}
-          </select>
+    <div className="">
+      {src && (
+        <div className="max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
+          <div className="inline-grid *:[grid-area:1/1]">
+            <div className="status status-lg status-error animate-ping bg-red-500"></div>
+            <div className="status status-lg status-error bg-red-600"></div>
+          </div>
+          <div className="font-semibold max-lg:text-sm">
+            {events?.category === "Channel" ? (
+              <p>{events?.channelName}</p>
+            ) : (
+              <p>Live</p>
+            )}
+          </div>
         </div>
       )}
 
-      {!isPlaying && (
-        <button
-          onClick={() => videoRef.current.play()}
-          className="absolute inset-0 m-auto w-16 h-16 bg-[var(--secondary)] bg-opacity-50 rounded-full flex items-center justify-center"
-        >
-          <svg
-            className="w-10 h-10 text-white"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-          </svg>
-        </button>
-      )}
+      <div className="w-full relative">
+        <video
+          ref={videoRef}
+          controls
+          autoPlay
+          muted
+          playsInline
+          className="w-full relative aspect-video bg-[var(--background)]"
+        />
+
+        {levels.length > 0 && (
+          <div className="absolute -bottom-8 right-0 text-xs lg:text-sm py-2 ">
+            <label className="mr-2">Quality:</label>
+            <select
+              value={selectedLevel}
+              onChange={(e) => handleQualityChange(parseInt(e.target.value))}
+              className=" bg-[var(--secondary)]  "
+            >
+              <option value={-1}>Auto</option>
+              {levels.map((level, i) => (
+                <option key={i} value={i}>
+                  {level.height}p
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        {!user && trialActive && (
+          <div className="bg-red-600 w-6 h-6 lg:w-10 lg:h-10 text-xs lg:text-sm  z-20 flex items-center justify-center absolute right-0 top-0 ">
+            {trialTimeLeft}s
+          </div>
+        )}
+      </div>
     </div>
   );
 };

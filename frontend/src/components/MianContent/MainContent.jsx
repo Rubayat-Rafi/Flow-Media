@@ -11,7 +11,6 @@ import LoginPalate from "../LoginPalate/LoginPalate";
 import PlayerPlate from "../PlayerPlate/PlayerPlate";
 import { useDispatch } from "react-redux";
 import { addDefaultUrl } from "../../utils/redux/slices/slice";
-import { useSearchParams } from "react-router";
 const subscriptions = [
   {
     id: 1,
@@ -67,17 +66,11 @@ const MainContent = () => {
   const dispatch = useDispatch();
   const [categorys] = useCategory();
   const { user } = useAuth();
-  const { events } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
-  const [searchParams] = useSearchParams();
-  const category = searchParams.get("q");
-  const categoryId = searchParams.get("id");
-
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );
-
   const { data: subscription, isLoading: subLoading } = useQuery({
     queryKey: ["subscription-status", user?.email],
     queryFn: () => fetchSubscription(user.email),
@@ -118,22 +111,6 @@ const MainContent = () => {
   return (
     <Subscription className="w-full lg:bg-[var(--secondary)] rounded-md shadow-lg lg:p-5 lg:border border-[var(--text)]/10 lg:h-[600px]">
       <section className="h-full w-full">
-        {category === null && categoryId == null && (
-          <div className=" max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
-            <div className="inline-grid *:[grid-area:1/1]">
-              <div className="status status-lg status-error animate-ping bg-red-500"></div>
-              <div className="status status-lg status-error bg-red-600"></div>
-            </div>
-            <div className="font-semibold max-lg:text-sm">
-              {events?.category === "Channel" ? (
-                <p>{events?.channelName}</p>
-              ) : (
-                <p>Live</p>
-              )}
-            </div>
-          </div>
-        )}
-
         {!user ? (
           trialActive ? (
             <PlayerPlate
