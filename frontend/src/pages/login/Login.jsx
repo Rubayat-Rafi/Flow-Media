@@ -90,19 +90,6 @@ const Login = () => {
 
           {/* Remember Me & Forgot Password */}
           <div className="flex items-center justify-end">
-            {/* <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="remember"
-                className="h-4 w-4 text-[var(--primary)] focus:ring-[var(--primary)] border-gray-300 rounded"
-              />
-              <label
-                htmlFor="remember"
-                className="ml-2 text-sm text-[var(--background)]"
-              >
-                Remember me
-              </label>
-            </div> */}
             <a
               href="#"
               className="text-sm text-[var(--primary)] hover:underline"

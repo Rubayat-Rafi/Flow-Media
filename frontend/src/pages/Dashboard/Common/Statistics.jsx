@@ -8,8 +8,8 @@ const Statistics = () => {
   const [role, isLoading] = useRole();
 
   if (isLoading) return <LoadingSpinner />;
-    if (role === "user") return <Navigate to="/dashboard/subscription" />;
 
+  if (role === "user") return <Navigate to="/dashboard/profile" />;
 
   return (
     <div>
