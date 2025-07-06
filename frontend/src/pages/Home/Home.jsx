@@ -10,7 +10,7 @@ import {
 import useCategory from "../../hooks/useCategory";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 import { useSearchParams } from "react-router";
-import { GetCategory } from "../../utils/get_searchParams/get_searchParams";
+
 import MainContent from "../../components/MianContent/MainContent";
 const Home = () => {
   const { hideVideoFlag } = useSelector((state) => state?.Slice);
@@ -19,8 +19,7 @@ const Home = () => {
   const [categorys, isLoading] = useCategory();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
-  const categoryData = searchParams.get("q");
-  
+
   useEffect(() => {
     setIsMounted(true);
   }, []);

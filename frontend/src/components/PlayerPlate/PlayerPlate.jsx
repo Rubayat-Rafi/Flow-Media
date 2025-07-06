@@ -2,30 +2,28 @@ import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import HlsPlayer from "../HlsPlayer/HlsPlayer";
 import MatchCountdown from "../MatchCountdown/MatchCountdown";
-import { data, useSearchParams } from "react-router";
-import { GetCategory } from "../../utils/get_searchParams/get_searchParams";
+import {  useSearchParams } from "react-router";
 import axios from "axios";
 
-const PlayerPlate = ({ hlsSrc }) => {
+const PlayerPlate = () => {
   const { events, defaultUrl } = useSelector((state) => state?.Slice);
   const [searchParams] = useSearchParams();
-  const categoryData = searchParams.get("q");
-  const { categ, eventName } = GetCategory(categoryData) || {};
+  const category = searchParams.get("q");
+  const categoryId = searchParams.get("id");
 
-  // ✅ TanStack Query to fetch live data every 500ms
   const {
     data: liveData,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["livePlay", eventName],
+    queryKey: ["livePlay", categoryId],
     queryFn: async () => {
       const { data } = await axios.get(
-        `${import.meta.env.VITE_FLOW_MRDIA_API}/api/find_for_play/${eventName}`
+        `${import.meta.env.VITE_FLOW_MRDIA_API}/api/find_for_play/${categoryId}`
       );
       return data;
     },
-    enabled: !!eventName,
+    enabled: !!categoryId,
     refetchInterval: 500,
     staleTime: 0,
   });
@@ -76,7 +74,7 @@ const PlayerPlate = ({ hlsSrc }) => {
           src={
             shouldShowLiveMatchFromAPI
               ? liveData.matchUrl
-              : hlsSrc?.match_url || defaultUrl
+              :  defaultUrl
           }
         />
       )}
