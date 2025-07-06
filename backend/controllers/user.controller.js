@@ -2,12 +2,12 @@ require("dotenv").config();
 const { ObjectId } = require("mongodb");
 const client = require("../lib/db_connection/db_connection.js");
 const bcrypt = require("bcryptjs");
-
+const admin = require("../utils/firebase/firebaseAdmin.js")
 exports.registerUser = async (req, res) => {
   try {
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
-    const { name, email, password } = req.body;
+    const { name, email, password, uid } = req.body;
     const existingUser = await usersCollection.findOne({ email });
     if (existingUser) {
       return res
@@ -29,6 +29,7 @@ exports.registerUser = async (req, res) => {
       role: "user",
       subscribe: isSubscribed,
       revenue: [],
+      uid,
       timestamp: Date.now(),
     };
     const result = await usersCollection.insertOne(newUser);
@@ -108,8 +109,10 @@ exports.deleteUser = async (req, res) => {
   try {
     const db = client.db("flow_media");
     const users = db.collection("users");
-    const email = req.params.id;
-    const result = await users.findOneAndDelete({ email });
+    const uid = req.params.id;
+
+    await admin.auth().deleteUser(uid);
+    const result = await users.findOneAndDelete({ uid });
     if (!result) {
       return res
         .status(404)

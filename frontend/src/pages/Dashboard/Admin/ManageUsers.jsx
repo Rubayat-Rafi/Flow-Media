@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import useUsers from "../../../hooks/useUsers";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 import { useAuth } from "../../../hooks/useAuth";
+import axios from "axios";
 
 const ManageUsers = () => {
   const axiosSecure = useAxiosSecure();
@@ -23,7 +24,7 @@ const ManageUsers = () => {
     }
   };
 
-  const handleDeleteUser = (id) => {
+  const handleDeleteUser = (uid) => {
     toast.custom((t) => (
       <div className="bg-white p-2 rounded shadow-lg flex flex-col md:flex-row items-center gap-3">
         <span className="text-[var(--background)]">
@@ -34,8 +35,9 @@ const ManageUsers = () => {
             className="bg-red-500 text-white px-2 py-1 rounded"
             onClick={async () => {
               toast.dismiss(t.id);
-              await axiosSecure.delete(`/api/user/${id}`);
-              await deleteUserAccount();
+              await axios.delete(
+                `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/${uid}`
+              );
               toast.success("Deleted successfully!");
               refetch();
             }}
@@ -97,7 +99,7 @@ const ManageUsers = () => {
                   </td>
                   <td>
                     <button
-                      onClick={() => handleDeleteUser(user?._id)}
+                      onClick={() => handleDeleteUser(user?.uid)}
                       className="bg-red-500 hover:bg-red-600 py-1.5 px-4 cursor-pointer"
                     >
                       <MdDeleteForever className="text-xl" />
