@@ -1,14 +1,12 @@
 import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth";
 import Subscription from "../../utils/subscription/Subscription";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaPlay } from "react-icons/fa";
 import { Link } from "react-router";
-import { useSearchParams } from "react-router";
 import useCategory from "../../hooks/useCategory";
-import { GetParams } from "../../utils/get_searchParams/get_searchParams";
 import LoginPalate from "../LoginPalate/LoginPalate";
 import PlayerPlate from "../PlayerPlate/PlayerPlate";
 import { useDispatch } from "react-redux";
@@ -65,16 +63,10 @@ const MainContent = () => {
   const dispatch = useDispatch();
   const [categorys] = useCategory();
   const { user } = useAuth();
-  const { url, events } = useSelector((state) => state?.Slice);
+  const { events } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
-  const [searchParams] = useSearchParams();
 
-  const categoryData = searchParams.get("q");
-  const hlsSrc = GetParams(categoryData, categorys, url);
-  const queryClient = useQueryClient();
-
-  
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );
@@ -148,7 +140,6 @@ const MainContent = () => {
               user={user}
               trialActive={trialActive}
               trialTimeLeft={trialTimeLeft}
-              hlsSrc={hlsSrc}
             />
           ) : (
             // Show trial options instead of login for new users
@@ -191,7 +182,7 @@ const MainContent = () => {
             </div>
           )
         ) : (
-          subscription && <PlayerPlate hlsSrc={hlsSrc} />
+          subscription && <PlayerPlate />
         )}
 
         {/* No subscription plans */}

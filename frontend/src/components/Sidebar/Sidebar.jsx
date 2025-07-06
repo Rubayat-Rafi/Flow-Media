@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router";
-import { GetCategory } from "../../utils/get_searchParams/get_searchParams";
 import {
   addEvents,
   addUrl,
@@ -16,10 +15,10 @@ const Sidebar = ({ channels }) => {
   const navigate = useNavigate();
   const [activeChannel, setActiveChannel] = useState(null);
   const [searchParams] = useSearchParams();
-  const categoryData = searchParams.get("q");
-  const catAndevent = GetCategory(categoryData);
-  const event_name = catAndevent?.eventName || null;
-  const cat = catAndevent?.categ || "Channel";
+  const category = searchParams.get("q");
+  const categoryId = searchParams.get("id");
+  const event_name = categoryId || null;
+  const cat = category || "Channel";
   const filteredChannels = channels?.filter((ch) => ch.category === cat);
   const isActiveOutside = activeChannel && activeChannel.category !== cat;
   const allChannelsToShow = [
@@ -43,7 +42,7 @@ const Sidebar = ({ channels }) => {
                 navigate={navigate}
                 event_name={event_name}
                 user={user}
-                categoryData={categoryData}
+                categoryData={{ eventName: categoryId, categ: category }}
               />
             ) : (
               <SheduleCard
@@ -92,7 +91,9 @@ const ChannelCard = ({
           ${
             isWatching
               ? "border-[var(--primary)]"
-              : categoryData == undefined && index === 0
+              : categoryData?.categ === null &&
+                categoryData?.eventName === null &&
+                index === 0
               ? !user
                 ? "border-[var(--text)]/20 hover:border-[var(--primary)]"
                 : "border-[var(--primary)]"
@@ -116,12 +117,14 @@ const ChannelCard = ({
             dispatch(addVideoFlag(true));
             dispatch(addUrl(ch?.channelURL));
             dispatch(addEvents(ch));
-            navigate(`/?q=${ch.category}+${ch?._id}`);
+            navigate(`/?q=${ch.category}&id=${ch?._id}`);
           }}
           className={`${
             isWatching
               ? "bg-red-500 text-[var(--text)]"
-              : categoryData == undefined && index === 0
+              : categoryData?.categ === null &&
+                categoryData?.eventName === null &&
+                index === 0
               ? !user
                 ? "bg-[var(--primary)]"
                 : "bg-red-500 text-[var(--text)]"
@@ -130,7 +133,9 @@ const ChannelCard = ({
         >
           {isWatching
             ? "Watching"
-            : categoryData == undefined && index === 0
+            :  categoryData?.categ === null &&
+                categoryData?.eventName === null &&
+                index === 0
             ? !user
               ? "watch"
               : "Watching"
@@ -207,7 +212,7 @@ const SheduleCard = ({
               dispatch(addVideoFlag(true));
               dispatch(addUrl(ch?.matchUrl));
               dispatch(addEvents(ch));
-              navigate(`/?q=${ch.category}+${ch?._id}`);
+              navigate(`/?q=${ch.category}&id=${ch?._id}`);
             }}
             className={`${
               isWatching
