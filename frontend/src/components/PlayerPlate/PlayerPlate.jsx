@@ -13,7 +13,11 @@ const PlayerPlate = ({ hlsSrc }) => {
   const { categ, eventName } = GetCategory(categoryData) || {};
 
   // ✅ TanStack Query to fetch live data every 500ms
-  const { data: liveData, isLoading, isError } = useQuery({
+  const {
+    data: liveData,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["livePlay", eventName],
     queryFn: async () => {
       const { data } = await axios.get(
@@ -25,14 +29,19 @@ const PlayerPlate = ({ hlsSrc }) => {
     refetchInterval: 500,
     staleTime: 0,
   });
-  const shouldShowLiveMatchFromAPI = liveData?.countdown === false && !!liveData?.matchUrl;
+
+  const shouldShowLiveMatchFromAPI =
+    liveData?.countdown === false && !!liveData?.matchUrl;
   const isMatch = events?.category !== "Channel";
   const hasCountdown = events?.countdown === true;
   const matchReady = events?.matchTime && events?.matchDate;
   const showCountdown = hasCountdown && isMatch && matchReady;
-  const showMatchStream = (events?.countdown === false && isMatch && matchReady) || shouldShowLiveMatchFromAPI;
+  const showMatchStream =
+    (events?.countdown === false && isMatch && matchReady) ||
+    shouldShowLiveMatchFromAPI;
   const showChannelStream = events?.category === "Channel";
   const showDefaultStream = !events;
+
   return (
     <div className="h-full">
       {/* Top Bar */}
@@ -74,7 +83,7 @@ const PlayerPlate = ({ hlsSrc }) => {
 
       {/* Channel Streaming */}
       {showChannelStream && (
-        <HlsPlayer src={hlsSrc?.channel_url || defaultUrl} />
+        <HlsPlayer src={liveData?.channelURL || defaultUrl} />
       )}
 
       {/* Fallback */}
