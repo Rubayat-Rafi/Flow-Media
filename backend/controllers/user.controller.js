@@ -127,3 +127,25 @@ exports.deleteUser = async (req, res) => {
     });
   }
 };
+
+// get user data
+exports.userData = async (req, res) => {
+  try {
+    const db = client.db("flow_media");
+    const users = db.collection("users");
+    const email = req.params.email;
+    
+    if (!email) {
+      return res.status(400).json({ message: "Email parameter is required" });
+    }
+    const user = await users.findOne({ email: email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json(user); 
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
