@@ -1,7 +1,6 @@
 import { GrLogout } from "react-icons/gr";
 import { IoIosSettings } from "react-icons/io";
 import { AiOutlineBars } from "react-icons/ai";
-
 import { useAuth } from "../../hooks/useAuth";
 import MenuItem from "./Menu/MenuItem";
 import { useState } from "react";
