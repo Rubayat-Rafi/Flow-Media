@@ -12,7 +12,7 @@ import PostCategory from "../pages/Dashboard/Admin/PostCategory";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import AddDeviceEmail from "../pages/Dashboard/User/AddDeviceEmail/AddDeviceEmail";
 import ChannelAndEvents from "../pages/Dashboard/Admin/ChannelAndEvents";
-import Subscription from "../pages/Dashboard/User/Subscription/Subscription";
+
 import Profile from "../pages/Dashboard/Common/Profile";
 import RemoveDeviceEmail from "../pages/Dashboard/User/RemoveDeviceEmail/RemoveDeviceEmail";
 
@@ -98,14 +98,6 @@ export const router = createBrowserRouter([
             element: (
               <PrivetRoute>
                 <RemoveDeviceEmail />
-              </PrivetRoute>
-            ),
-          },
-          {
-            path: "subscription",
-            element: (
-              <PrivetRoute>
-                <Subscription />
               </PrivetRoute>
             ),
           },

@@ -1,13 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "./useAuth";
-// import useAxiosSecure from "./useAxiosSecure";
 import axios from "axios";
 
-
-
-
 const useDBUser = () => {
-  // const axiosSecure = useAxiosSecure();
   const { user, loading: authLoading } = useAuth();
 
   const {

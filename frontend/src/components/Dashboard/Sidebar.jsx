@@ -8,7 +8,7 @@ import logo from "../../../public/logo.png";
 import { Link } from "react-router";
 import useRole from "../../hooks/useRole";
 import AdminMenu from "./Menu/AdminMenu";
-import UserMenu from "./Menu/UserMenu";
+
 
 const Sidebar = () => {
   const { signOutUser } = useAuth();
@@ -72,7 +72,6 @@ const Sidebar = () => {
             <nav>
               {/*  Menu Items */}
               {role === "admin" && <AdminMenu />}
-              {role === "user" && <UserMenu/>}
             </nav>
           </div>
         </div>

@@ -4,10 +4,15 @@ import {toast} from 'react-hot-toast';
 
 const ProfileMenu = ({ user, signOutUser }) => {
 
-  const links = [
-    { name: "Profile", href: "/dashboard/profile" },
-    { name: "Dadhboard", href: "/dashboard" },
-  ];
+const links =
+  user.role === "admin"
+    ? [
+        { name: "Profile", href: "/dashboard/profile" },
+        { name: "Dashboard", href: "/dashboard" },
+      ]
+    : [
+        { name: "Profile", href: "/dashboard/profile" },
+      ];
 
   return (
     <aside className="bg-[var(--secondary)] shadow-lg rounded-md h-full p-5 space-y-2 z-50">
