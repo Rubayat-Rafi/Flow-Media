@@ -99,7 +99,7 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
         <div className=" relative w-full aspect-video">
           <iframe
             src={src}
-            className="w-full h-full bg-[var(--background)"
+            className="w-full h-full bg-[var(--background)]"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             autoPlay
