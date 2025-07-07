@@ -4,11 +4,13 @@ import HlsPlayer from "../HlsPlayer/HlsPlayer";
 import MatchCountdown from "../MatchCountdown/MatchCountdown";
 import { useSearchParams } from "react-router";
 import axios from "axios";
+
 const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
-  const { events, defaultUrl } = useSelector((state) => state?.Slice);
+  const { defaultUrl } = useSelector((state) => state?.Slice); // only using defaultUrl
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("id");
-  const { data: liveData } = useQuery({
+
+  const { data: liveData, isLoading } = useQuery({
     queryKey: ["livePlay", categoryId],
     queryFn: async () => {
       const { data } = await axios.get(
@@ -21,17 +23,23 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
     staleTime: 0,
   });
 
-  const shouldShowLiveMatchFromAPI =
-    liveData?.countdown === false && !!liveData?.matchUrl;
-  const isMatch = events?.category !== "Channel";
-  const hasCountdown = events?.countdown === true;
-  const matchReady = events?.matchTime && events?.matchDate;
-  const showCountdown = hasCountdown && isMatch && matchReady;
+  // Show countdown if countdown is true and match time/date exist
+  const showCountdown =
+    liveData?.countdown === true &&
+    liveData?.matchTime &&
+    liveData?.matchDate;
+
+  // Match stream if countdown is false and matchUrl exists
   const showMatchStream =
-    (events?.countdown === false && isMatch && matchReady) ||
-    shouldShowLiveMatchFromAPI;
-  const showChannelStream = events?.category === "Channel";
-  const showDefaultStream = !events;
+    liveData?.countdown === false && !!liveData?.matchUrl;
+
+  // Channel stream if it's a channel category
+  const showChannelStream =
+    liveData?.category === "Channel" && !!liveData?.channelURL;
+
+  // Fallback to default if nothing else applies
+  const showDefaultStream =
+    !showMatchStream && !showChannelStream && !isLoading;
 
   return (
     <div className="h-full relative">
@@ -39,9 +47,9 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
       <div className="absolute top-0 right-0 bottom-0 left-0">
         {showCountdown && (
           <MatchCountdown
-            matchTime={events.matchTime}
-            matchDate={events.matchDate}
-            matchId={events?._id}
+            matchTime={liveData.matchTime}
+            matchDate={liveData.matchDate}
+            matchId={liveData?._id}
           />
         )}
       </div>
@@ -49,7 +57,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
       {/* Match Streaming */}
       {showMatchStream && (
         <HlsPlayer
-          src={shouldShowLiveMatchFromAPI ? liveData.matchUrl : defaultUrl}
+          src={liveData.matchUrl}
           user={user}
           trialActive={trialActive}
           trialTimeLeft={trialTimeLeft}
@@ -59,7 +67,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
       {/* Channel Streaming */}
       {showChannelStream && (
         <HlsPlayer
-          src={liveData?.channelURL || defaultUrl}
+          src={liveData.channelURL}
           user={user}
           trialActive={trialActive}
           trialTimeLeft={trialTimeLeft}

@@ -10,7 +10,10 @@ import useCategory from "../../hooks/useCategory";
 import LoginPalate from "../LoginPalate/LoginPalate";
 import PlayerPlate from "../PlayerPlate/PlayerPlate";
 import { useDispatch } from "react-redux";
-import { addDefaultUrl } from "../../utils/redux/slices/slice";
+import {
+  addDefaultChannel,
+  addDefaultUrl,
+} from "../../utils/redux/slices/slice";
 const subscriptions = [
   {
     id: 1,
@@ -106,6 +109,7 @@ const MainContent = () => {
   useEffect(() => {
     if (channelDataFilter.length > 0 && channelDataFilter[0]?.channelURL) {
       dispatch(addDefaultUrl(channelDataFilter[0].channelURL));
+      dispatch(addDefaultChannel(channelDataFilter[0]));
     }
   }, [channelDataFilter, dispatch]);
 

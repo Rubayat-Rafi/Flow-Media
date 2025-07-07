@@ -11,7 +11,10 @@ import { convertMatchTimeByTimeZone } from "../TimeZone/convertMatchTimeByTimeZo
 import { useAuth } from "../../hooks/useAuth";
 const Sidebar = ({ channels }) => {
   const { user } = useAuth();
-  const { url, timeZone } = useSelector((state) => state?.Slice);
+  const { url, timeZone, defaultChannel } = useSelector(
+    (state) => state?.Slice
+  );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [activeChannel, setActiveChannel] = useState(null);
@@ -43,7 +46,9 @@ const Sidebar = ({ channels }) => {
                 navigate={navigate}
                 event_name={event_name}
                 user={user}
-                categoryData={{ eventName: categoryId, categ: category }}
+                defaultChannel={defaultChannel}
+                categoryId={categoryId}
+                category={category}
               />
             ) : (
               <SheduleCard
@@ -82,23 +87,22 @@ const ChannelCard = ({
   url,
   index,
   navigate,
-  categoryData,
+  categoryId,
+  category,
   user,
+  defaultChannel,
 }) => {
   const isWatching = url === ch?.channelURL || ch?.channelName === event_name;
+
   return (
     <div className="">
       <div
         className={`border-b-2 py-4 flex items-center justify-between gap-3 p-3 rounded-md transition-all duration-300 ease-in-out
           ${
-            isWatching
+            !category && !categoryId && index === 0
               ? "border-[var(--primary)]"
-              : categoryData?.categ === null &&
-                categoryData?.eventName === null &&
-                index === 0
-              ? !user
-                ? "border-[var(--text)]/20 hover:border-[var(--primary)]"
-                : "border-[var(--primary)]"
+              : ch?._id === categoryId
+              ? "border-[var(--primary)]"
               : "border-[var(--text)]/20 hover:border-[var(--primary)]"
           }
         `}
@@ -115,7 +119,12 @@ const ChannelCard = ({
         </div>
         <button
           onClick={() => {
-            if (!user) {
+            setActiveChannel(ch);
+            dispatch(addVideoFlag(true));
+            dispatch(addUrl(ch?.channelURL));
+            dispatch(addEvents(ch));
+            navigate(`/?q=${ch.category}&id=${ch?._id}`);
+            !user &&
               toast.error("Login for full access!", {
                 style: {
                   background: "red",
@@ -123,35 +132,19 @@ const ChannelCard = ({
                 },
                 position: "bottom-center",
               });
-            }
-            {
-              setActiveChannel(ch);
-              dispatch(addVideoFlag(true));
-              dispatch(addUrl(ch?.channelURL));
-              dispatch(addEvents(ch));
-              navigate(`/?q=${ch.category}&id=${ch?._id}`);
-            }
           }}
           className={`${
-            isWatching
+            !category && !categoryId && index === 0
               ? "bg-red-500 text-[var(--text)]"
-              : categoryData?.categ === null &&
-                categoryData?.eventName === null &&
-                index === 0
-              ? !user
-                ? "bg-[var(--primary)]"
-                : "bg-red-500 text-[var(--text)]"
+              : ch?._id === categoryId
+              ? "bg-red-500 text-[var(--text)]"
               : "bg-[var(--primary)]"
           } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
         >
-          {isWatching
+          {!category && !categoryId && index === 0
+            ? "watching"
+            : ch?._id === categoryId
             ? "Watching"
-            : categoryData?.categ === null &&
-              categoryData?.eventName === null &&
-              index === 0
-            ? !user
-              ? "watch"
-              : "Watching"
             : "watch"}
         </button>
       </div>

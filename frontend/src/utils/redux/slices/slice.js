@@ -4,6 +4,7 @@ const Slice = createSlice({
   initialState: {
     url: "",
     defaultUrl: "",
+    defaultChannel: null,
     runningUrl: null,
     events: null,
     usbscribe: false,
@@ -34,6 +35,9 @@ const Slice = createSlice({
     addDefaultUrl: (state, action) => {
       state.defaultUrl = action.payload;
     },
+    addDefaultChannel: (state, action) => {
+      state.defaultChannel = action.payload;
+    },
     addRunningUrl: (state, action) => {
       state.runningUrl = action.payload;
     },
@@ -49,5 +53,6 @@ export const {
   addEvents,
   addDefaultUrl,
   addRunningUrl,
+  addDefaultChannel
 } = Slice.actions;
 export default Slice.reducer;
