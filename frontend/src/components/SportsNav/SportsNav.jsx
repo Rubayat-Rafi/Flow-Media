@@ -6,7 +6,9 @@ import { useSearchParams } from "react-router";
 import { useNavigate } from "react-router";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 const SportsNav = ({ onSelectCategory }) => {
+  const { defaultChannel } = useSelector((state) => state?.Slice);
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -49,7 +51,13 @@ const SportsNav = ({ onSelectCategory }) => {
               <button
                 key={cat.name}
                 onClick={() => {
-                  if (!user) {
+                  if (!categoryId && !category) {
+                    navigate(`/?q=${cat.name}&id=${defaultChannel?._id}`);
+                  } else {
+                    navigate(`/?q=${cat.name}&id=${categoryId}`),
+                      handleClick(cat.name);
+                  }
+                  !user &&
                     toast.error("Login for full access!", {
                       style: {
                         background: "red",
@@ -57,10 +65,6 @@ const SportsNav = ({ onSelectCategory }) => {
                       },
                       position: "bottom-center",
                     });
-                  } else {
-                    navigate(`/?q=${cat.name}&id=${categoryId}`),
-                      handleClick(cat.name);
-                  }
                 }}
                 className={`px-2 py-1 md:px-4 md:py-2 rounded md:rounded-md font-semibold flex items-center gap-1 md:gap-2 transition duration-200 uppercase cursor-pointer text-sm md:text-base" ${
                   active === cat.name

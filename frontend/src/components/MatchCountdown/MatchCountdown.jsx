@@ -189,8 +189,6 @@ const MatchCountdown = ({ matchTime, matchDate, matchId }) => {
 
       const [hour, minute] = matchTime.split(":").map(Number);
       const [year, month, day] = matchDate.split("-").map(Number); // "YYYY-MM-DD"
-
-      // Convert match time to UTC timestamp
       const matchStartUTC = Date.UTC(year, month - 1, day, hour, minute, 0);
 
       // Extract GMT offset from string (e.g., GMT+6 or GMT-5)
