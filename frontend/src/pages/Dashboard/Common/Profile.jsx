@@ -20,7 +20,7 @@ const Profile = () => {
         {/* User Info Section */}
         <div className="w-full md:w-2/8 border p-6 rounded-lg bg-[var(--secondary)]">
           <img
-            src="/public/user.png"
+            src="/user.png"
             alt="user icon"
             className="max-w-[100px] w-full mb-6"
           />

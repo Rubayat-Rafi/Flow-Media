@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { MdOutlineAccessTime } from "react-icons/md";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const MatchCountdown = ({ matchTime, matchDate, matchId }) => {
   const [countdown, setCountdown] = useState(null);
   const [isLive, setIsLive] = useState(false);
   const [hasUpdated, setHasUpdated] = useState(false);
+  const { events } = useSelector((state) => state?.Slice);
 
   useEffect(() => {
     let timer;
@@ -71,28 +74,91 @@ const MatchCountdown = ({ matchTime, matchDate, matchId }) => {
   }, [matchTime, matchDate, matchId, hasUpdated]);
 
   return (
-    <div className="w-full">
+    <div className="w-full max-h-[600px] h-full flex items-center justify-center relative overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/count-down-bg.jpg" // Replace with your image path
+          alt="Stadium background"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/70"></div>
+        {/* Dark overlay */}
+      </div>
+
+      {/* Countdown Content */}
       {!isLive && countdown && (
-        <div className="bg-[var(--primary)] text-white p-3 rounded-lg text-center mb-4">
-          <h3 className="font-bold text-lg mb-2">Match Starts In:</h3>
-          <div className="flex justify-center gap-4">
-            {countdown.days > 0 && (
+        <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-white p-6 rounded-lg text-center">
+          <h3 className="font-bold text-2xl md:text-3xl mb-4">
+            {events.category}
+          </h3>
+
+          <div className="flex flex-col items-center w-full">
+            {/* Teams and VS section */}
+            <div className="flex items-center justify-center gap-8 md:gap-16 w-full mb-8">
+              {/* Team A */}
               <div className="flex flex-col items-center">
-                <span className="text-2xl font-bold">{countdown.days}</span>
-                <span className="text-xs">Days</span>
+                <img
+                  src={events.team1Image}
+                  alt={events.teamA}
+                  className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2"
+                />
+                <h4 className="text-xl font-semibold">{events?.teamA}</h4>
               </div>
-            )}
-            <div className="flex flex-col items-center">
-              <span className="text-2xl font-bold">{countdown.hours}</span>
-              <span className="text-xs">Hours</span>
+
+              {/* VS separator */}
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-4xl font-bold my-4">VS</p>
+
+                {/* Countdown days */}
+                {countdown.days > 0 && (
+                  <div className="mb-4">
+                    <span className="text-3xl md:text-4xl font-bold">
+                      {countdown.days} Days
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Team B */}
+              <div className="flex flex-col items-center">
+                <img
+                  src={events.team2Image}
+                  alt={events.teamB}
+                  className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2"
+                />
+                <h4 className="text-xl font-semibold">{events?.teamB}</h4>{" "}
+                {/* Fixed: was showing teamA */}
+              </div>
             </div>
-            <div className="flex flex-col items-center">
-              <span className="text-2xl font-bold">{countdown.minutes}</span>
-              <span className="text-xs">Minutes</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-2xl font-bold">{countdown.seconds}</span>
-              <span className="text-xs">Seconds</span>
+
+            {/* Time and Date section - now properly centered */}
+            <div className="flex flex-col items-center space-y-4 w-full">
+              {/* Timer */}
+              <div className="flex items-center justify-center gap-1 bg-[var(--primary)]/30 rounded-full px-6 py-2 backdrop-blur-sm">
+                <MdOutlineAccessTime className="text-white text-xl" />
+                <span className="font-semibold text-white">
+                  {countdown.hours.toString().padStart(2, "0")}
+                </span>
+                <span className="text-white">:</span>
+                <span className="font-semibold text-white">
+                  {countdown.minutes.toString().padStart(2, "0")}
+                </span>
+                <span className="text-white">:</span>
+                <span className="font-semibold text-white">
+                  {countdown.seconds.toString().padStart(2, "0")}
+                </span>
+              </div>
+
+              {/* Date */}
+              <p className="text-xl font-semibold">
+                {new Date(events?.matchDate).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
             </div>
           </div>
         </div>
