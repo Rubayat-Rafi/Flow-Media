@@ -4,11 +4,14 @@ import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { Categories } from "../Categories/Categories";
 import { useSearchParams } from "react-router";
 import { useNavigate } from "react-router";
+import { useAuth } from "../../hooks/useAuth";
+import toast from "react-hot-toast";
 const SportsNav = ({ onSelectCategory }) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const category= searchParams.get("q");
-    const categoryId = searchParams.get("id");
+  const category = searchParams.get("q");
+  const categoryId = searchParams.get("id");
   const scrollRef = useRef(null);
   const [active, setActive] = useState(category || "Channel");
   const handleClick = (category) => {
@@ -46,7 +49,18 @@ const SportsNav = ({ onSelectCategory }) => {
               <button
                 key={cat.name}
                 onClick={() => {
-                  navigate(`/?q=${cat.name}&id=${categoryId}`), handleClick(cat.name);
+                  if (!user) {
+                    toast.error("Login for full access!", {
+                      style: {
+                        background: "red",
+                        color: "#fff",
+                      },
+                      position: "bottom-center",
+                    });
+                  } else {
+                    navigate(`/?q=${cat.name}&id=${categoryId}`),
+                      handleClick(cat.name);
+                  }
                 }}
                 className={`px-2 py-1 md:px-4 md:py-2 rounded md:rounded-md font-semibold flex items-center gap-1 md:gap-2 transition duration-200 uppercase cursor-pointer text-sm md:text-base" ${
                   active === cat.name

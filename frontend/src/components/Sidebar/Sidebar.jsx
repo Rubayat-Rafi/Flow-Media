@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router";
+import toast from "react-hot-toast";
 import {
   addEvents,
   addUrl,
@@ -54,6 +55,7 @@ const Sidebar = ({ channels }) => {
                 timeZone={timeZone}
                 navigate={navigate}
                 event_name={event_name}
+                user={user}
               />
             )
           )
@@ -113,11 +115,22 @@ const ChannelCard = ({
         </div>
         <button
           onClick={() => {
-            setActiveChannel(ch);
-            dispatch(addVideoFlag(true));
-            dispatch(addUrl(ch?.channelURL));
-            dispatch(addEvents(ch));
-            navigate(`/?q=${ch.category}&id=${ch?._id}`);
+            if (!user) {
+              toast.error("Login for full access!", {
+                style: {
+                  background: "red",
+                  color: "#fff",
+                },
+                position: "bottom-center",
+              });
+            }
+            {
+              setActiveChannel(ch);
+              dispatch(addVideoFlag(true));
+              dispatch(addUrl(ch?.channelURL));
+              dispatch(addEvents(ch));
+              navigate(`/?q=${ch.category}&id=${ch?._id}`);
+            }
           }}
           className={`${
             isWatching
@@ -133,9 +146,9 @@ const ChannelCard = ({
         >
           {isWatching
             ? "Watching"
-            :  categoryData?.categ === null &&
-                categoryData?.eventName === null &&
-                index === 0
+            : categoryData?.categ === null &&
+              categoryData?.eventName === null &&
+              index === 0
             ? !user
               ? "watch"
               : "Watching"
@@ -154,6 +167,7 @@ const SheduleCard = ({
   timeZone,
   navigate,
   event_name,
+  user,
 }) => {
   const [isLive, setIsLive] = useState(false);
 
@@ -208,11 +222,21 @@ const SheduleCard = ({
           </div>
           <button
             onClick={() => {
-              setActiveChannel(ch);
-              dispatch(addVideoFlag(true));
-              dispatch(addUrl(ch?.matchUrl));
-              dispatch(addEvents(ch));
-              navigate(`/?q=${ch.category}&id=${ch?._id}`);
+              if (!user) {
+                toast.error("Login for full access!", {
+                  style: {
+                    background: "red",
+                    color: "#fff",
+                  },
+                  position: "bottom-center",
+                });
+              } else {
+                setActiveChannel(ch);
+                dispatch(addVideoFlag(true));
+                dispatch(addUrl(ch?.matchUrl));
+                dispatch(addEvents(ch));
+                navigate(`/?q=${ch.category}&id=${ch?._id}`);
+              }
             }}
             className={`${
               isWatching
