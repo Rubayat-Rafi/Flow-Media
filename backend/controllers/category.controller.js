@@ -72,16 +72,29 @@ exports.categoryDelete = async (req, res) => {
 };
 
 exports.updateCategory = async (req, res) => {
-  const db = client.db("flow_media");
-  const categoryCollection = db.collection("categorys");
-  const id = req.params.id;
-  const data = req.body;
-  const filter = { _id: new ObjectId(id) };
   try {
-    const result = await categoryCollection.updateOne(filter, { $set: data });
-    if (result.matchedCount === 0) {
-      return res.status(404).json({ message: "Category not found" });
+    const db = client.db("flow_media");
+    const categoryCollection = db.collection("categorys");
+    const id = req.params.id;
+    const data = req.body;
+    const filter = { _id: new ObjectId(id) };
+
+    data.countdown = true;
+    const event = categoryCollection.findOne(filter);
+
+    if (event.countdown && event.countdown === false) {
+      data.countdown = true;
+      const result = await categoryCollection.updateOne(filter, { $set: data });
+      if (result.matchedCount === 0) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+    } else {
+      const result = await categoryCollection.updateOne(filter, { $set: data });
+      if (result.matchedCount === 0) {
+        return res.status(404).json({ message: "Category not found" });
+      }
     }
+
     res.status(200).json({ message: "Category updated successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
