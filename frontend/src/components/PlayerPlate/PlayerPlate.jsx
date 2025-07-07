@@ -34,15 +34,17 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
   const showDefaultStream = !events;
 
   return (
-    <div className="h-full">
+    <div className="h-full relative">
       {/* Countdown Timer */}
-      {showCountdown && (
-        <MatchCountdown
-          matchTime={events.matchTime}
-          matchDate={events.matchDate}
-          matchId={events?._id}
-        />
-      )}
+      <div className="absolute top-0 right-0 bottom-0 left-0">
+        {showCountdown && (
+          <MatchCountdown
+            matchTime={events.matchTime}
+            matchDate={events.matchDate}
+            matchId={events?._id}
+          />
+        )}
+      </div>
 
       {/* Match Streaming */}
       {showMatchStream && (
