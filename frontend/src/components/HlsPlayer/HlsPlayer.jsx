@@ -77,9 +77,11 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
     }
   };
 
+  
+
   if (isEmbed) {
     return (
-      <div className="">
+      <div>
         {src && (
           <div className="max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
             <div className="inline-grid *:[grid-area:1/1]">
@@ -96,7 +98,7 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
           </div>
         )}
 
-        <div className=" relative w-full aspect-video">
+        <div className="relative w-full aspect-video">
           <iframe
             src={src}
             className="w-full h-full bg-[var(--background)]"
