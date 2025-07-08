@@ -4,8 +4,9 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const userRoutes = require("./routes/user.routes.js");
 const categoryRoutes = require("./routes/category.routes.js");
-const paymentRoutes = require("./routes/payments.route.js");
-const freeTrialRoutes = require("./routes/freeTrial.routes.js")
+const paymentRoutes = require("./routes/payments.routes.js");
+const freeTrialRoutes = require("./routes/freeTrial.routes.js");
+const pricingRoutes = require("./routes/pricing.routes.js");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -19,8 +20,9 @@ async function run() {
     app.use("/api/users", userRoutes);
     app.use("/api", categoryRoutes);
     app.use("/api/category", categoryRoutes);
+    app.use("/api", pricingRoutes);
     app.use("/api/payment", paymentRoutes);
-    app.use("/api/free-trial",freeTrialRoutes)
+    app.use("/api/free-trial", freeTrialRoutes);
     app.listen(port, () => {
       console.log(`Backend server is running on port: ${port}`);
     });

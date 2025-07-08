@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth";
 import Subscription from "../../utils/subscription/Subscription";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -178,9 +177,8 @@ const MainContent = () => {
                 {subscriptions.map((subs) => (
                   <Link
                     key={subs?.id}
-                    to={`${import.meta.env.VITE_PAYMENT_URL}${subs.url}?email=${
-                      user?.email
-                    }&price=${subs.offerPrice}`}
+                    // to={`${import.meta.env.VITE_PAYMENT_URL}${subs.url}?email=${user?.email}&price=${subs.offerPrice}`}
+                    to={`https://go.adsflowmedia.com/go.php?oid=201&sub3=${user?.email}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
