@@ -6,7 +6,7 @@ import { saveUser } from "../../api/utils";
 import { toast } from "react-hot-toast";
 
 const SignUp = () => {
-  const { createUser, updateUserProfile } = useAuth();
+  const { createUser, updateUserProfile, setLoading } = useAuth();
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
 
@@ -20,8 +20,10 @@ const SignUp = () => {
       await saveUser(data);
       reset();
       toast.success("sign up successfull");
+      setLoading(false)
       // redirect to home page
       navigate("/");
+
     } catch (error) {
       toast.error("Sign up failed. please try again later.", error);
     }
