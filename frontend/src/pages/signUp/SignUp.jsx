@@ -25,6 +25,7 @@ const SignUp = () => {
       navigate("/");
 
     } catch (error) {
+      setLoading(false)
       toast.error("Sign up failed. please try again later.", error);
     }
   };
