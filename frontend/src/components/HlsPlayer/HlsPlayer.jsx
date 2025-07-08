@@ -46,7 +46,7 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
         const playPromise = videoRef.current.play();
 
         if (playPromise !== undefined) {
-          playPromise.catch((error) => {
+          playPromise.catch(() => {
             // Show play button or handle error
           });
         }

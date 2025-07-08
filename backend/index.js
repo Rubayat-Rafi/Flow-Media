@@ -12,6 +12,7 @@ const pricingRoutes = require("./routes/pricing.routes.js");
 
 const app = express();
 const PORT = process.env.PORT
+
 // Middlewares
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
@@ -36,7 +37,7 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 // module.exports = app;
