@@ -6,22 +6,25 @@ const cors = require("cors");
 // Import routes
 const userRoutes = require("./routes/user.routes.js");
 const categoryRoutes = require("./routes/category.routes.js");
-const paymentRoutes = require("./routes/payments.route.js");
+const paymentRoutes = require("./routes/payments.routes.js");
 const freeTrialRoutes = require("./routes/freeTrial.routes.js");
-const app = express();
+const pricingRoutes = require("./routes/pricing.routes.js");
 
+const app = express();
+const PORT = process.env.PORT
 // Middlewares
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
 // Routes
-app.use("/api/user", userRoutes);
-app.use("/api/users", userRoutes); // optional
-app.use("/api", categoryRoutes);
-app.use("/api/category", categoryRoutes);
-app.use("/api/payment", paymentRoutes);
-app.use("/api/free-trial", freeTrialRoutes);
+    app.use("/api/user", userRoutes);
+    app.use("/api/users", userRoutes);
+    app.use("/api", categoryRoutes);
+    app.use("/api/category", categoryRoutes);
+    app.use("/api", pricingRoutes);
+    app.use("/api/payment", paymentRoutes);
+    app.use("/api/free-trial", freeTrialRoutes);
 
 // Root route
 app.get("/", (req, res) => {
@@ -32,4 +35,8 @@ app.get("/", (req, res) => {
   res.send(response);
 });
 
-module.exports = app;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
+
+// module.exports = app;
