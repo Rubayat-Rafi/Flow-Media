@@ -81,7 +81,35 @@ const ManageUsers = () => {
                   <th>{index + 1}</th>
                   <td className="uppercase">{user?.name}</td>
                   <td>{user?.email}</td>
-                  <td>{user?.subscribe ? "True" : "False"}</td>
+                  <td>
+                    <span
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                        user?.subscribe === "active"
+                          ? "bg-green-50 text-green-800"
+                          : user?.subscribe === "expired"
+                          ? "bg-red-50 text-red-800"
+                          : "bg-yellow-50 text-yellow-800"
+                      }`}
+                    >
+                      {/* Status Dot */}
+                      <span
+                        className={`inline-block w-2 h-2 rounded-full mr-2 ${
+                          user?.subscribe === "active"
+                            ? "bg-green-600"
+                            : user?.subscribe === "expired"
+                            ? "bg-red-600"
+                            : "bg-yellow-600"
+                        }`}
+                      ></span>
+
+                      {/* Status Text */}
+                      {user?.subscribe === "active"
+                        ? "Active"
+                        : user?.subscribe === "expired"
+                        ? "Expired"
+                        : "Inactive"}
+                    </span>
+                  </td>
                   <td>
                     <select
                       value={user?.role}

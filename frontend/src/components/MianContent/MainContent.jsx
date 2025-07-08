@@ -116,7 +116,7 @@ const MainContent = () => {
   }, [channelDataFilter, dispatch]);
 
   return (
-    <Subscription className="w-full lg:bg-[var(--secondary)] rounded-md shadow-lg lg:p-5 lg:border border-[var(--text)]/10 lg:h-[600px]">
+    <Subscription className="w-full lg:h-[600px]">
       <section className="h-full w-full">
         {!user ? (
           trialActive ? (
@@ -130,7 +130,7 @@ const MainContent = () => {
               <div
                 className={`${
                   trialData?.used === false &&
-                  "rounded-xl p-4 md:p-6 text-center bg-[var(--background)] max-w-md md:min-w-md  shadow-md shadow-[#dd8f3c]"
+                  "rounded-xl p-4 md:p-6 text-center bg-[var(--secondary)] max-w-md md:min-w-md  shadow-md shadow-[#dd8f3c]"
                 } `}
               >
                 {trialData?.used === false && (
@@ -170,7 +170,7 @@ const MainContent = () => {
           !subLoading &&
           !trialActive ? (
           <div className="flex items-center justify-center h-full w-full">
-            <div className="bg-[var(--background)] rounded-xl p-6">
+            <div className="bg-[var(--secondary)] rounded-xl p-4">
               <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
               <p className="text-sm">
                 Watch Unlimited BOXING, MMA (PPV INCLUDED), NFL, NCAAF, NCAAB,
@@ -182,7 +182,8 @@ const MainContent = () => {
                     key={price?._id}
                     // to={`${import.meta.env.VITE_PAYMENT_URL}${subs.url}?email=${user?.email}&price=${subs.offerPrice}`}
                     // to={`https://go.adsflowmedia.com/go.php?oid=401&pid=${number}&sub3=${user?.email}&sub2=${name}`}
-                    to={`https://go.adsflowmedia.com/go.php?oid=401&sub3=${user?.email}`}
+                    // to={`https://go.adsflowmedia.com/go.php?oid=401&sub3=${user?.email}`}
+                    
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
