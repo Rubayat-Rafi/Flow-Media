@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
-import { toast } from "react-hot-toast";
+// import { toast } from "react-hot-toast";
 import useUserData from "../../../hooks/useUserData";
 
 const Profile = () => {
