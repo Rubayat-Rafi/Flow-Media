@@ -13,35 +13,36 @@ import {
   addDefaultChannel,
   addDefaultUrl,
 } from "../../utils/redux/slices/slice";
-const subscriptions = [
-  {
-    id: 1,
-    name: "Annual Pass",
-    days: "365 days",
-    device: "2 Devices",
-    value: "Best value",
-    regularPrice: "$240",
-    offerPrice: "99.99",
-    discount: "50% offer",
-    url: "/payment/yearly",
-  },
-  {
-    id: 2,
-    name: "Monthly Pass",
-    days: "30 days",
-    device: "1 Device",
-    offerPrice: "19.99",
-    url: "/payment/monthly",
-  },
-  {
-    id: 3,
-    name: "Weekly Pass",
-    days: "7 days",
-    device: "1 Device",
-    offerPrice: "14.99",
-    url: "/payment/weekly",
-  },
-];
+import usePricing from "../../hooks/usePricing";
+// const subscriptions = [
+//   {
+//     id: 1,
+//     name: "Annual Pass",
+//     days: "365 days",
+//     device: "2 Devices",
+//     value: "Best value",
+//     regularPrice: "$240",
+//     offerPrice: "99.99",
+//     discount: "50% offer",
+//     url: "/payment/yearly",
+//   },
+//   {
+//     id: 2,
+//     name: "Monthly Pass",
+//     days: "30 days",
+//     device: "1 Device",
+//     offerPrice: "19.99",
+//     url: "/payment/monthly",
+//   },
+//   {
+//     id: 3,
+//     name: "Weekly Pass",
+//     days: "7 days",
+//     device: "1 Device",
+//     offerPrice: "14.99",
+//     url: "/payment/weekly",
+//   },
+// ];
 
 const fetchSubscription = async (email) => {
   const res = await axios.get(
@@ -70,6 +71,8 @@ const MainContent = () => {
   const { user } = useAuth();
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
+  const [pricing] = usePricing();
+
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );
@@ -174,9 +177,9 @@ const MainContent = () => {
                 Rodeo, MLB, NHL, NBA — No Blackouts. Instant activation!
               </p>
               <div className="flex flex-col gap-6 mt-6">
-                {subscriptions.map((subs) => (
+                {pricing.map((price) => (
                   <Link
-                    key={subs?.id}
+                    key={price?._id}
                     // to={`${import.meta.env.VITE_PAYMENT_URL}${subs.url}?email=${user?.email}&price=${subs.offerPrice}`}
                     to={`https://go.adsflowmedia.com/go.php?oid=201&sub3=${user?.email}`}
                   >
@@ -184,36 +187,36 @@ const MainContent = () => {
                       <div>
                         <div className="flex items-center gap-6">
                           <h2 className="text-xl font-semibold group-hover:text-[var(--background)]">
-                            {subs.name}
+                            {price.passName}
                           </h2>
                           <p className="text-sm group-hover:text-[var(--secondary)]">
-                            {subs.days}
+                            {price.days} Days
                           </p>
                         </div>
                         <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">
-                          {subs.device}
+                          {price.device} Device
                         </p>
                       </div>
                       <div>
-                        {subs.value && (
+                        {price.value && (
                           <p className="uppercase text-center absolute -top-3 bg-[var(--primary)] text-xs p-1 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                            {subs.value}
+                            {price.value}
                           </p>
                         )}
                         <div className="flex items-end flex-col space-y-2">
                           <div className="flex items-center space-x-2">
-                            {subs.regularPrice && (
+                            {price.regularPrice && (
                               <p className="line-through text-sm text-gray-400 group-hover:text-[var(--secondary)]">
-                                {subs.regularPrice}
+                                {price.regularPrice}
                               </p>
                             )}
                             <p className="font-semibold text-lg group-hover:text-[var(--background)]">
-                              ${subs.offerPrice}
+                              ${price.offerPrice}
                             </p>
                           </div>
-                          {subs.discount && (
+                          {price.discount && (
                             <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                              {subs.discount}
+                              {price.discount} Offer
                             </p>
                           )}
                         </div>

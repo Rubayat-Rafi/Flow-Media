@@ -163,7 +163,7 @@ const AddPricing = () => {
             </div>
 
             {/* Discount */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 md:col-span-2">
               <label htmlFor="discount">Discount (Optional)</label>
               <input
                 id="discount"
