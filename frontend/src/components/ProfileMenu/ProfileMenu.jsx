@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast";
 import useUserData from "../../hooks/useUserData";
-
+import { Link } from "react-router";
 const ProfileMenu = ({ user, signOutUser }) => {
   const [userData] = useUserData();
 
@@ -22,13 +22,13 @@ const ProfileMenu = ({ user, signOutUser }) => {
       {/* profile option */}
       <div className="flex flex-col space-y-2">
         {links.map((link, index) => (
-          <a
+          <Link
             key={index}
-            href={link.href}
+            to={link.href}
             className={`w-full py-2 px-4 font-medium bg-[var(--background)] rounded-md hover:bg-[var(--primary)] hover:text-[var(--background)] transition-colors duration-300 ease-in-out `}
           >
             {link.name}
-          </a>
+          </Link>
         ))}
       </div>
       <div>

@@ -181,7 +181,8 @@ const MainContent = () => {
                   <Link
                     key={price?._id}
                     // to={`${import.meta.env.VITE_PAYMENT_URL}${subs.url}?email=${user?.email}&price=${subs.offerPrice}`}
-                    to={`https://go.adsflowmedia.com/go.php?oid=201&sub3=${user?.email}`}
+                    // to={`https://go.adsflowmedia.com/go.php?oid=401&pid=${number}&sub3=${user?.email}&sub2=${name}`}
+                    to={`https://go.adsflowmedia.com/go.php?oid=401&sub3=${user?.email}`}
                   >
                     <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                       <div>
