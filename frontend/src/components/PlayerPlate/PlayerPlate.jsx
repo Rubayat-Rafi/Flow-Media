@@ -39,7 +39,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
 
   // Fallback to default if nothing else applies
   const showDefaultStream =
-    !showMatchStream && !showChannelStream && !isLoading;
+    !showMatchStream && !showChannelStream && !isLoading && !showCountdown ;
 
   return (
     <div className="h-full relative">
