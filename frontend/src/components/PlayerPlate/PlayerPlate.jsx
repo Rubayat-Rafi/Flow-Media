@@ -25,13 +25,10 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
 
   // Show countdown if countdown is true and match time/date exist
   const showCountdown =
-    liveData?.countdown === true &&
-    liveData?.matchTime &&
-    liveData?.matchDate;
+    liveData?.countdown === true && liveData?.matchTime && liveData?.matchDate;
 
   // Match stream if countdown is false and matchUrl exists
-  const showMatchStream =
-    liveData?.countdown === false && !!liveData?.matchUrl;
+  const showMatchStream = liveData?.countdown === false && !!liveData?.matchUrl;
 
   // Channel stream if it's a channel category
   const showChannelStream =
@@ -39,7 +36,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
 
   // Fallback to default if nothing else applies
   const showDefaultStream =
-    !showMatchStream && !showChannelStream && !isLoading && !showCountdown ;
+    !showMatchStream && !showChannelStream && !isLoading && !showCountdown;
 
   return (
     <div className="h-full relative">

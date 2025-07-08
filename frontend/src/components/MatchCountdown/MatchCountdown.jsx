@@ -3,7 +3,6 @@ import { MdOutlineAccessTime } from "react-icons/md";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-
 const MatchCountdown = ({ matchTime, matchDate, matchId }) => {
   const [countdown, setCountdown] = useState(null);
   const [isLive, setIsLive] = useState(false);
@@ -74,7 +73,7 @@ const MatchCountdown = ({ matchTime, matchDate, matchId }) => {
   }, [matchTime, matchDate, matchId, hasUpdated, timeZone]);
 
   return (
-    <div className="w-full max-h-[600px] h-full flex items-center justify-center relative overflow-hidden">
+    <div className="w-full max-h-[600px] h-full flex items-center justify-center relative ">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img
