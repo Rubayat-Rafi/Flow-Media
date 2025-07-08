@@ -8,7 +8,6 @@ const userRoutes = require("./routes/user.routes.js");
 const categoryRoutes = require("./routes/category.routes.js");
 const paymentRoutes = require("./routes/payments.route.js");
 const freeTrialRoutes = require("./routes/freeTrial.routes.js");
-
 const app = express();
 
 // Middlewares

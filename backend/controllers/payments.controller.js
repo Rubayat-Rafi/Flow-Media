@@ -3,6 +3,8 @@ const client = require("../lib/db_connection/db_connection.js");
 const Stripe = require("stripe");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const package = require("../utils/subscriptions/packages/packages.js");
+
+
 exports.payments = async (req, res) => {
   try {
     const { pack, queryEmail, formData } = req.body;

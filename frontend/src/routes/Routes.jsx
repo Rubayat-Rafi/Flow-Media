@@ -15,6 +15,9 @@ import ChannelAndEvents from "../pages/Dashboard/Admin/ChannelAndEvents";
 
 import Profile from "../pages/Dashboard/Common/Profile";
 import RemoveDeviceEmail from "../pages/Dashboard/User/RemoveDeviceEmail/RemoveDeviceEmail";
+import AddPricing from "../pages/Dashboard/Admin/AddPricing";
+import Pricing from "../pages/Dashboard/Admin/Pricing";
+import GiveSubscription from "../pages/Dashboard/Admin/GiveSubscription";
 
 export const router = createBrowserRouter([
   {
@@ -98,6 +101,36 @@ export const router = createBrowserRouter([
             element: (
               <PrivetRoute>
                 <RemoveDeviceEmail />
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "add-pricing",
+            element: (
+              <PrivetRoute>
+                <AdminRoute>
+                  <AddPricing />
+                </AdminRoute>
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "pricing",
+            element: (
+              <PrivetRoute>
+                <AdminRoute>
+                  <Pricing />
+                </AdminRoute>
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "give-subscription",
+            element: (
+              <PrivetRoute>
+                <AdminRoute>
+                  <GiveSubscription />
+                </AdminRoute>
               </PrivetRoute>
             ),
           },
