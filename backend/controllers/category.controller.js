@@ -81,26 +81,28 @@ exports.countDown = async (req, res) => {
     const db = client.db("flow_media");
     const categoryCollection = db.collection("categorys");
     const id = req.params.id;
-
     const category = await categoryCollection.findOne({
       _id: new ObjectId(id),
     });
 
     if (!category) {
-      return res
-        .status(404)
-        .json({ message: "Category not found", success: false });
+      return res.status(404).json({
+        message: "Category not found",
+        success: false,
+      });
     }
 
     const targetDate = new Date(category.targetDate);
     const now = new Date();
 
-    if (targetDate <= now) {
+    if (now >= targetDate) {
+      // Countdown has ended
       return res.status(200).json({
-        message: "Countdown Expired",
+        message: "Countdown finished — match has started",
         success: true,
       });
     } else {
+      // Still counting down
       return res.status(200).json({
         message: "Countdown is still active — match not started yet",
         success: false,

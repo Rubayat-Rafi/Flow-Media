@@ -9,12 +9,10 @@ import {
 } from "../../utils/redux/slices/slice";
 import { convertMatchTimeByTimeZone } from "../TimeZone/ConvertMatchTimeByTimeZone";
 import { useAuth } from "../../hooks/useAuth";
+
 const Sidebar = ({ channels }) => {
   const { user } = useAuth();
-  const { url, timeZone } = useSelector(
-    (state) => state?.Slice
-  );
-
+  const { url, timeZone } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [activeChannel, setActiveChannel] = useState(null);
@@ -191,17 +189,19 @@ const SheduleCard = ({
       >
         <div className="flex justify-between">
           <div className="font-medium text-xs flex items-center gap-2">
-            {isLive ? (
-              <>
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span className="text-green-500">Live</span>
-              </>
-            ) : (
+            {!isLive ? (
               <>
                 <span>Schedule for</span>
                 <span>
-                  {convertMatchTimeByTimeZone(ch?.targetDate, timeZone)}
+                  {ch?.targetDate
+                    ? convertMatchTimeByTimeZone(ch.targetDate, timeZone)
+                    : "Time not set"}
                 </span>
+              </>
+            ) : (
+              <>
+                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span className="text-green-500">Live</span>
               </>
             )}
           </div>

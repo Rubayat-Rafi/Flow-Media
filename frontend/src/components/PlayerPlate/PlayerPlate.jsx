@@ -27,18 +27,21 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
     currentTimeUTC < matchStartTime &&
     liveData?.matchTime &&
     liveData?.matchDate;
-
   const showMatchStream =
     matchStartTime && currentTimeUTC >= matchStartTime && !!liveData?.matchUrl;
-
   const showChannelStream =
     liveData?.category === "Channel" && !!liveData?.channelURL;
-
   const showDefaultStream =
     !showMatchStream && !showChannelStream && !isLoading && !showCountdown;
-
   return (
     <div className="h-full relative">
+      {/* 🔄 Loading State */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-50">
+          <div className=" loading loading-spinner loading-md"></div>
+        </div>
+      )}
+
       {/* Countdown Timer */}
       <div className="absolute top-0 right-0 bottom-0 left-0">
         {showCountdown && (
