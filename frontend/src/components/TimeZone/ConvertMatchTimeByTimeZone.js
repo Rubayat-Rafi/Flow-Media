@@ -26,7 +26,7 @@ const gmtOffsetToTimeZone = {
 export const convertMatchTimeByTimeZone = (rawDateString, gmtOffset) => {
   const timeZone = gmtOffsetToTimeZone[gmtOffset];
   if (!timeZone) return "Invalid Time Zone";
-  const [isoString] = rawDateString.split(" GMT");
+  const [isoString] = rawDateString.split("GMT");
   const date = new Date(isoString);
   const time = date.toLocaleTimeString("en-US", {
     hour: "numeric",

@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { MdOutlineAccessTime } from "react-icons/md";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useMutation } from "@tanstack/react-query";
+
 import {
   convertMatchDateZone,
   convertMatchTimeByTimeZone,
 } from "../TimeZone/ConvertMatchTimeByTimeZone";
+
 const MatchCountdown = ({ matchId, targetDate }) => {
   const [timeLeft, setTimeLeft] = useState(null);
   const [hasUpdated, setHasUpdated] = useState(false);
@@ -15,20 +18,24 @@ const MatchCountdown = ({ matchId, targetDate }) => {
   const offsetMatch = timeZone?.match(/GMT([+-]?\d+)/);
   const gmtOffset = offsetMatch ? parseInt(offsetMatch[1], 10) : 0;
 
+  // Countdown calculation
   const calculateTimeLeft = () => {
     const nowUTC = new Date();
-    const currentGMTTime = new Date(nowUTC.getTime() + gmtOffset * 60 * 60 * 1000);
+    const currentGMTTime = new Date(
+      nowUTC.getTime() + gmtOffset * 60 * 60 * 1000
+    );
 
-    // Parse targetDate as UTC date (not local)
-    const parts = targetDate.split(/[-T:]/); // [year, month, day, hour, minute, second?]
-    const target = new Date(Date.UTC(
-      parts[0],
-      parts[1] - 1,
-      parts[2],
-      parts[3],
-      parts[4],
-      parts[5] || 0
-    ));
+    const parts = targetDate.split(/[-T:]/);
+    const target = new Date(
+      Date.UTC(
+        parts[0],
+        parts[1] - 1,
+        parts[2],
+        parts[3],
+        parts[4],
+        parts[5] || 0
+      )
+    );
 
     const difference = target.getTime() - currentGMTTime.getTime();
     if (difference <= 0) return null;
@@ -41,6 +48,25 @@ const MatchCountdown = ({ matchId, targetDate }) => {
     };
   };
 
+  // useMutation for API call when countdown is done
+  const { mutate: updateCountdown } = useMutation({
+    mutationFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_FLOW_MRDIA_API}/api/countdown/${matchId}`
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data?.success) {
+        setHasUpdated(true);
+      }
+    },
+    onError: (err) => {
+      console.error("Failed to update countdown:", err);
+    },
+  });
+
+  // Countdown timer logic
   useEffect(() => {
     const interval = setInterval(() => {
       const updated = calculateTimeLeft();
@@ -50,26 +76,16 @@ const MatchCountdown = ({ matchId, targetDate }) => {
         clearInterval(interval);
 
         if (!hasUpdated && matchId) {
-          (async () => {
-            try {
-              const response = await axios.get(
-                `${import.meta.env.VITE_FLOW_MRDIA_API}/api/countdown/${matchId}`
-              );
-              if (response?.data?.success) {
-                setHasUpdated(true);
-              }
-            } catch (err) {
-              console.error("Failed to update countdown:", err);
-            }
-          })();
+          updateCountdown();
         }
       }
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(interval);
-  }, [targetDate, gmtOffset, matchId, hasUpdated]);
+  }, [targetDate, gmtOffset, matchId, hasUpdated, updateCountdown]);
 
-  if (!timeLeft) return null;
+  if (!timeLeft)
+    return null
 
   const { days, hours, minutes, seconds } = timeLeft;
 
