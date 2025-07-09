@@ -21,7 +21,26 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
 
   const handleUpdateEvent = async (data) => {
     try {
+      // Convert matchDate and matchTime to local datetime string (no "Z")
+      if (data.matchDate && data.matchTime) {
+        // Create a local Date object (do NOT add "Z")
+        const localDate = new Date(`${data.matchDate}T${data.matchTime}:00`);
+
+        // Format as "YYYY-MM-DDTHH:mm:ss" (no timezone info)
+        const year = localDate.getFullYear();
+        const month = String(localDate.getMonth() + 1).padStart(2, "0");
+        const day = String(localDate.getDate()).padStart(2, "0");
+        const hours = String(localDate.getHours()).padStart(2, "0");
+        const minutes = String(localDate.getMinutes()).padStart(2, "0");
+        const seconds = String(localDate.getSeconds()).padStart(2, "0");
+
+        data.targetDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`; // No "Z"
+      }
+
+      // Send the updated data to the server
       const res = await axiosSecure.patch(`/api/update/${event?._id}`, data);
+
+      // Handle UI response
       setEventModal(false);
       toast.success(res?.data?.message);
       refetch();
@@ -48,7 +67,7 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
           onSubmit={handleSubmit(handleUpdateEvent)}
           className="grid grid-cols-1 lg:grid-cols-2 gap-6"
         >
-          {/* Event Category */}
+          {/* Category */}
           <div className="flex flex-col gap-2">
             <label htmlFor="category" className="text-[var(--text)]">
               Category
@@ -81,7 +100,7 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
             <input
               type="time"
               {...register("matchTime")}
-              className="time w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)] "
+              className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)] "
             />
           </div>
 
@@ -109,7 +128,7 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
             />
           </div>
 
-          {/* Team A Image */}
+          {/* Team A Image URL */}
           <div className="flex flex-col gap-2">
             <label htmlFor="team1Image" className="text-[var(--text)]">
               Team A Image URL
@@ -121,7 +140,7 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
             />
           </div>
 
-          {/* Team B Image */}
+          {/* Team B Image URL */}
           <div className="flex flex-col gap-2">
             <label htmlFor="team2Image" className="text-[var(--text)]">
               Team B Image URL
@@ -133,8 +152,8 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
             />
           </div>
 
-          {/* Match URL */}
-          <div className="flex flex-col gap-2 ">
+          {/* Match Stream URL */}
+          <div className="flex flex-col gap-2">
             <label htmlFor="matchUrl" className="text-[var(--text)]">
               Match Stream URL
             </label>
@@ -145,7 +164,7 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
             />
           </div>
 
-          {/* Submit button */}
+          {/* Submit */}
           <button
             type="submit"
             className="primary-btn w-full col-span-1 lg:col-span-2 mt-4"

@@ -4,12 +4,10 @@ import HlsPlayer from "../HlsPlayer/HlsPlayer";
 import MatchCountdown from "../MatchCountdown/MatchCountdown";
 import { useSearchParams } from "react-router";
 import axios from "axios";
-
 const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
-  const { defaultUrl } = useSelector((state) => state?.Slice); // only using defaultUrl
+  const { defaultUrl } = useSelector((state) => state?.Slice);
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("id");
-
   const { data: liveData, isLoading } = useQuery({
     queryKey: ["livePlay", categoryId],
     queryFn: async () => {
@@ -22,19 +20,20 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
     refetchInterval: 500,
     staleTime: 0,
   });
-
-  // Show countdown if countdown is true and match time/date exist
+  const currentTimeUTC = new Date();
+  const matchStartTime = new Date(liveData?.targetDate || null);
   const showCountdown =
-    liveData?.countdown === true && liveData?.matchTime && liveData?.matchDate;
+    matchStartTime &&
+    currentTimeUTC < matchStartTime &&
+    liveData?.matchTime &&
+    liveData?.matchDate;
 
-  // Match stream if countdown is false and matchUrl exists
-  const showMatchStream = liveData?.countdown === false && !!liveData?.matchUrl;
+  const showMatchStream =
+    matchStartTime && currentTimeUTC >= matchStartTime && !!liveData?.matchUrl;
 
-  // Channel stream if it's a channel category
   const showChannelStream =
     liveData?.category === "Channel" && !!liveData?.channelURL;
 
-  // Fallback to default if nothing else applies
   const showDefaultStream =
     !showMatchStream && !showChannelStream && !isLoading && !showCountdown;
 
@@ -47,6 +46,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
             matchTime={liveData.matchTime}
             matchDate={liveData.matchDate}
             matchId={liveData?._id}
+            targetDate={liveData?.targetDate}
           />
         )}
       </div>

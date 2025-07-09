@@ -18,7 +18,6 @@ const GiveSubscription = () => {
     ? [...new Set(pricing.map((item) => item.passName))]
     : [];
 
-  console.log(passNames);
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -45,7 +44,7 @@ const GiveSubscription = () => {
                 ) : (
                   <>
                     <option value="">Select a pass</option>
-                    {passNames.map((name, index) => (
+                    {passNames?.map((name, index) => (
                       <option key={index} value={name}>
                         {name}
                       </option>
