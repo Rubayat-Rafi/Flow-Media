@@ -5,9 +5,6 @@ import axios from 'axios';
 
 const useUserData = () => {
   const { user } = useAuth();
-
-  console.log(user.email)
-
   const {
     data: userData = [],
     isLoading,

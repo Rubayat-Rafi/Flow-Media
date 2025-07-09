@@ -7,11 +7,11 @@ import {
   addUrl,
   addVideoFlag,
 } from "../../utils/redux/slices/slice";
-import { convertMatchTimeByTimeZone } from "../TimeZone/convertMatchTimeByTimeZone";
+import { convertMatchTimeByTimeZone } from "../TimeZone/ConvertMatchTimeByTimeZone";
 import { useAuth } from "../../hooks/useAuth";
 const Sidebar = ({ channels }) => {
   const { user } = useAuth();
-  const { url, timeZone, defaultChannel } = useSelector(
+  const { url, timeZone } = useSelector(
     (state) => state?.Slice
   );
 
@@ -42,11 +42,8 @@ const Sidebar = ({ channels }) => {
                 index={idx}
                 setActiveChannel={setActiveChannel}
                 dispatch={dispatch}
-                url={url}
                 navigate={navigate}
-                event_name={event_name}
                 user={user}
-                defaultChannel={defaultChannel}
                 categoryId={categoryId}
                 category={category}
               />
@@ -81,19 +78,14 @@ const Sidebar = ({ channels }) => {
 
 const ChannelCard = ({
   ch,
-  event_name,
   setActiveChannel,
   dispatch,
-  url,
   index,
   navigate,
   categoryId,
   category,
   user,
-  defaultChannel,
 }) => {
-  const isWatching = url === ch?.channelURL || ch?.channelName === event_name;
-
   return (
     <div className="">
       <div
@@ -208,7 +200,7 @@ const SheduleCard = ({
               <>
                 <span>Schedule for</span>
                 <span>
-                  {convertMatchTimeByTimeZone(ch?.matchTime, timeZone)}
+                  {convertMatchTimeByTimeZone(ch?.targetDate, timeZone)}
                 </span>
               </>
             )}

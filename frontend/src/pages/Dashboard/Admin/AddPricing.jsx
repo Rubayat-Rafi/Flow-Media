@@ -52,7 +52,6 @@ const AddPricing = () => {
         reset();
       }
     } catch (error) {
-      console.log(error);
       toast.error("Failed to add pricing. Please try again.");
     }
   };

@@ -5,11 +5,7 @@ import useUserData from "../../../hooks/useUserData";
 
 const Profile = () => {
   const [userData, isLoading] = useUserData();
-
-  console.log(userData);
-
   if (isLoading) return <LoadingSpinner />;
-
   return (
     <div>
       <Helmet>
