@@ -186,50 +186,53 @@ const SheduleCard = ({
             : "border-[var(--background)] hover:border-[var(--primary)]"
         }`}
       >
-        <div className="flex justify-between">
-          <div className="font-medium text-xs flex items-center gap-2">
-            {!isLive ? (
-              <>
-                <span>Schedule for</span>
-                <span>
-                  {ch?.targetDate
-                    ? convertMatchTimeByTimeZone(ch.targetDate, timeZone)
-                    : "Time not set"}
-                </span>
-              </>
-            ) : (
-              <>
-                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span className="text-green-500">Live</span>
-              </>
-            )}
+        <div>
+          {ch?.eventName && <h5 className="mb-2 font-semibold">{ch?.eventName}</h5>}
+          <div className="flex justify-between">
+            <div className="font-medium text-xs flex items-center gap-2">
+              {!isLive ? (
+                <>
+                  <span>Schedule for</span>
+                  <span>
+                    {ch?.targetDate
+                      ? convertMatchTimeByTimeZone(ch.targetDate, timeZone)
+                      : "Time not set"}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                  <span className="text-green-500">Live</span>
+                </>
+              )}
+            </div>
+            <button
+              onClick={() => {
+                if (!user) {
+                  toast.error("Login for full access!", {
+                    style: {
+                      background: "red",
+                      color: "#fff",
+                    },
+                    position: "bottom-center",
+                  });
+                } else {
+                  setActiveChannel(ch);
+                  dispatch(addVideoFlag(true));
+                  dispatch(addUrl(ch?.matchUrl));
+                  dispatch(addEvents(ch));
+                  navigate(`/?q=${ch.category}&id=${ch?._id}`);
+                }
+              }}
+              className={`${
+                isWatching
+                  ? "bg-red-500 text-[var(--text)]"
+                  : "bg-[var(--primary)]"
+              } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
+            >
+              {isWatching ? "Watching" : "Watch"}
+            </button>
           </div>
-          <button
-            onClick={() => {
-              if (!user) {
-                toast.error("Login for full access!", {
-                  style: {
-                    background: "red",
-                    color: "#fff",
-                  },
-                  position: "bottom-center",
-                });
-              } else {
-                setActiveChannel(ch);
-                dispatch(addVideoFlag(true));
-                dispatch(addUrl(ch?.matchUrl));
-                dispatch(addEvents(ch));
-                navigate(`/?q=${ch.category}&id=${ch?._id}`);
-              }
-            }}
-            className={`${
-              isWatching
-                ? "bg-red-500 text-[var(--text)]"
-                : "bg-[var(--primary)]"
-            } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
-          >
-            {isWatching ? "Watching" : "Watch"}
-          </button>
         </div>
 
         <div className="space-y-2 mt-2">

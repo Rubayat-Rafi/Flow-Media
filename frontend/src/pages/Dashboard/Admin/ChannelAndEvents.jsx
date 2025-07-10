@@ -182,7 +182,7 @@ const ChannelAndEvents = () => {
               {/* Card Header */}
               <div className="bg-[var(--primary)] px-4 py-2 flex justify-between items-center">
                 <span className="text-white font-medium">
-                  {event?.category} Match
+                  {event?.category} Match {event?.eventName && (`( ${event?.eventName} )`)}
                 </span>
 
                 <div className="flex items-center space-x-3">
