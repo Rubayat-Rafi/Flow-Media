@@ -15,7 +15,8 @@ const ForFreeChannel = ({ children, channels, className }) => {
   );
   const freeChannel =
     filterChannel?.type === "free" ? filterChannel?.channelURL : null;
-  if (!category && !categoryId && !freeChannel) {
+
+  if (!user && !category && !categoryId && !freeChannel) {
     return (
       <div className=" w-full h-full">
         <FreeChannelHls src={defaultUrl} />
