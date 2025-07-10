@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import InputField from "../../../components/Shared/InputField";
 import { Categories } from "../../../components/Categories/Categories";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { toast } from "react-hot-toast";
 
@@ -10,9 +10,16 @@ const PostCategory = () => {
   const selectedCategory = watch("category");
   const axiosSecure = useAxiosSecure();
 
+  const [isFree, setIsFree] = useState(false);
+
   const handlePostCategoryForm = async (data) => {
     try {
-      // Conditionally format targetDate only for event category
+      // ✅ Conditionally add type field for Channel
+      if (selectedCategory === "Channel") {
+        data.type = isFree ? "free" : "paid";
+      }
+
+      // ✅ Format targetDate if it's an Event
       if (selectedCategory && selectedCategory !== "Channel") {
         if (data.matchDate && data.matchTime) {
           const localDate = new Date(`${data.matchDate}T${data.matchTime}:00`);
@@ -24,22 +31,24 @@ const PostCategory = () => {
           const minutes = String(localDate.getMinutes()).padStart(2, "0");
           const seconds = String(localDate.getSeconds()).padStart(2, "0");
 
-          data.targetDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`; // No "Z"
+          data.targetDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
         }
       }
 
       const res = await axiosSecure.post("/api/category", data);
       if (res.status === 201) {
         reset();
+        setIsFree(false); // ✅ reset checkbox
         toast.success("Post successfully");
       } else {
         toast.error("Failed to post category");
       }
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || "Something went wrong.");
     }
   };
 
+  // ✅ Reset fields on category switch
   useEffect(() => {
     if (selectedCategory === "Channel") {
       resetField("matchDate");
@@ -53,6 +62,7 @@ const PostCategory = () => {
       resetField("channelName");
       resetField("channelLogo");
       resetField("channelURL");
+      setIsFree(false); // ✅ reset checkbox if not channel
     }
   }, [selectedCategory, resetField]);
 
@@ -98,6 +108,19 @@ const PostCategory = () => {
                   name="channelURL"
                   register={register}
                 />
+
+                {/* ✅ Free Channel Checkbox */}
+                <div className="md:col-span-2 flex items-center gap-3 mt-2">
+                  <input
+                    type="checkbox"
+                    id="freeCheckbox"
+                    checked={isFree}
+                    onChange={(e) => setIsFree(e.target.checked)}
+                  />
+                  <label htmlFor="freeCheckbox" className="text-[var(--text)]">
+                    Make this a free channel
+                  </label>
+                </div>
               </>
             ) : selectedCategory && selectedCategory !== "Channel" ? (
               <>
@@ -133,7 +156,7 @@ const PostCategory = () => {
                   name="team2Image"
                   register={register}
                 />
-                <div className="md:col-span-2 ">
+                <div className="md:col-span-2">
                   <InputField
                     label="Match Stream URL"
                     name="matchUrl"

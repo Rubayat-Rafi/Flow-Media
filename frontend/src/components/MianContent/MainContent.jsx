@@ -14,7 +14,9 @@ import {
   addDefaultUrl,
 } from "../../utils/redux/slices/slice";
 import usePricing from "../../hooks/usePricing";
-import ForFreeChannel from "../../utils/forFreeChannel/forFreeChannel";
+import { useSearchParams } from "react-router";
+import FreeChannelHls from "../FeeChannelHls/FreeChannelHls";
+
 // const subscriptions = [
 //   {
 //     id: 1,
@@ -69,6 +71,7 @@ const startTrialRequest = async () => {
 const MainContent = () => {
   const dispatch = useDispatch();
   const [categorys] = useCategory();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
@@ -76,6 +79,14 @@ const MainContent = () => {
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );
+
+  const categoryId = searchParams.get("id");
+  const filterChannel = channelDataFilter.find(
+    (item) => item?._id === categoryId
+  );
+  const freeChannel = filterChannel?.type === "free" ? filterChannel : null;
+
+  console.log(freeChannel)
   const { data: subscription, isLoading: subLoading } = useQuery({
     queryKey: ["subscription-status", user?.email],
     queryFn: () => fetchSubscription(user.email),
@@ -116,60 +127,60 @@ const MainContent = () => {
   }, [channelDataFilter, dispatch]);
 
   return (
-    <ForFreeChannel className="w-full lg:h-[600px]"  channels={channelDataFilter}>
-      <Subscription className="w-full h-full">
-        <section className="h-full w-full">
-          {!user ? (
-            trialActive ? (
-              <PlayerPlate
-                user={user}
-                trialActive={trialActive}
-                trialTimeLeft={trialTimeLeft}
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full p-4">
-                <div
-                  className={`${
-                    trialData?.used === false &&
-                    "rounded-xl p-4 md:p-6 text-center bg-[var(--secondary)] max-w-md md:min-w-md  shadow-md shadow-[#dd8f3c]"
-                  } `}
-                >
-                  {trialData?.used === false && (
-                    <>
-                      <h2 className="text-xl font-bold mb-4">
-                        Start Watching Now
-                      </h2>
-                      <p className="mb-6">
-                        Try our free trial to access all content
-                      </p>
-                    </>
-                  )}
+    <Subscription className="w-full lg:h-[600px]">
+      <section className="h-full w-full">
+        {!user ? (
+          trialActive ? (
+            <PlayerPlate
+              user={user}
+              trialActive={trialActive}
+              trialTimeLeft={trialTimeLeft}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full p-4">
+              <div
+                className={`${
+                  trialData?.used === false &&
+                  "rounded-xl p-4 md:p-6 text-center bg-[var(--secondary)] max-w-md md:min-w-md  shadow-md shadow-[#dd8f3c]"
+                } `}
+              >
+                {trialData?.used === false && (
+                  <>
+                    <h2 className="text-xl font-bold mb-4">
+                      Start Watching Now
+                    </h2>
+                    <p className="mb-6">
+                      Try our free trial to access all content
+                    </p>
+                  </>
+                )}
 
-                  {trialData?.used === false && !trialActive && (
-                    <button
-                      onClick={() => startTrial()}
-                      className="bg-[var(--primary)] flex gap-2 items-center justify-center text-white  px-4 py-2 lg:py-3 w-full rounded-md font-medium hover:bg-opacity-90  cursor-pointer transition"
-                    >
-                      <FaPlay className="text-xl" />
-                      Watch Now
-                    </button>
-                  )}
+                {trialData?.used === false && !trialActive && (
+                  <button
+                    onClick={() => startTrial()}
+                    className="bg-[var(--primary)] flex gap-2 items-center justify-center text-white  px-4 py-2 lg:py-3 w-full rounded-md font-medium hover:bg-opacity-90  cursor-pointer transition"
+                  >
+                    <FaPlay className="text-xl" />
+                    Watch Now
+                  </button>
+                )}
 
-                  {trialData?.used === true && <LoginPalate />}
+                {trialData?.used === true && <LoginPalate />}
 
-                  {trialLoading && (
-                    <div className="text-center py-4">
-                      <p>Checking trial availability...</p>
-                    </div>
-                  )}
-                </div>
+                {trialLoading && (
+                  <div className="text-center py-4">
+                    <p>Checking trial availability...</p>
+                  </div>
+                )}
               </div>
-            )
-          ) : subscription === "active" ? (
-            <PlayerPlate />
-          ) : (subscription === "expired" || subscription === false) &&
-            !subLoading &&
-            !trialActive ? (
+            </div>
+          )
+        ) : subscription === "active" ? (
+          <PlayerPlate />
+        ) : (subscription === "expired" || subscription === false) &&
+          !subLoading &&
+          !trialActive ? (
+          !freeChannel && !subscription ? (
             <div className="flex items-center justify-center h-full w-full">
               <div className="bg-[var(--secondary)] rounded-xl p-4">
                 <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
@@ -181,8 +192,6 @@ const MainContent = () => {
                   {pricing?.map((price) => (
                     <Link
                       key={price?._id}
-                      // to={`${import.meta.env.VITE_PAYMENT_URL}${subs.url}?email=${user?.email}&price=${subs.offerPrice}`}
-                      // to={`https://go.adsflowmedia.com/go.php?oid=401&pid=${number}&sub3=${user?.email}&sub2=${name}`}
                       to={`https://go.adsflowmedia.com/go.php?oid=401&pid=${4}&sub3=${
                         user?.email
                       }`}
@@ -191,18 +200,18 @@ const MainContent = () => {
                         <div>
                           <div className="flex items-center gap-6">
                             <h2 className="text-xl font-semibold group-hover:text-[var(--background)]">
-                              {price.passName}
+                              {price?.passName}
                             </h2>
                             <p className="text-sm group-hover:text-[var(--secondary)]">
-                              {price.days} Days
+                              {price?.days} Days
                             </p>
                           </div>
                           <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">
-                            {price.device} Device
+                            {price?.device} Device
                           </p>
                         </div>
                         <div>
-                          {price.value && (
+                          {price?.value && (
                             <p className="uppercase text-center absolute -top-3 bg-[var(--primary)] text-xs p-1 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
                               {price.value}
                             </p>
@@ -211,16 +220,16 @@ const MainContent = () => {
                             <div className="flex items-center space-x-2">
                               {price.regularPrice && (
                                 <p className="line-through text-sm text-gray-400 group-hover:text-[var(--secondary)]">
-                                  {price.regularPrice}
+                                  {price?.regularPrice}
                                 </p>
                               )}
                               <p className="font-semibold text-lg group-hover:text-[var(--background)]">
-                                ${price.offerPrice}
+                                ${price?.offerPrice}
                               </p>
                             </div>
                             {price.discount && (
                               <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                                {price.discount} Offer
+                                {price?.discount} Offer
                               </p>
                             )}
                           </div>
@@ -235,10 +244,15 @@ const MainContent = () => {
                 </p>
               </div>
             </div>
-          ) : null}
-        </section>
-      </Subscription>
-    </ForFreeChannel>
+          ) : (
+            <FreeChannelHls
+              src={freeChannel?.channelURL}
+              channelName={freeChannel?.channelName}
+            />
+          )
+        ) : null}
+      </section>
+    </Subscription>
   );
 };
 
