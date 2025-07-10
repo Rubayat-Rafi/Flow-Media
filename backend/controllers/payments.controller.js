@@ -3,67 +3,82 @@ const client = require("../lib/db_connection/db_connection.js");
 const Stripe = require("stripe");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const package = require("../utils/subscriptions/packages/packages.js");
-
-
 exports.payments = async (req, res) => {
   try {
-    const { pack, queryEmail, formData } = req.body;
-    const plan = pack;
-    const expiryDate = await package.Package({ plan });
-    // const expiryDate = new Date(Date.now() + 2 * 60 * 1000);
+    const { pack, queryEmail, formData, caustomDate } = req.body;
+    const splitPack = pack.split(" ")[0].toLowerCase();
+    const validPack = splitPack === "annual" ? "yearly" : splitPack;
+    const plan = validPack;
+    const expiryDate = await package.Package({ plan, caustomDate });
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
     const findUser = await usersCollection.findOne({ email: queryEmail });
-    if (findUser) {
-      const subscription = {
-        pack,
-        details: formData,
-        startDate: new Date(),
-        endDate: expiryDate,
-        status: "active",
-        emails: [findUser?.email],
-      };
+    if (!findUser) {
+      return res
+        .status(200)
+        .json({ message: "User not found", success: false });
+    }
 
-      const newRevenueEntry = {
-        amount: formData?.amount / 100,
-        plan: pack,
-        date: new Date(),
-      };
+    if (
+      findUser.subscribe === "active" &&
+      findUser.subscription &&
+      findUser.subscription.status === "active"
+    ) {
+      return res.status(200).json({
+        message: "Subscription already active for this user",
+        success: false,
+      });
+    }
 
-      const updatedUser = await usersCollection.updateOne(
-        { email: queryEmail },
-        {
-          $set: {
-            subscribe: "active",
-            subscription: subscription,
-          },
-          $push: {
-            revenue: newRevenueEntry,
-          },
-        }
-      );
-      if (updatedUser.modifiedCount > 0) {
-        res.status(200).json({
-          message: "Subscription updated successfully",
-          success: true,
-        });
-      } else {
-        res.status(404).json({ message: "User not found", success: false });
+    const subscription = {
+      pack,
+      details: formData,
+      startDate: new Date(),
+      endDate: expiryDate,
+      status: "active",
+      emails: [findUser.email],
+    };
+
+    const newRevenueEntry = {
+      amount: formData?.amount / 100,
+      plan: pack,
+      date: new Date(),
+    };
+    const updatedUser = await usersCollection.updateOne(
+      { email: queryEmail },
+      {
+        $set: {
+          subscribe: "active",
+          subscription: subscription,
+        },
+        $push: {
+          revenue: newRevenueEntry,
+        },
       }
+    );
+    if (updatedUser.modifiedCount > 0) {
+      return res.status(200).json({
+        message: "Subscription updated successfully",
+        success: true,
+      });
     } else {
-      res.status(404).json({ message: "User not found", success: false });
+      return res.status(400).json({
+        message: "Failed to update subscription",
+        success: false,
+      });
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Payment Error:", error.message);
+    return res.status(500).json({ error: error.message });
   }
 };
+
 exports.expiredSubscription = async (req, res) => {
   try {
     const { email } = req.params;
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
     const user = await usersCollection.findOne({ email });
-
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }

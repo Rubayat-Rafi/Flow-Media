@@ -156,10 +156,9 @@ const SheduleCard = ({
 
   useEffect(() => {
     const checkLiveStatus = () => {
-      const matchDateTime = `${ch?.matchDate}T${ch?.matchTime}`;
-      const matchStart = new Date(matchDateTime).getTime();
-      const now = new Date().getTime();
-      setIsLive(now >= matchStart);
+      const currentTimeUTC = new Date();
+      const matchStartTime = new Date(ch?.targetDate || null);
+      setIsLive(currentTimeUTC >= matchStartTime);
     };
 
     checkLiveStatus();

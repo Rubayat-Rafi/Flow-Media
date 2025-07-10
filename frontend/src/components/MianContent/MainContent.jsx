@@ -72,7 +72,6 @@ const MainContent = () => {
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const [pricing] = usePricing();
-
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );

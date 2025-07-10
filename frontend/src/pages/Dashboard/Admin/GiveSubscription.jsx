@@ -1,26 +1,72 @@
 import { useForm } from "react-hook-form";
 import usePricing from "../../../hooks/usePricing";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useState } from "react";
 
 const GiveSubscription = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm({});
 
   const [pricing, isLoading] = usePricing();
+  const [selectedPass, setSelectedPass] = useState("");
+  const [prefilledValues, setPrefilledValues] = useState({
+    days: "",
+    regularPrice: "",
+  });
 
   if (isLoading) return <LoadingSpinner />;
 
-  // Extract unique pass names
   const passNames = pricing
     ? [...new Set(pricing.map((item) => item.passName))]
     : [];
 
+  const packageNames = ["Caustom", ...passNames];
 
   const onSubmit = async (data) => {
-    console.log(data);
+    try {
+      const subscription = {
+        pack: selectedPass,
+        caustomDate:
+          selectedPass === "Caustom"
+            ? data.days
+            : prefilledValues.days || data.days,
+        queryEmail: data.email,
+        formData: {
+          ...data,
+          days:
+            selectedPass === "Caustom"
+              ? data.days
+              : prefilledValues.days || data.days,
+          amount:
+            selectedPass === "Caustom"
+              ? Number(data.regularPrice)
+              : Number(prefilledValues.regularPrice || data.regularPrice),
+        },
+        amount:
+          selectedPass === "Caustom"
+            ? data.regularPrice
+            : prefilledValues.regularPrice,
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_FLOW_MRDIA_API}/api/payment/payments`,
+        subscription
+      );
+
+      if (response?.data?.success) {
+        toast.success("Subscription successfully added!");
+      } else {
+        toast.error(response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Submission error:", error.message);
+    }
   };
 
   return (
@@ -36,21 +82,39 @@ const GiveSubscription = () => {
             <div className="flex flex-col gap-2">
               <label htmlFor="passName">Pass Name</label>
               <select
+                id="passName"
                 className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
-                disabled={isLoading}
+                {...register("passName", {
+                  required: "Pass name is required",
+                })}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSelectedPass(value);
+                  if (value !== "Caustom") {
+                    const matched = pricing.find(
+                      (item) => item.passName === value
+                    );
+                    if (matched) {
+                      setPrefilledValues({
+                        days: matched.days || "",
+                        regularPrice: matched.regularPrice || "",
+                      });
+                      setValue("days", matched.days || "");
+                      setValue("regularPrice", matched.regularPrice || "");
+                    }
+                  } else {
+                    setPrefilledValues({ days: "", regularPrice: "" });
+                    setValue("days", "");
+                    setValue("regularPrice", "");
+                  }
+                }}
               >
-                {isLoading ? (
-                  <option>Loading pricing options...</option>
-                ) : (
-                  <>
-                    <option value="">Select a pass</option>
-                    {passNames?.map((name, index) => (
-                      <option key={index} value={name}>
-                        {name}
-                      </option>
-                    ))}
-                  </>
-                )}
+                <option value="">Select a pass</option>
+                {packageNames.map((name, index) => (
+                  <option key={index} value={name}>
+                    {name}
+                  </option>
+                ))}
               </select>
               {errors.passName && (
                 <span className="text-red-500 text-sm">
@@ -69,6 +133,14 @@ const GiveSubscription = () => {
                   required: "Duration is required",
                   min: { value: 1, message: "Must be at least 1 day" },
                 })}
+                value={prefilledValues.days}
+                onChange={(e) =>
+                  setPrefilledValues((prev) => ({
+                    ...prev,
+                    days: e.target.value,
+                  }))
+                }
+                disabled={selectedPass !== "Caustom"}
                 className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
                 placeholder="Enter days"
               />
@@ -89,6 +161,14 @@ const GiveSubscription = () => {
                   type="number"
                   step="0.01"
                   {...register("regularPrice")}
+                  value={prefilledValues.regularPrice}
+                  onChange={(e) =>
+                    setPrefilledValues((prev) => ({
+                      ...prev,
+                      regularPrice: e.target.value,
+                    }))
+                  }
+                  disabled={selectedPass !== "Caustom"}
                   className="w-full py-3 pl-8 pr-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
                   placeholder="0.00"
                 />
@@ -98,15 +178,20 @@ const GiveSubscription = () => {
             {/* Email */}
             <div className="flex flex-col gap-2">
               <label htmlFor="userEmail">User Email</label>
-              <div className="relative">
-                <input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
-                  placeholder="Enter user email"
-                />
-              </div>
+              <input
+                id="email"
+                type="email"
+                {...register("email", {
+                  required: "Email is required",
+                })}
+                className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
+                placeholder="Enter user email"
+              />
+              {errors.email && (
+                <span className="text-red-500 text-sm">
+                  {errors.email.message}
+                </span>
+              )}
             </div>
           </div>
 
