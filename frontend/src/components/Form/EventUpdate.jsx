@@ -104,6 +104,18 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
             />
           </div>
 
+          {/* eventName */}
+          <div className="flex flex-col gap-2">
+            <label htmlFor="teamA" className="text-[var(--text)]">
+              Event Name
+            </label>
+            <input
+              type="text"
+              {...register("eventName")}
+              className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)] "
+            />
+          </div>
+
           {/* Team A */}
           <div className="flex flex-col gap-2">
             <label htmlFor="teamA" className="text-[var(--text)]">
@@ -153,7 +165,7 @@ const EventUpdate = ({ refetch, event, setEventModal }) => {
           </div>
 
           {/* Match Stream URL */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 lg:col-span-2">
             <label htmlFor="matchUrl" className="text-[var(--text)]">
               Match Stream URL
             </label>
