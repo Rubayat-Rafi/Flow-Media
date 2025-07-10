@@ -29,19 +29,15 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         setLevels(hls.levels);
-
-        // Find and set 720p as default if available
         const level720 = hls.levels.findIndex((level) => level.height === 720);
         if (level720 !== -1) {
           hls.currentLevel = level720;
           setSelectedLevel(level720);
         } else {
-          // Fallback to highest available quality
-          hls.currentLevel = -1; // Auto
+          hls.currentLevel = -1;
           setSelectedLevel(-1);
         }
 
-        // Auto-play with muted audio to bypass browser restrictions
         videoRef.current.muted = true;
         const playPromise = videoRef.current.play();
 
