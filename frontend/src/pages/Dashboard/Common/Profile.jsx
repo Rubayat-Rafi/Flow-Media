@@ -1,11 +1,9 @@
 import { Helmet } from "react-helmet";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 import useUserData from "../../../hooks/useUserData";
-
 const Profile = () => {
   const [userData, isLoading] = useUserData();
-
-
+  
   if (isLoading) return <LoadingSpinner />;
 
   return (
