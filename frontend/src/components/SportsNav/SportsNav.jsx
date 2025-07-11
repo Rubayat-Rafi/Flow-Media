@@ -7,6 +7,10 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+
+
+
+
 const SportsNav = ({ onSelectCategory }) => {
   const { defaultChannel } = useSelector((state) => state?.Slice);
   const { user } = useAuth();
@@ -28,6 +32,10 @@ const SportsNav = ({ onSelectCategory }) => {
       });
     }
   };
+
+
+
+  
 
   return (
     <Container>

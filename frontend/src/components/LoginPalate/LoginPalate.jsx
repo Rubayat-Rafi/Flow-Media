@@ -1,9 +1,11 @@
 import { Link } from "react-router";
 const LoginPalate = () => {
+
+  
   return (
     <div className="flex h-full items-center justify-center max-w-md md:min-w-xl w-full">
       <div
-        className="bg-[var(--secondary)] px-6 py-10 rounded-xl  "
+        className="bg-[var(--background)] px-6 py-10 rounded-xl  "
         style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
       >
         <p className="text-sm text-gray-400 mb-6 text-center">Your free trial has ended</p>

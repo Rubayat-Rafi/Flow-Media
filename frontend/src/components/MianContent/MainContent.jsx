@@ -17,36 +17,6 @@ import usePricing from "../../hooks/usePricing";
 import { useSearchParams } from "react-router";
 import FreeChannelHls from "../FeeChannelHls/FreeChannelHls";
 
-// const subscriptions = [
-//   {
-//     id: 1,
-//     name: "Annual Pass",
-//     days: "365 days",
-//     device: "2 Devices",
-//     value: "Best value",
-//     regularPrice: "$240",
-//     offerPrice: "99.99",
-//     discount: "50% offer",
-//     url: "/payment/yearly",
-//   },
-//   {
-//     id: 2,
-//     name: "Monthly Pass",
-//     days: "30 days",
-//     device: "1 Device",
-//     offerPrice: "19.99",
-//     url: "/payment/monthly",
-//   },
-//   {
-//     id: 3,
-//     name: "Weekly Pass",
-//     days: "7 days",
-//     device: "1 Device",
-//     offerPrice: "14.99",
-//     url: "/payment/weekly",
-//   },
-// ];
-
 const fetchSubscription = async (email) => {
   const res = await axios.get(
     `${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/role/${email}`
@@ -86,7 +56,7 @@ const MainContent = () => {
   );
   const freeChannel = filterChannel?.type === "free" ? filterChannel : null;
 
-  console.log(freeChannel)
+  console.log(freeChannel);
   const { data: subscription, isLoading: subLoading } = useQuery({
     queryKey: ["subscription-status", user?.email],
     queryFn: () => fetchSubscription(user.email),
@@ -127,7 +97,7 @@ const MainContent = () => {
   }, [channelDataFilter, dispatch]);
 
   return (
-    <Subscription className="w-full lg:h-[600px]">
+    <Subscription className={`w-full lg:h-[600px]  ${!subscription && 'bg-[var(--secondary)] rounded-lg'}`}>
       <section className="h-full w-full">
         {!user ? (
           trialActive ? (
@@ -141,7 +111,7 @@ const MainContent = () => {
               <div
                 className={`${
                   trialData?.used === false &&
-                  "rounded-xl p-4 md:p-6 text-center bg-[var(--secondary)] max-w-md md:min-w-md  shadow-md shadow-[#dd8f3c]"
+                  "rounded-xl p-4 md:p-6 text-center bg-[var(--background)] max-w-md md:min-w-md  shadow-md shadow-[#dd8f3c]"
                 } `}
               >
                 {trialData?.used === false && (
@@ -182,7 +152,9 @@ const MainContent = () => {
           !trialActive ? (
           !freeChannel && !subscription ? (
             <div className="flex items-center justify-center h-full w-full">
-              <div className="bg-[var(--secondary)] rounded-xl p-4">
+              <div
+                className="bg-[var(--background)] rounded-xl p-4"
+              >
                 <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
                 <p className="text-sm">
                   Watch Unlimited BOXING, MMA (PPV INCLUDED), NFL, NCAAF, NCAAB,

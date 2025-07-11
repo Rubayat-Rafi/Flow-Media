@@ -77,7 +77,7 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
 
   if (isEmbed) {
     return (
-      <div>
+      <div className="bg-[var(--background)]">
         {src && (
           <div className="max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
             <div className="inline-grid *:[grid-area:1/1]">
@@ -115,7 +115,7 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
   }
 
   return (
-    <div className="">
+    <div className="bg-[var(--background)]">
       {src && (
         <div className="max-lg:hidden bg-[var(--background)] px-4 py-2 inline-flex rounded-t-md gap-2 items-center border-t border-x border-[var(--primary)]">
           <div className="inline-grid *:[grid-area:1/1]">
