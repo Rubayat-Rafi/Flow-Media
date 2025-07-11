@@ -9,6 +9,7 @@ const categoryRoutes = require("./routes/category.routes.js");
 const paymentRoutes = require("./routes/payments.routes.js");
 const freeTrialRoutes = require("./routes/freeTrial.routes.js");
 const pricingRoutes = require("./routes/pricing.routes.js");
+const affiliateRoutes = require("./routes/affiliate.routes.js");
 const verifyToken = require("./middlewares/verifyToken.js");
 
 const app = express();
@@ -27,6 +28,7 @@ app.use("/api/category", categoryRoutes);
 app.use("/api", pricingRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/free-trial", freeTrialRoutes);
+app.use("/api/affiliate", affiliateRoutes);
 
 // Root route
 app.get("/", (req, res) => {

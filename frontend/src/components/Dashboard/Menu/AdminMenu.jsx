@@ -14,6 +14,7 @@ const AdminMenu = () => {
       <MenuItem icon={MdOutlinePostAdd } label="Manage Category" address="/dashboard/all-category" />
       <MenuItem icon={MdPriceChange } label="Manage Pricing" address="/dashboard/pricing" />
       <MenuItem icon={MdPriceChange } label="Pricing" address="/dashboard/add-pricing" />
+      {/* <MenuItem icon={MdPriceChange } label="Mange Affiliate" address="/dashboard/manage_affiliate" /> */}
       <MenuItem icon={SiOpenaccess } label="Subscription" address="/dashboard/give-subscription" />
     </>
   );

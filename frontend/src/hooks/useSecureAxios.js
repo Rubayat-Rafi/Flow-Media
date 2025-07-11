@@ -1,28 +1,40 @@
-// hooks/useSecureAxios.js
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
+
+const secureAxios = axios.create({
+  baseURL: import.meta.env.VITE_FLOW_MRDIA_API,
+  withCredentials: true,
+});
+
+let interceptorsAdded = false;
+
 const useSecureAxios = () => {
-  const [secureAxios, setSecureAxios] = useState(null);
   useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        console.log(user)
-        const token = await user.getIdToken();
+    if (!interceptorsAdded) {
+      secureAxios.interceptors.request.use(
+        (config) => {
+          const token = localStorage.getItem("access-token");
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }
+          return config;
+        },
+        (error) => Promise.reject(error)
+      );
 
-        const instance = axios.create({
-          baseURL: import.meta.env.VITE_FLOW_MRDIA_API, // 🔁 or your base URL
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      secureAxios.interceptors.response.use(
+        (response) => response,
+        (error) => {
+          if (error.response?.status === 401) {
+            console.warn("Unauthorized - maybe redirect to login?");
+            // Optional: toast.error("Please login again");
+          }
+          return Promise.reject(error);
+        }
+      );
 
-        setSecureAxios(instance);
-      }
-    });
-
-    return () => unsubscribe(); // cleanup
+      interceptorsAdded = true; // Prevent multiple setup
+    }
   }, []);
 
   return secureAxios;

@@ -2,9 +2,10 @@ import { Helmet } from "react-helmet";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 // import { toast } from "react-hot-toast";
 import useUserData from "../../../hooks/useUserData";
+import useUserAffiliate from "../../../hooks/useAffiliates";
 const Profile = () => {
   const [userData, isLoading] = useUserData();
-  
+  const [affiliate] = useUserAffiliate();
   if (isLoading) return <LoadingSpinner />;
   return (
     <div>
@@ -34,6 +35,18 @@ const Profile = () => {
               <span className="font-medium uppercase">Subscription: </span>
               <span>{userData?.subscribe || "not subscribe"}</span>
             </p>
+            {affiliate && (
+              <p className="text-sm flex items-center justify-between">
+                <span className="font-medium uppercase">Affiliate: </span>
+
+                <span>
+                  {userData?.affiliateInfo?.status === true &&
+                    `Pid:${userData?.affiliateInfo?.pid}`}
+                  {userData?.affiliateInfo?.status === false && `Pending`}
+                  {userData?.affiliateInfo?.status === "rejected" && `Rejected`}
+                </span>
+              </p>
+            )}
 
             {userData?.subscription?.details && (
               <p className="text-sm flex items-center justify-between">
@@ -57,7 +70,9 @@ const Profile = () => {
               </p>
             </div>
             <button className="mt-6">
-              <a href="/" className="primary-btn ">Get Subscription</a>
+              <a href="/" className="primary-btn ">
+                Get Subscription
+              </a>
             </button>
           </div>
         ) : (

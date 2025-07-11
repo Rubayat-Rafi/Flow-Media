@@ -76,17 +76,32 @@ const MainContent = () => {
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const [pricing] = usePricing();
+  const [pid, setPid] = useState(null);
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );
 
   const categoryId = searchParams.get("id");
+
+  useEffect(() => {
+    const pid = searchParams.get("pid");
+    if (pid) {
+      localStorage.setItem("pid", pid);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("pid");
+    if (storedToken) {
+      setPid(storedToken);
+    }
+  }, [pid]);
+
+  console.log(pid)
   const filterChannel = channelDataFilter.find(
     (item) => item?._id === categoryId
   );
   const freeChannel = filterChannel?.type === "free" ? filterChannel : null;
-
-  console.log(freeChannel)
   const { data: subscription, isLoading: subLoading } = useQuery({
     queryKey: ["subscription-status", user?.email],
     queryFn: () => fetchSubscription(user.email),
@@ -118,7 +133,6 @@ const MainContent = () => {
       }, 1000);
     },
   });
-
   useEffect(() => {
     if (channelDataFilter.length > 0 && channelDataFilter[0]?.channelURL) {
       dispatch(addDefaultUrl(channelDataFilter[0].channelURL));
@@ -192,9 +206,7 @@ const MainContent = () => {
                   {pricing?.map((price) => (
                     <Link
                       key={price?._id}
-                      to={`https://go.adsflowmedia.com/go.php?oid=401&pid=${4}&sub3=${
-                        user?.email
-                      }`}
+                      to={`https://go.adsflowmedia.com/go.php?oid=401&${pid && `pid=${pid}`}&sub3=${user?.email}`}
                     >
                       <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                         <div>
