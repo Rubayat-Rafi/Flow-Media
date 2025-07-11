@@ -86,3 +86,8 @@ body {
     background: transparent;
   }
 }
+@layer affiliate {
+  .input {
+    @apply w-full px-4 py-2 text-white rounded bg-[#111827] border border-gray-700 focus:outline-none;
+  }
+}
