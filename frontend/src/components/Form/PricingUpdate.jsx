@@ -28,10 +28,13 @@ const PricingUpdate = ({ setOpenModal, selectedPrice, refetch }) => {
         `/api/update/pricing/${selectedPrice._id}`,
         data
       );
-      if (res.data.modifiedCount > 0) {
+
+      if (res.data.result?.modifiedCount > 0) {
         toast.success("Pricing updated successfully!");
         refetch();
         setOpenModal(false);
+      } else {
+        toast.info(res.data.message || "No changes made.");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");

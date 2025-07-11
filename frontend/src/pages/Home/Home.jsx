@@ -9,7 +9,7 @@ import {
 } from "../../utils/redux/slices/slice";
 import useCategory from "../../hooks/useCategory";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
-import { useNavigate, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 
 import MainContent from "../../components/MianContent/MainContent";
 const Home = () => {
@@ -63,7 +63,7 @@ const Home = () => {
     <section className="space-y-6 pb-10">
       <SportsNav onSelectCategory={category} />
 
-      <div className="max-w-[1440px] w-full mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col-reverse lg:flex-row gap-6 h-full">
+      <div className="max-w-[1500px] w-full mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col-reverse lg:flex-row gap-6 h-full">
         {/* Sidebar - Always visible on desktop, modal on mobile */}
         <div className="w-full lg:w-2/8">
           <Sidebar sidebarContent={selectedCategory} channels={categorys} />

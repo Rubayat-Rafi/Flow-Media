@@ -1,12 +1,12 @@
 import { Helmet } from "react-helmet";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
-// import { toast } from "react-hot-toast";
 import useUserData from "../../../hooks/useUserData";
 import useUserAffiliate from "../../../hooks/useAffiliates";
 const Profile = () => {
   const [userData, isLoading] = useUserData();
   const [affiliate] = useUserAffiliate();
   if (isLoading) return <LoadingSpinner />;
+
   return (
     <div>
       <Helmet>
@@ -33,7 +33,13 @@ const Profile = () => {
             </p>
             <p className="text-sm flex items-center justify-between">
               <span className="font-medium uppercase">Subscription: </span>
-              <span>{userData?.subscribe || "not subscribe"}</span>
+              <span>
+                {userData?.subscribe === "active"
+                  ? "Active"
+                  : userData?.subscribe === "expired"
+                  ? "Expired"
+                  : "Not Subscribed"}
+              </span>
             </p>
             {affiliate && (
               <p className="text-sm flex items-center justify-between">
@@ -57,9 +63,8 @@ const Profile = () => {
           </div>
         </div>
 
-        {/*Plan */}
-
-        {userData.subscribe === false ? (
+        {/* Subscription Plan Section */}
+        {userData.subscribe !== "active" ? (
           <div className="w-full md:w-6/8 border p-6 flex flex-col items-center rounded-lg justify-center bg-[var(--secondary)]">
             <div className="text-center">
               <h6 className="text-xl font-semibold mb-3">
@@ -70,7 +75,9 @@ const Profile = () => {
               </p>
             </div>
             <button className="mt-6">
-              <a href="/" className="primary-btn ">
+            
+              <a href="/" className="primary-btn">
+
                 Get Subscription
               </a>
             </button>
@@ -83,7 +90,7 @@ const Profile = () => {
               </h2>
 
               <p className="bg-[var(--background)] inline-flex px-4 py-1 text-xs rounded-full text-red-400">
-                Ex:{" "}
+                Expires:{" "}
                 {userData?.subscription?.endDate
                   ? new Date(userData.subscription.endDate).toLocaleDateString(
                       "en-US",
@@ -101,14 +108,13 @@ const Profile = () => {
             <div className="mt-6 md:mt-0 text-right">
               {userData?.subscription?.status === "active" ? (
                 <div className="space-y-4">
-                  <p className="font-semibold text-green-600  ">Active</p>
-
+                  <p className="font-semibold text-green-600">Active</p>
                   {userData?.subscription?.pack === "yearly" && (
                     <p className="text-blue-400 font-semibold"> + Add Device</p>
                   )}
                 </div>
               ) : (
-                <p className=" font-semibold px-4 py-2 rounded-lg">Expired</p>
+                <p className="font-semibold px-4 py-2 rounded-lg">Expired</p>
               )}
             </div>
           </div>

@@ -48,7 +48,7 @@ const PostCategory = () => {
     }
   };
 
-  // ✅ Reset fields on category switch
+  // Reset fields on category switch
   useEffect(() => {
     if (selectedCategory === "Channel") {
       resetField("matchDate");
@@ -62,7 +62,7 @@ const PostCategory = () => {
       resetField("channelName");
       resetField("channelLogo");
       resetField("channelURL");
-      setIsFree(false); // ✅ reset checkbox if not channel
+      setIsFree(false);
     }
   }, [selectedCategory, resetField]);
 
