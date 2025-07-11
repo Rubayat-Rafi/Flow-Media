@@ -133,7 +133,6 @@ const MainContent = () => {
       }, 1000);
     },
   });
-
   useEffect(() => {
     if (channelDataFilter.length > 0 && channelDataFilter[0]?.channelURL) {
       dispatch(addDefaultUrl(channelDataFilter[0].channelURL));
