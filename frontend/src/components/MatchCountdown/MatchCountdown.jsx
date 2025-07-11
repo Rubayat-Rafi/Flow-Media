@@ -84,26 +84,29 @@ const MatchCountdown = ({ matchId, targetDate }) => {
     return () => clearInterval(interval);
   }, [targetDate, gmtOffset, matchId, hasUpdated, updateCountdown]);
 
-  if (!timeLeft)
-    return null
+  if (!timeLeft) return null;
 
   const { days, hours, minutes, seconds } = timeLeft;
 
   return (
-    <div className="w-full max-h-[600px] h-full flex items-center justify-center relative">
+    <div
+      style={{ backgroundImage: "url('/count-bg.jpg')" }}
+      className="w-full max-h-[600px] h-full flex items-center justify-center relative bg-cover bg-center"
+    >
       {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+      {/* <div className="absolute inset-0 z-0">
         <img
           src="/count-bg.jpg"
           alt="Stadium background"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/70" />
-      </div>
+      </div> */}
+        <div className="absolute inset-0 bg-black/70" />
 
       {/* Countdown Content */}
       <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-white p-6 rounded-lg text-center">
-        <h3 className="font-bold text-2xl md:text-3xl mb-4">
+        <h3 className="font-bold text-2xl md:text-3xl">
           {events?.category}
         </h3>
 
@@ -113,7 +116,7 @@ const MatchCountdown = ({ matchId, targetDate }) => {
               <img
                 src={events?.team1Image}
                 alt={events?.teamA}
-                className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2"
+                className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2 bg-amber-200"
               />
               <h4 className="text-xl font-semibold">{events?.teamA}</h4>
             </div>
@@ -123,7 +126,7 @@ const MatchCountdown = ({ matchId, targetDate }) => {
               {days > 0 && (
                 <div className="mb-4">
                   <span className="text-3xl md:text-4xl font-bold">
-                    {days} Days
+                  In  {days} Days
                   </span>
                 </div>
               )}
@@ -133,7 +136,7 @@ const MatchCountdown = ({ matchId, targetDate }) => {
               <img
                 src={events?.team2Image}
                 alt={events?.teamB}
-                className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2"
+                className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2 bg-amber-200"
               />
               <h4 className="text-xl font-semibold">{events?.teamB}</h4>
             </div>

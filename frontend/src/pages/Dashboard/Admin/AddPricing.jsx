@@ -6,35 +6,6 @@ import toast from "react-hot-toast";
 
 const AddPricing = () => {
   const axiosSecure = useAxiosSecure();
-  //     const subscriptions = [
-  //   {
-  //     id: 1,
-  //     name: "Annual Pass",
-  //     days: "365 days",
-  //     device: "2 Devices",
-  //     value: "Best value",
-  //     regularPrice: "$240",
-  //     offerPrice: "99.99",
-  //     discount: "50% offer",
-  //     url: "/payment/yearly",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Monthly Pass",
-  //     days: "30 days",
-  //     device: "1 Device",
-  //     offerPrice: "19.99",
-  //     url: "/payment/monthly",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Weekly Pass",
-  //     days: "7 days",
-  //     device: "1 Device",
-  //     offerPrice: "14.99",
-  //     url: "/payment/weekly",
-  //   },
-  // ];
 
   const {
     register,
@@ -52,7 +23,7 @@ const AddPricing = () => {
         reset();
       }
     } catch (error) {
-      toast.error("Failed to add pricing. Please try again.");
+      toast.error(error);
     }
   };
 
@@ -87,7 +58,7 @@ const AddPricing = () => {
               <label htmlFor="days">Duration</label>
               <input
                 id="days"
-                type="text"
+                type="number"
                 {...register("days", { required: "Duration is required" })}
                 className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
                 placeholder="e.g. 365 days"
@@ -104,7 +75,7 @@ const AddPricing = () => {
               <label htmlFor="device">Device Limit</label>
               <input
                 id="device"
-                type="text"
+                type="number"
                 {...register("device", {
                   required: "Device limit is required",
                 })}
@@ -135,7 +106,7 @@ const AddPricing = () => {
               <label htmlFor="regularPrice">Regular Price (Optional)</label>
               <input
                 id="regularPrice"
-                type="text"
+                type="number"
                 {...register("regularPrice")}
                 className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
                 placeholder="e.g. $240"
@@ -147,7 +118,7 @@ const AddPricing = () => {
               <label htmlFor="offerPrice">Offer Price</label>
               <input
                 id="offerPrice"
-                type="text"
+                type="number"
                 {...register("offerPrice", {
                   required: "Offer price is required",
                 })}

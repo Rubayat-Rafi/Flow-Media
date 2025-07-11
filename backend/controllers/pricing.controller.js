@@ -29,7 +29,6 @@ exports.allPricing = async (req, res) => {
   }
 };
 
-
 exports.deletePricing = async (req, res) => {
   try {
     const db = client.db("flow_media");
@@ -53,7 +52,6 @@ exports.deletePricing = async (req, res) => {
   }
 };
 
-
 exports.updatePricing = async (req, res) => {
   try {
     const db = client.db("flow_media");
@@ -63,15 +61,20 @@ exports.updatePricing = async (req, res) => {
     const updateData = req.body;
 
     const result = await pricingCollection.updateOne(
-      { _id: id },
+      { _id: new ObjectId(id) },
       { $set: updateData }
     );
 
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Pricing not found" });
+    }
+
     if (result.modifiedCount === 0) {
-      return res.status(404).json({ message: "No changes made or pricing not found" });
+      return res.status(200).json({ message: "No changes made, but document exists", result });
     }
 
     res.status(200).json({ message: "Pricing updated successfully", result });
+
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

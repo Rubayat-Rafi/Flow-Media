@@ -23,10 +23,10 @@ const Sidebar = ({ channels }) => {
   const cat = category || "Channel";
   const filteredChannels = channels?.filter((ch) => ch.category === cat);
   const isActiveOutside = activeChannel && activeChannel.category !== cat;
-  const allChannelsToShow = [
-    ...(isActiveOutside ? [activeChannel] : []),
-    ...filteredChannels,
-  ];
+  const allChannelsToShow = [ ...(isActiveOutside ? [activeChannel] : []), ...filteredChannels,];
+
+
+
 
   return (
     <aside className="bg-[var(--secondary)] max-h-[600px] overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
@@ -187,7 +187,9 @@ const SheduleCard = ({
         }`}
       >
         <div>
-          {ch?.eventName && <h5 className="mb-2 font-semibold">{ch?.eventName}</h5>}
+          {ch?.eventName && (
+            <h5 className="mb-2 font-semibold">{ch?.eventName}</h5>
+          )}
           <div className="flex justify-between">
             <div className="font-medium text-xs flex items-center gap-2">
               {!isLive ? (

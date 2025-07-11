@@ -32,6 +32,9 @@ const Footer = () => {
               <a href="#" className="link_css">
                 Affiliates
               </a>
+              {/* <a href="/affiliate" className="link_css">
+                Affiliates
+              </a> */}
               |
               <a href="#" className="link_css">
                 Contact Us
