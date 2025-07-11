@@ -18,9 +18,9 @@ import RemoveDeviceEmail from "../pages/Dashboard/User/RemoveDeviceEmail/RemoveD
 import AddPricing from "../pages/Dashboard/Admin/AddPricing";
 import Pricing from "../pages/Dashboard/Admin/Pricing";
 import GiveSubscription from "../pages/Dashboard/Admin/GiveSubscription";
-import Affiliate from "../pages/Affiliate/Affiliate";
-import ManageAffiliate from "../pages/Dashboard/Admin/ManageAffiliate";
-import ViewAffiliate from "../pages/Dashboard/Admin/ViewAffiliate";
+// import Affiliate from "../pages/Affiliate/Affiliate";
+// import ManageAffiliate from "../pages/Dashboard/Admin/ManageAffiliate";
+// import ViewAffiliate from "../pages/Dashboard/Admin/ViewAffiliate";
 
 export const router = createBrowserRouter([
   {
@@ -43,10 +43,7 @@ export const router = createBrowserRouter([
         path: "/payment",
         element: <Payment />,
       },
-      {
-        path: "/affiliate",
-        element: <Affiliate />,
-      },
+
       {
         path: "/dashboard",
         element: (
@@ -121,26 +118,6 @@ export const router = createBrowserRouter([
               </PrivetRoute>
             ),
           },
-          {
-            path: "manage_affiliate",
-            element: (
-              <PrivetRoute>
-                <AdminRoute>
-                  <ManageAffiliate />
-                </AdminRoute>
-              </PrivetRoute>
-            ),
-          },
-          {
-            path: "affiliate/:id",
-            element: (
-              <PrivetRoute>
-                <AdminRoute>
-                  <ViewAffiliate />
-                </AdminRoute>
-              </PrivetRoute>
-            ),
-          },
 
           {
             path: "pricing",
@@ -175,3 +152,28 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+
+// {
+//   path: "/affiliate",
+//   element: <Affiliate />,
+// },
+// {
+//   path: "manage_affiliate",
+//   element: (
+//     <PrivetRoute>
+//       <AdminRoute>
+//         <ManageAffiliate />
+//       </AdminRoute>
+//     </PrivetRoute>
+//   ),
+// },
+// {
+//   path: "affiliate/:id",
+//   element: (
+//     <PrivetRoute>
+//       <AdminRoute>
+//         <ViewAffiliate />
+//       </AdminRoute>
+//     </PrivetRoute>
+//   ),
+// },
