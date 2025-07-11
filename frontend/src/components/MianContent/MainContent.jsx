@@ -96,7 +96,8 @@ const MainContent = () => {
       setPid(storedToken);
     }
   }, [pid]);
-console.log(pid)
+
+  console.log(pid)
   const filterChannel = channelDataFilter.find(
     (item) => item?._id === categoryId
   );
@@ -206,7 +207,7 @@ console.log(pid)
                   {pricing?.map((price) => (
                     <Link
                       key={price?._id}
-                      to={`https://go.adsflowmedia.com/go.php?oid=401&${`pid=${pid}`}}&sub3=${user?.email}`}
+                      to={`https://go.adsflowmedia.com/go.php?oid=401&${pid && `pid=${pid}`}&sub3=${user?.email}`}
                     >
                       <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                         <div>
