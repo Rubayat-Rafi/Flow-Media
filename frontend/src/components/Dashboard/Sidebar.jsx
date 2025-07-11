@@ -1,7 +1,6 @@
 import { GrLogout } from "react-icons/gr";
 import { IoIosSettings } from "react-icons/io";
 import { AiOutlineBars } from "react-icons/ai";
-
 import { useAuth } from "../../hooks/useAuth";
 import MenuItem from "./Menu/MenuItem";
 import { useState } from "react";
@@ -9,7 +8,7 @@ import logo from "../../../public/logo.png";
 import { Link } from "react-router";
 import useRole from "../../hooks/useRole";
 import AdminMenu from "./Menu/AdminMenu";
-import UserMenu from "./Menu/UserMenu";
+
 
 const Sidebar = () => {
   const { signOutUser } = useAuth();
@@ -27,7 +26,7 @@ const Sidebar = () => {
       <div className="flex justify-between md:hidden bg-[var(--secondary)]">
         <div>
           <div className="block cursor-pointer p-4 font-bold outline-none">
-            <Link to="/">
+            <Link to="/" className="outline-none">
               <img
                 // className='hidden md:block'
                 src={logo}
@@ -73,7 +72,6 @@ const Sidebar = () => {
             <nav>
               {/*  Menu Items */}
               {role === "admin" && <AdminMenu />}
-              {role === "user" && <UserMenu/>}
             </nav>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import Container from "./Shared/Container";
-import { useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import ProfileMenu from "./ProfileMenu/ProfileMenu";
 import LoadingSpinner from "./Shared/LoadingSpinner";
@@ -57,10 +57,10 @@ const Navbar = () => {
     <Container>
       <nav className="flex items-center justify-between py-6 relative">
         <div className="flex items-center gap-5">
-          <div>
+          <Link to='/' className="outline-none">
             <img src="/logo.png" className="max-h-[48px]" alt="logo" />
-          </div>
-          <div className="hidden  md:flex items-center gap-2 py-2 px-4 rounded-md bg-[var(--secondary)]">
+          </Link>
+          <div className="hidden  lg:flex items-center gap-2 py-2 px-4 rounded-md bg-[var(--secondary)]">
             {/* Clock Icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -114,21 +114,21 @@ const Navbar = () => {
           </div>
         </div>
         <div className="flex items-center gap-5">
-          <a href="/" className="hidden md:block hover:underline">
+          <Link href="/" className="hidden lg:block hover:underline">
             Why Flow Media?
-          </a>
-          <a href="/" className="hidden md:flex items-center gap-1 hover:underline">
+          </Link>
+          <Link to="/" className="hidden lg:flex items-center gap-1 hover:underline">
             <IoInformationCircleOutline className="text-2xl" />
             FAQ?
-          </a>
+          </Link>
           {user ? (
             <button ref={profileBtnRef} onClick={handleClickProfile}>
               <CgProfile className="text-3xl cursor-pointer hover:text-[var(--primary)] transition-colors duration-300 ease-in" />
             </button>
           ) : (
-            <a href="/login" className="primary-btn">
+            <Link to="/login" className="primary-btn">
               My Account
-            </a>
+            </Link>
           )}
         </div>
 

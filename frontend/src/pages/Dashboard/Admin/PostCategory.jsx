@@ -1,30 +1,54 @@
 import { useForm } from "react-hook-form";
 import InputField from "../../../components/Shared/InputField";
 import { Categories } from "../../../components/Categories/Categories";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import { toast } from "react-hot-toast";
 
 const PostCategory = () => {
   const { register, handleSubmit, watch, resetField, reset } = useForm();
-  const selectedCategory = watch("category"); // Changed to watch "category" instead of "Channel"
+  const selectedCategory = watch("category");
   const axiosSecure = useAxiosSecure();
+
+  const [isFree, setIsFree] = useState(false);
 
   const handlePostCategoryForm = async (data) => {
     try {
+      // ✅ Conditionally add type field for Channel
+      if (selectedCategory === "Channel") {
+        data.type = isFree ? "free" : "paid";
+      }
+
+      // ✅ Format targetDate if it's an Event
+      if (selectedCategory && selectedCategory !== "Channel") {
+        if (data.matchDate && data.matchTime) {
+          const localDate = new Date(`${data.matchDate}T${data.matchTime}:00`);
+
+          const year = localDate.getFullYear();
+          const month = String(localDate.getMonth() + 1).padStart(2, "0");
+          const day = String(localDate.getDate()).padStart(2, "0");
+          const hours = String(localDate.getHours()).padStart(2, "0");
+          const minutes = String(localDate.getMinutes()).padStart(2, "0");
+          const seconds = String(localDate.getSeconds()).padStart(2, "0");
+
+          data.targetDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        }
+      }
+
       const res = await axiosSecure.post("/api/category", data);
       if (res.status === 201) {
         reset();
-        alert("Post successfully");
+        setIsFree(false); // ✅ reset checkbox
+        toast.success("Post successfully");
       } else {
-        alert("Failed to post category");
+        toast.error("Failed to post category");
       }
     } catch (error) {
-      console.error(error.message);
-      alert("An error occurred while posting the category.");
+      toast.error(error.message || "Something went wrong.");
     }
   };
 
-  // Reset fields when category changes
+  // ✅ Reset fields on category switch
   useEffect(() => {
     if (selectedCategory === "Channel") {
       resetField("matchDate");
@@ -38,6 +62,7 @@ const PostCategory = () => {
       resetField("channelName");
       resetField("channelLogo");
       resetField("channelURL");
+      setIsFree(false); // ✅ reset checkbox if not channel
     }
   }, [selectedCategory, resetField]);
 
@@ -49,13 +74,12 @@ const PostCategory = () => {
       <div className="max-w-[800px] mx-auto bg-[var(--secondary)] p-6 rounded-md">
         <form onSubmit={handleSubmit(handlePostCategoryForm)}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Category Field - now properly watched */}
             <div className="flex flex-col gap-2">
               <label htmlFor="category">Category</label>
               <select
                 id="category"
                 {...register("category")}
-                className="w-full py-3 px-4 rounded-md border border-gray-300  focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
+                className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
               >
                 <option value="">Select a category</option>
                 {Categories.map((cat) => (
@@ -66,9 +90,8 @@ const PostCategory = () => {
               </select>
             </div>
 
-            {/* Dynamic Fields */}
+            {/* Conditional Fields */}
             {selectedCategory === "Channel" ? (
-              // Channel Fields
               <>
                 <InputField
                   label="Channel Name"
@@ -85,9 +108,21 @@ const PostCategory = () => {
                   name="channelURL"
                   register={register}
                 />
+
+                {/* ✅ Free Channel Checkbox */}
+                <div className="md:col-span-2 flex items-center gap-3 mt-2">
+                  <input
+                    type="checkbox"
+                    id="freeCheckbox"
+                    checked={isFree}
+                    onChange={(e) => setIsFree(e.target.checked)}
+                  />
+                  <label htmlFor="freeCheckbox" className="text-[var(--text)]">
+                    Make this a free channel
+                  </label>
+                </div>
               </>
             ) : selectedCategory && selectedCategory !== "Channel" ? (
-              // Event Fields
               <>
                 <InputField
                   label="Match Date"
@@ -95,17 +130,22 @@ const PostCategory = () => {
                   type="date"
                   register={register}
                 />
-                <InputField label="Team A" name="teamA" register={register} />
-                <InputField label="Team B" name="teamB" register={register} />
-                {/* time  */}
                 <div className="flex flex-col gap-2">
                   <label htmlFor="time">Match Time</label>
                   <input
                     type="time"
                     {...register("matchTime", { required: true })}
-                    className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)] "
+                    className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
                   />
                 </div>
+
+                <InputField
+                  label="Event Name"
+                  name="eventName"
+                  register={register}
+                />
+                <InputField label="Team A" name="teamA" register={register} />
+                <InputField label="Team B" name="teamB" register={register} />
                 <InputField
                   label="Team A Image URL"
                   name="team1Image"
@@ -116,24 +156,25 @@ const PostCategory = () => {
                   name="team2Image"
                   register={register}
                 />
-                <InputField
-                  label="Match Stream URL"
-                  name="matchUrl"
-                  register={register}
-                />
+                <div className="md:col-span-2">
+                  <InputField
+                    label="Match Stream URL"
+                    name="matchUrl"
+                    register={register}
+                  />
+                </div>
               </>
             ) : (
-              // Default state when no category is selected
               <div className="md:col-span-2 text-center py-4 text-gray-500">
                 Please select a category to continue
               </div>
             )}
           </div>
-          {/* Submit Button */}
+
           <button
             type="submit"
             className="signup-btn mt-6 text-[var(--background)]"
-            disabled={!selectedCategory} // Disable if no category selected
+            disabled={!selectedCategory}
           >
             Save Event
           </button>

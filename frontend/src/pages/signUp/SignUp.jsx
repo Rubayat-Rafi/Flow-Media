@@ -3,24 +3,29 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
 import { saveUser } from "../../api/utils";
-import {toast} from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 
 const SignUp = () => {
-  const { createUser, updateUserProfile } = useAuth();
+  const { createUser, updateUserProfile, setLoading } = useAuth();
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm();
 
   const handleSignUpFormSubmit = async (data) => {
     const { name, email, password } = data;
     try {
-      await createUser(email, password);
+      const userCredential = await createUser(email, password);
+      const uid = userCredential?.user?.uid;
+      data.uid = uid;
       await updateUserProfile(name);
       await saveUser(data);
       reset();
       toast.success("sign up successfull");
+      setLoading(false)
       // redirect to home page
       navigate("/");
+
     } catch (error) {
+      setLoading(false)
       toast.error("Sign up failed. please try again later.", error);
     }
   };

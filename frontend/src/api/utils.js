@@ -4,5 +4,6 @@ export const saveUser = async (user) => {
     name: user?.displayName || user?.name,
     email: user?.email,
     password: user?.password,
+    uid: user?.uid,
   });
 };

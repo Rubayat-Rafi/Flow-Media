@@ -1,41 +1,51 @@
-import HlsPlayer from "../HlsPlayer/HlsPlayer";
-import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth";
 import Subscription from "../../utils/subscription/Subscription";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FaPlay } from "react-icons/fa";
 import { Link } from "react-router";
+import useCategory from "../../hooks/useCategory";
+import LoginPalate from "../LoginPalate/LoginPalate";
+import PlayerPlate from "../PlayerPlate/PlayerPlate";
+import { useDispatch } from "react-redux";
+import {
+  addDefaultChannel,
+  addDefaultUrl,
+} from "../../utils/redux/slices/slice";
+import usePricing from "../../hooks/usePricing";
+import { useSearchParams } from "react-router";
+import FreeChannelHls from "../FeeChannelHls/FreeChannelHls";
 
-const subscriptions = [
-  {
-    id: 1,
-    name: "Annual Pass",
-    days: "365 days",
-    device: "2 Devices",
-    value: "Best value",
-    regularPrice: "$240",
-    offerPrice: "99.99",
-    discount: "50% offer",
-    url: "/payment/yearly",
-  },
-  {
-    id: 2,
-    name: "Monthly Pass",
-    days: "30 days",
-    device: "1 Device",
-    offerPrice: "19.99",
-    url: "/payment/monthly",
-  },
-  {
-    id: 3,
-    name: "Weekly Pass",
-    days: "7 days",
-    device: "1 Device",
-    offerPrice: "14.99",
-    url: "/payment/weekly",
-  },
-];
+// const subscriptions = [
+//   {
+//     id: 1,
+//     name: "Annual Pass",
+//     days: "365 days",
+//     device: "2 Devices",
+//     value: "Best value",
+//     regularPrice: "$240",
+//     offerPrice: "99.99",
+//     discount: "50% offer",
+//     url: "/payment/yearly",
+//   },
+//   {
+//     id: 2,
+//     name: "Monthly Pass",
+//     days: "30 days",
+//     device: "1 Device",
+//     offerPrice: "19.99",
+//     url: "/payment/monthly",
+//   },
+//   {
+//     id: 3,
+//     name: "Weekly Pass",
+//     days: "7 days",
+//     device: "1 Device",
+//     offerPrice: "14.99",
+//     url: "/payment/weekly",
+//   },
+// ];
 
 const fetchSubscription = async (email) => {
   const res = await axios.get(
@@ -59,16 +69,25 @@ const startTrialRequest = async () => {
 };
 
 const MainContent = () => {
+  const dispatch = useDispatch();
+  const [categorys] = useCategory();
+  const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const { url } = useSelector((state) => state?.Slice);
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
-  const queryClient = useQueryClient();
-  const {
-    data: subscription,
-    isLoading: subLoading,
-    isError,
-  } = useQuery({
+  const [pricing] = usePricing();
+  const channelDataFilter = categorys?.filter(
+    (item) => item?.category === "Channel"
+  );
+
+  const categoryId = searchParams.get("id");
+  const filterChannel = channelDataFilter.find(
+    (item) => item?._id === categoryId
+  );
+  const freeChannel = filterChannel?.type === "free" ? filterChannel : null;
+
+  console.log(freeChannel)
+  const { data: subscription, isLoading: subLoading } = useQuery({
     queryKey: ["subscription-status", user?.email],
     queryFn: () => fetchSubscription(user.email),
     enabled: !!user?.email,
@@ -80,19 +99,18 @@ const MainContent = () => {
     queryFn: fetchTrialStatus,
     retry: false,
     refetchOnWindowFocus: false,
+    refetchInterval: 5000,
   });
 
   const { mutate: startTrial } = useMutation({
     mutationFn: startTrialRequest,
     onSuccess: () => {
       setTrialActive(true);
-
       const interval = setInterval(() => {
         setTrialTimeLeft((prev) => {
           if (prev === 1) {
             clearInterval(interval);
             setTrialActive(false);
-            queryClient.invalidateQueries(["free-trial-status"]);
             return 0;
           }
           return prev - 1;
@@ -101,148 +119,138 @@ const MainContent = () => {
     },
   });
 
-  // const hasTrialUsed = trialData?.used;
+  useEffect(() => {
+    if (channelDataFilter.length > 0 && channelDataFilter[0]?.channelURL) {
+      dispatch(addDefaultUrl(channelDataFilter[0].channelURL));
+      dispatch(addDefaultChannel(channelDataFilter[0]));
+    }
+  }, [channelDataFilter, dispatch]);
 
   return (
-    <Subscription
-      className={`${
-        user ? "max-md:h-fit" : "h-full"
-      } w-full md:bg-[var(--secondary)] rounded-md shadow-lg p-8 border border-[var(--text)]/10`}
-    >
+    <Subscription className="w-full lg:h-[600px]">
       <section className="h-full w-full">
-        {!user &&
-          !trialLoading &&
-          !trialActive &&
-          trialData?.used === false && (
-            <div className="text-center">
-              <button
-                onClick={() => startTrial()}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded mb-4"
-                disabled={trialActive}
+        {!user ? (
+          trialActive ? (
+            <PlayerPlate
+              user={user}
+              trialActive={trialActive}
+              trialTimeLeft={trialTimeLeft}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full p-4">
+              <div
+                className={`${
+                  trialData?.used === false &&
+                  "rounded-xl p-4 md:p-6 text-center bg-[var(--secondary)] max-w-md md:min-w-md  shadow-md shadow-[#dd8f3c]"
+                } `}
               >
-                Start 1-Minute Free Trial
-              </button>
-              <p className="text-sm text-gray-500">
-                Enjoy free access for 60 seconds.
-              </p>
-            </div>
-          )}
+                {trialData?.used === false && (
+                  <>
+                    <h2 className="text-xl font-bold mb-4">
+                      Start Watching Now
+                    </h2>
+                    <p className="mb-6">
+                      Try our free trial to access all content
+                    </p>
+                  </>
+                )}
 
-        {!user && trialLoading && (
-          <div className="text-center text-gray-500">
-            Checking free trial...
-          </div>
-        )}
-
-        {!user && trialData?.used && !trialActive && (
-          <div className="flex items-center justify-center lg:h-[500px] w-full">
-            <div
-              className="bg-[var(--background)] rounded-xl p-6"
-              style={{ boxShadow: "0 2px 6px 0 var(--primary)" }}
-            >
-              <Link
-                to="/signup"
-                className="text-xl max-md:text-base bg-[var(--primary)] py-3 px-4 rounded-md cursor-pointer uppercase"
-              >
-                Signup to keep watching
-              </Link>
-              <p className="text-base max-md:text-xs text-center mt-4">
-                Already have an account?
-                <Link
-                  to="/login"
-                  className="text-[var(--primary)] font-medium ml-2"
-                >
-                  Log in
-                </Link>
-              </p>
-            </div>
-          </div>
-        )}
-
-        {!user && trialActive && (
-          <div className="text-center">
-            <p className="text-lg text-gray-500">
-              Trial expires in: {trialTimeLeft}s
-            </p>
-            <HlsPlayer src={url} />
-          </div>
-        )}
-
-        {user && subLoading && (
-          <div className="text-center text-gray-600">
-            Checking subscription...
-          </div>
-        )}
-        {user && isError && (
-          <div className="text-center text-red-500">
-            Failed to fetch subscription.
-          </div>
-        )}
-        {user && !subscription && !subLoading && (
-          <div className="flex items-center justify-center h-full w-full">
-            <div className="bg-[var(--background)] rounded-xl p-6">
-              <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
-              <p className="text-sm">
-                Watch Unlimited BOXING, MMA (PPV INCLUDED), NFL, NCAAF, NCAAB,
-                Rodeo, MLB, NHL, NBA — No Blackouts. Instant activation!
-              </p>
-              <div className="flex flex-col gap-6 mt-6">
-                {subscriptions.map((subscription) => (
-                  <Link
-                    key={subscription.id}
-                    to={`${import.meta.env.VITE_PAYMENT_URL}${subscription.url}?email=${user?.email}&price=${subscription.offerPrice}`}
+                {trialData?.used === false && !trialActive && (
+                  <button
+                    onClick={() => startTrial()}
+                    className="bg-[var(--primary)] flex gap-2 items-center justify-center text-white  px-4 py-2 lg:py-3 w-full rounded-md font-medium hover:bg-opacity-90  cursor-pointer transition"
                   >
-                    <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
-                      <div>
-                        <div className="flex items-center gap-6">
-                          <h2 className="text-xl font-semibold group-hover:text-[var(--background)]">
-                            {subscription.name}
-                          </h2>
-                          <p className="text-sm group-hover:text-[var(--secondary)]">
-                            {subscription.days}
-                          </p>
-                        </div>
-                        <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">
-                          {subscription.device}
-                        </p>
-                      </div>
-                      <div>
-                        {subscription.value && (
-                          <p className="uppercase text-center absolute -top-3 bg-[var(--primary)] text-xs p-1 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                            {subscription.value}
-                          </p>
-                        )}
-                        <div className="flex items-end flex-col space-y-2">
-                          <div className="flex items-center space-x-2">
-                            {subscription.regularPrice && (
-                              <p className="line-through text-sm text-gray-400 group-hover:text-[var(--secondary)]">
-                                {subscription.regularPrice}
-                              </p>
-                            )}
-                            <p className="font-semibold text-lg group-hover:text-[var(--background)]">
-                              ${subscription.offerPrice}
+                    <FaPlay className="text-xl" />
+                    Watch Now
+                  </button>
+                )}
+
+                {trialData?.used === true && <LoginPalate />}
+
+                {trialLoading && (
+                  <div className="text-center py-4">
+                    <p>Checking trial availability...</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        ) : subscription === "active" ? (
+          <PlayerPlate />
+        ) : (subscription === "expired" || subscription === false) &&
+          !subLoading &&
+          !trialActive ? (
+          !freeChannel && !subscription ? (
+            <div className="flex items-center justify-center h-full w-full">
+              <div className="bg-[var(--secondary)] rounded-xl p-4">
+                <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
+                <p className="text-sm">
+                  Watch Unlimited BOXING, MMA (PPV INCLUDED), NFL, NCAAF, NCAAB,
+                  Rodeo, MLB, NHL, NBA — No Blackouts. Instant activation!
+                </p>
+                <div className="flex flex-col gap-6 mt-6">
+                  {pricing?.map((price) => (
+                    <Link
+                      key={price?._id}
+                      to={`https://go.adsflowmedia.com/go.php?oid=401&pid=${4}&sub3=${
+                        user?.email
+                      }`}
+                    >
+                      <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
+                        <div>
+                          <div className="flex items-center gap-6">
+                            <h2 className="text-xl font-semibold group-hover:text-[var(--background)]">
+                              {price?.passName}
+                            </h2>
+                            <p className="text-sm group-hover:text-[var(--secondary)]">
+                              {price?.days} Days
                             </p>
                           </div>
-                          {subscription.discount && (
-                            <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                              {subscription.discount}
+                          <p className="mt-2 text-sm group-hover:text-[var(--secondary)]">
+                            {price?.device} Device
+                          </p>
+                        </div>
+                        <div>
+                          {price?.value && (
+                            <p className="uppercase text-center absolute -top-3 bg-[var(--primary)] text-xs p-1 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
+                              {price.value}
                             </p>
                           )}
+                          <div className="flex items-end flex-col space-y-2">
+                            <div className="flex items-center space-x-2">
+                              {price.regularPrice && (
+                                <p className="line-through text-sm text-gray-400 group-hover:text-[var(--secondary)]">
+                                  {price?.regularPrice}
+                                </p>
+                              )}
+                              <p className="font-semibold text-lg group-hover:text-[var(--background)]">
+                                ${price?.offerPrice}
+                              </p>
+                            </div>
+                            {price.discount && (
+                              <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
+                                {price?.discount} Offer
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  ))}
+                </div>
+                <p className="mt-4 text-sm">
+                  Our subscriptions do not auto-renew. You will need to renew
+                  manually if you wish to continue.
+                </p>
               </div>
-
-              <p className="mt-4 text-sm">
-                Our subscriptions do not auto-renew. You will need to renew
-                manually if you wish to continue.
-              </p>
             </div>
-          </div>
-        )}
-        {user && subscription && <HlsPlayer src={url} />}
+          ) : (
+            <FreeChannelHls
+              src={freeChannel?.channelURL}
+              channelName={freeChannel?.channelName}
+            />
+          )
+        ) : null}
       </section>
     </Subscription>
   );

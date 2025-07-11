@@ -2,12 +2,12 @@ require("dotenv").config();
 const { ObjectId } = require("mongodb");
 const client = require("../lib/db_connection/db_connection.js");
 const bcrypt = require("bcryptjs");
-
+const admin = require("../utils/firebase/firebaseAdmin.js")
 exports.registerUser = async (req, res) => {
   try {
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
-    const { name, email, password } = req.body;
+    const { name, email, password, uid } = req.body;
     const existingUser = await usersCollection.findOne({ email });
     if (existingUser) {
       return res
@@ -19,6 +19,7 @@ exports.registerUser = async (req, res) => {
       "subscription.emails": email,
       "subscription.status": "active",
     });
+
     const isSubscribed = Boolean(subscriptionOwner);
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = {
@@ -27,6 +28,8 @@ exports.registerUser = async (req, res) => {
       password: hashedPassword,
       role: "user",
       subscribe: isSubscribed,
+      revenue: [],
+      uid,
       timestamp: Date.now(),
     };
     const result = await usersCollection.insertOne(newUser);
@@ -53,7 +56,7 @@ exports.userRole = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.send({ role: user.role, userData:user });
+    res.send({ role: user.role, userData: user });
   } catch (err) {
     res.status(500).json({ message: "Role Not Found", error: err.message });
   }
@@ -103,18 +106,48 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-  const db = client.db("flow_media");
-  const usersCollection = db.collection("users");
-  const id = req.params.id;
   try {
-    const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
-    if (result.deletedCount === 0) {
+    const db = client.db("flow_media");
+    const users = db.collection("users");
+    const uid = req.params.id;
+    await admin.auth().deleteUser(uid);
+    const result = await users.findOneAndDelete({ uid });
+    if (!result) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "User deleted successfully", success: true });
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to delete user",
+      error: err.message,
+      success: false,
+    });
+  }
+};
+
+// get user data
+exports.userData = async (req, res) => {
+  try {
+    const db = client.db("flow_media");
+    const users = db.collection("users");
+    const email = req.params.email;
+    
+    if (!email) {
+      return res.status(400).json({ message: "Email parameter is required" });
+    }
+    const user = await users.findOne({ email: email });
+
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json({ message: "User deleted successfully" });
+
+    return res.status(200).json(user); 
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to delete user", error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };

@@ -2,15 +2,24 @@ import { useRef, useState } from "react";
 import Container from "../Shared/Container";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { Categories } from "../Categories/Categories";
-
+import { useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
+import { useAuth } from "../../hooks/useAuth";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 const SportsNav = ({ onSelectCategory }) => {
+  const { defaultChannel } = useSelector((state) => state?.Slice);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("q");
+  const categoryId = searchParams.get("id");
   const scrollRef = useRef(null);
-  const [active, setActive] = useState("Channel");
+  const [active, setActive] = useState(category || "Channel");
   const handleClick = (category) => {
     setActive(category);
     onSelectCategory(category);
   };
-
   const scroll = (direction) => {
     if (scrollRef.current) {
       scrollRef.current.scrollBy({
@@ -41,11 +50,26 @@ const SportsNav = ({ onSelectCategory }) => {
             {Categories.map((cat) => (
               <button
                 key={cat.name}
-                onClick={() => handleClick(cat.name)}
+                onClick={() => {
+                  if (!categoryId && !category) {
+                    navigate(`/?q=${cat.name}&id=${defaultChannel?._id}`);
+                  } else {
+                    navigate(`/?q=${cat.name}&id=${categoryId}`),
+                      handleClick(cat.name);
+                  }
+                  !user &&
+                    toast.error("Login for full access!", {
+                      style: {
+                        background: "red",
+                        color: "#fff",
+                      },
+                      position: "bottom-center",
+                    });
+                }}
                 className={`px-2 py-1 md:px-4 md:py-2 rounded md:rounded-md font-semibold flex items-center gap-1 md:gap-2 transition duration-200 uppercase cursor-pointer text-sm md:text-base" ${
                   active === cat.name
                     ? "bg-[var(--primary)] text-[var(--background)]"
-                    : "bg-[var(--background)] hover:bg-[var(--primary)] hover:text-[var(--background)]"
+                    : "hover:bg-[var(--primary)] hover:text-[var(--background)]"
                 }`}
               >
                 <cat.Icon className="text-lg  md:text-xl hover:text-[var(--background)]" />

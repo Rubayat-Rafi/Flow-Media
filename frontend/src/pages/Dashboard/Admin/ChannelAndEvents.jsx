@@ -1,11 +1,19 @@
+import { FaEdit } from "react-icons/fa";
 import LoadingSpinner from "../../../components/Shared/LoadingSpinner";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useCategory from "../../../hooks/useCategory";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import ChannelUpdate from "../../../components/Form/ChannelUpdate";
+import EventUpdate from "../../../components/Form/EventUpdate";
 
 const ChannelAndEvents = () => {
   const [categories, isLoading, refetch] = useCategory();
   const axiosSecure = useAxiosSecure();
+  const [showModal, setShowModal] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState(null);
+  const [eventModal, setEventModal] = useState(false);
+  const [selectEvent, setSelecteEvent] = useState(null);
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -37,14 +45,10 @@ const ChannelAndEvents = () => {
       </div>
     ));
   };
-
   const channels = categories.filter(
     (channel) => channel.category === "Channel"
   );
-
   const events = categories.filter((event) => event.category !== "Channel");
-
-  console.log(events);
 
   return (
     <div className="space-y-12">
@@ -55,7 +59,7 @@ const ChannelAndEvents = () => {
       {/* channels  */}
       {channels && (
         <div className="grid grid-cols-1 lg:grid-cols-2  xl:grid-cols-3 gap-6">
-          {channels.map((channel) => (
+          {channels?.map((channel) => (
             <div
               key={channel._id}
               className="bg-[var(--secondary)] p-6 rounded-lg  border border-[var(--text)]/20 overflow-hidden"
@@ -118,31 +122,52 @@ const ChannelAndEvents = () => {
                   </div>
                 </div>
 
-                {/* Delete Button */}
-                <button
-                  className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors"
-                  title="Delete channel"
-                  onClick={() => handleDelete(channel?._id)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                {/* buttons  */}
+                <div className="flex gap-4">
+                  {/* Delete Button */}
+                  <button
+                    className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors"
+                    title="Delete channel"
+                    onClick={() => handleDelete(channel?._id)}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                  {/* update button  */}
+                  <button
+                    onClick={() => {
+                      setSelectedChannel(channel);
+                      setShowModal(true);
+                    }}
+                    className="hover:bg-green-50 p-1 rounded-full transition-colors duration-300 ease-in"
+                  >
+                    <FaEdit className="text-lg text-green-500 hover:text-green-700" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
+      )}
+      {/* channel update modal show */}
+      {showModal && selectedChannel && (
+        <ChannelUpdate
+          refetch={refetch}
+          channel={selectedChannel}
+          closeModal={setShowModal}
+        />
       )}
 
       {/* events  */}
@@ -157,28 +182,41 @@ const ChannelAndEvents = () => {
               {/* Card Header */}
               <div className="bg-[var(--primary)] px-4 py-2 flex justify-between items-center">
                 <span className="text-white font-medium">
-                  {event?.category} Match
+                  {event?.category} Match {event?.eventName && (`( ${event?.eventName} )`)}
                 </span>
-                <button
-                  className="text-white hover:text-red-200 transition-colors"
-                  onClick={() => handleDelete(event?._id)}
-                  title="Delete event"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+
+                <div className="flex items-center space-x-3">
+                  {/* delete button  */}
+                  <button
+                    className="text-white hover:text-red-200 transition-colors"
+                    onClick={() => handleDelete(event?._id)}
+                    title="Delete event"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                  {/* update button  */}
+                  <button
+                    onClick={() => {
+                      setEventModal(true), setSelecteEvent(event);
+                    }}
+                    className=" transition-colors duration-300 ease-in"
+                  >
+                    <FaEdit className="text-lg text-white hover:text-[var(--text)]" />
+                  </button>
+                </div>
               </div>
 
               {/* Card Body */}
@@ -299,6 +337,13 @@ const ChannelAndEvents = () => {
             </div>
           ))}
         </div>
+      )}
+      {eventModal && selectEvent && (
+        <EventUpdate
+          refetch={refetch}
+          event={selectEvent}
+          setEventModal={setEventModal}
+        />
       )}
     </div>
   );

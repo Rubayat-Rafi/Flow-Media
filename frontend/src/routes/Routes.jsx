@@ -12,9 +12,12 @@ import PostCategory from "../pages/Dashboard/Admin/PostCategory";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import AddDeviceEmail from "../pages/Dashboard/User/AddDeviceEmail/AddDeviceEmail";
 import ChannelAndEvents from "../pages/Dashboard/Admin/ChannelAndEvents";
-import Subscription from "../pages/Dashboard/User/Subscription/Subscription";
+
 import Profile from "../pages/Dashboard/Common/Profile";
 import RemoveDeviceEmail from "../pages/Dashboard/User/RemoveDeviceEmail/RemoveDeviceEmail";
+import AddPricing from "../pages/Dashboard/Admin/AddPricing";
+import Pricing from "../pages/Dashboard/Admin/Pricing";
+import GiveSubscription from "../pages/Dashboard/Admin/GiveSubscription";
 
 export const router = createBrowserRouter([
   {
@@ -102,10 +105,32 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "subscription",
+            path: "add-pricing",
             element: (
               <PrivetRoute>
-                <Subscription />
+                <AdminRoute>
+                  <AddPricing />
+                </AdminRoute>
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "pricing",
+            element: (
+              <PrivetRoute>
+                <AdminRoute>
+                  <Pricing />
+                </AdminRoute>
+              </PrivetRoute>
+            ),
+          },
+          {
+            path: "give-subscription",
+            element: (
+              <PrivetRoute>
+                <AdminRoute>
+                  <GiveSubscription />
+                </AdminRoute>
               </PrivetRoute>
             ),
           },

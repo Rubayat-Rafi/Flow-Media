@@ -2,11 +2,11 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import {toast} from 'react-hot-toast';
+import { toast } from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { signInUser } = useAuth();
+  const { signInUser, setLoading } = useAuth();
   const { register, handleSubmit, reset } = useForm();
 
   const handleSignInFormSubmit = async (data) => {
@@ -15,10 +15,11 @@ const Login = () => {
       await signInUser(email, password);
       reset();
       toast.success("sign In successfull");
-      // redirect to home page
       navigate("/");
     } catch (error) {
       toast.error("Login faild. Please try again Later.", error);
+      navigate("/signup");
+      setLoading(false);
     }
   };
 
@@ -89,19 +90,6 @@ const Login = () => {
 
           {/* Remember Me & Forgot Password */}
           <div className="flex items-center justify-end">
-            {/* <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="remember"
-                className="h-4 w-4 text-[var(--primary)] focus:ring-[var(--primary)] border-gray-300 rounded"
-              />
-              <label
-                htmlFor="remember"
-                className="ml-2 text-sm text-[var(--background)]"
-              >
-                Remember me
-              </label>
-            </div> */}
             <a
               href="#"
               className="text-sm text-[var(--primary)] hover:underline"
