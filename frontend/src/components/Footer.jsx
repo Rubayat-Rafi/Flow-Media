@@ -29,7 +29,7 @@ const Footer = () => {
                 Privacy Policy
               </a>
               |
-              <a href="#" className="link_css">
+              <a href="https://pub.adsflowmedia.com/panel/auth/register" className="link_css">
                 Affiliates
               </a>
               {/* <a href="/affiliate" className="link_css">

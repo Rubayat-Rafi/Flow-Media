@@ -90,7 +90,7 @@ const MatchCountdown = ({ matchId, targetDate }) => {
 
   return (
     <div
-      style={{ backgroundImage: "url('/count-bg.jpg')" }}
+      style={{ backgroundImage: "url('https://res.cloudinary.com/dzdfnuno8/image/upload/v1752337122/count-bg_jaffwd.jpg')" }}
       className="w-full max-h-[600px] h-full flex items-center justify-center relative bg-cover bg-center"
     >
       {/* Background Image */}

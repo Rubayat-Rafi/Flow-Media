@@ -7,13 +7,15 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(-1);
   const { events } = useSelector((state) => state?.Slice);
-  const isMp4 = src.endsWith(".mp4");
-  const isM3u8 = src.endsWith(".m3u8");
+
   const isEmbed =
     src.includes("youtube.com") ||
     src.includes("vimeo.com") ||
     src.includes("embed") ||
     src.includes("player.php");
+  const isMp4 = src.endsWith(".mp4");
+
+  const isM3u8 = src.endsWith(".m3u8");
 
   useEffect(() => {
     if (isM3u8 && Hls.isSupported()) {
@@ -72,8 +74,6 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
       setSelectedLevel(levelIndex);
     }
   };
-
-  
 
   if (isEmbed) {
     return (
@@ -137,7 +137,7 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
           ref={videoRef}
           controls
           autoPlay
-          muted
+
           playsInline
           className="w-full relative aspect-video bg-[var(--background)]"
         />
