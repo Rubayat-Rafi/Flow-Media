@@ -10,8 +10,9 @@ import {
 import useCategory from "../../hooks/useCategory";
 import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 import { useSearchParams } from "react-router";
-
 import MainContent from "../../components/MianContent/MainContent";
+
+
 const Home = () => {
   const { hideVideoFlag } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
@@ -20,6 +21,8 @@ const Home = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const reqCategory = searchParams.get("q");
   const [isMounted, setIsMounted] = useState(false);
+
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -59,6 +62,9 @@ const Home = () => {
   if (!isMounted || isLoading) {
     return <LoadingSpinner />;
   }
+
+
+
   return (
     <section className="space-y-6 pb-10">
       <SportsNav onSelectCategory={category} />
