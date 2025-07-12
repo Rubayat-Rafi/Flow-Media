@@ -67,7 +67,7 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
       video.src = src;
       tryAutoPlay();
     }
-  }, [src]);
+  }, [src, isM3u8, isMp4]);
   const handleQualityChange = (levelIndex) => {
     if (hlsInstance) {
       hlsInstance.currentLevel = levelIndex;
@@ -163,4 +163,3 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
 };
 
 export default HlsPlayer;
-
