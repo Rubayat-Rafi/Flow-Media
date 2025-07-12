@@ -47,32 +47,32 @@ const MainContent = () => {
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const [pricing] = usePricing();
   const [pid, setPid] = useState(null);
+  const [worker, setWorker] = useState(null);
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );
-
   const categoryId = searchParams.get("id");
-
   useEffect(() => {
     const pid = searchParams.get("pid");
+    const sub6 = searchParams.get("sub6");
     if (pid) {
       localStorage.setItem("pid", pid);
+      localStorage.setItem("worker", sub6);
     }
   }, [searchParams]);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("pid");
-    if (storedToken) {
-      setPid(storedToken);
+    const storedPid = localStorage.getItem("pid");
+    const storedWorker = localStorage.getItem("worker");
+    if (storedPid && storedWorker) {
+      setPid(storedPid);
+      setWorker(storedWorker);
     }
-  }, [pid]);
-
-  console.log(pid)
+  }, [pid, worker]);
   const filterChannel = channelDataFilter.find(
     (item) => item?._id === categoryId
   );
   const freeChannel = filterChannel?.type === "free" ? filterChannel : null;
-  
   const { data: subscription, isLoading: subLoading } = useQuery({
     queryKey: ["subscription-status", user?.email],
     queryFn: () => fetchSubscription(user.email),
@@ -112,7 +112,11 @@ const MainContent = () => {
   }, [channelDataFilter, dispatch]);
 
   return (
-    <Subscription className={`w-full lg:h-[600px]  ${!subscription && 'bg-[var(--secondary)] rounded-lg'}`}>
+    <Subscription
+      className={`w-full lg:h-[600px]  ${
+        !subscription && "bg-[var(--secondary)] rounded-lg"
+      }`}
+    >
       <section className="h-full w-full">
         {!user ? (
           trialActive ? (
@@ -167,9 +171,7 @@ const MainContent = () => {
           !trialActive ? (
           !freeChannel && !subscription ? (
             <div className="flex items-center justify-center h-full w-full">
-              <div
-                className="bg-[var(--background)] rounded-xl p-4"
-              >
+              <div className="bg-[var(--background)] rounded-xl p-4">
                 <h1 className="text-2xl font-semibold mb-2">Select a plan</h1>
                 <p className="text-sm">
                   Watch Unlimited BOXING, MMA (PPV INCLUDED), NFL, NCAAF, NCAAB,
@@ -179,7 +181,7 @@ const MainContent = () => {
                   {pricing?.map((price) => (
                     <Link
                       key={price?._id}
-                      to={`https://go.adsflowmedia.com/go.php?oid=401&${pid && `pid=${pid}`}&sub3=${user?.email}`}
+                      to={`https://go.adsflowmedia.com/go.php?oid=401&${pid && `pid=${pid}`}&sub3=${user?.email}&sub6=${worker}`}
                     >
                       <div className="group hover:bg-[var(--primary)] px-4 py-3 border border-[var(--primary)] rounded-lg flex items-center justify-between relative transition-colors duration-300 ease-linear">
                         <div>
