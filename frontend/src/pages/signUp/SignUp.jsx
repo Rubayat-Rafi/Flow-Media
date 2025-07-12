@@ -34,7 +34,7 @@ const SignUp = () => {
     <section
       className="flex flex-col items-center justify-center min-h-screen p-4"
       style={{
-        backgroundImage: "url('/sports-bg.jpg')",
+        backgroundImage: "url('https://res.cloudinary.com/dzdfnuno8/image/upload/v1752337116/sports-bg_irqw9u.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
