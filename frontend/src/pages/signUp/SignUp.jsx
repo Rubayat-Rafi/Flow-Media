@@ -8,7 +8,12 @@ import { toast } from "react-hot-toast";
 const SignUp = () => {
   const { createUser, updateUserProfile, setLoading } = useAuth();
   const navigate = useNavigate();
-  const { register, handleSubmit, reset } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
   const handleSignUpFormSubmit = async (data) => {
     const { name, email, password } = data;
@@ -20,12 +25,11 @@ const SignUp = () => {
       await saveUser(data);
       reset();
       toast.success("sign up successfull");
-      setLoading(false)
+      setLoading(false);
       // redirect to home page
       navigate("/");
-
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       toast.error("Sign up failed. please try again later.", error);
     }
   };
@@ -34,7 +38,8 @@ const SignUp = () => {
     <section
       className="flex flex-col items-center justify-center min-h-screen p-4"
       style={{
-        backgroundImage: "url('https://res.cloudinary.com/dzdfnuno8/image/upload/v1752337116/sports-bg_irqw9u.jpg')",
+        backgroundImage:
+          "url('https://res.cloudinary.com/dzdfnuno8/image/upload/v1752337116/sports-bg_irqw9u.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -87,11 +92,23 @@ const SignUp = () => {
             <input
               type="email"
               name="email"
-              {...register("email", { required: true })}
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: "Invalid email address",
+                },
+              })}
               placeholder="Enter your email"
               className="input-fild"
               required
             />
+
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           {/* Password Field */}
@@ -102,11 +119,34 @@ const SignUp = () => {
             <input
               type="password"
               name="password"
-              {...register("password", { required: true })}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+                pattern: {
+                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+                  message:
+                    "Password must contain uppercase, lowercase, and number",
+                },
+                validate: (value) => {
+                  if (value === "password123") {
+                    return "Don't use common passwords";
+                  }
+                  return true;
+                },
+              })}
               placeholder="Enter your password"
               className="input-fild"
               required
             />
+
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           {/* Remember Me & Forgot Password */}
