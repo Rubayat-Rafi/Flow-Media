@@ -6,9 +6,7 @@ const package = require("../utils/subscriptions/packages/packages.js");
 exports.payments = async (req, res) => {
   try {
     const { pack, queryEmail, formData, caustomDate } = req.body;
-    const splitPack = pack.split(" ")[0].toLowerCase();
-    const validPack = splitPack === "annual" ? "yearly" : splitPack;
-    const plan = validPack;
+    const plan = pack;
     const expiryDate = await package.Package({ plan, caustomDate });
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
@@ -18,7 +16,6 @@ exports.payments = async (req, res) => {
         .status(200)
         .json({ message: "User not found", success: false });
     }
-
     if (
       findUser.subscribe === "active" &&
       findUser.subscription &&

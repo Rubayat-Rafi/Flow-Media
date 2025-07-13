@@ -6,7 +6,7 @@ exports.Package = async ({ plan, caustomDate }) => {
     now.setMonth(now.getMonth() + 1);
   } else if (plan === "yearly") {
     now.setFullYear(now.getFullYear() + 1);
-  } else if (plan === "caustom") {
+  } else if (plan !== "weekly" || plan !== "monthly" || plan !== "yearly") {
     const days = parseInt(caustomDate);
     if (!isNaN(days) && days > 0) {
       now.setDate(now.getDate() + days);

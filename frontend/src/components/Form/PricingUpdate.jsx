@@ -58,18 +58,22 @@ const PricingUpdate = ({ setOpenModal, selectedPrice, refetch }) => {
         <div className="max-w-[800px] mx-auto bg-[var(--secondary)] p-6 rounded-md">
           <form onSubmit={handleSubmit(handleUpdatePricing)}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Pass Name */}
+              {/* Pass Name (Dropdown) */}
               <div className="flex flex-col gap-2">
                 <label htmlFor="passName">Pass Name</label>
-                <input
+                <select
                   id="passName"
-                  type="text"
                   {...register("passName", {
                     required: "Pass name is required",
                   })}
                   className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
-                  placeholder="e.g. Annual Pass"
-                />
+                >
+                  <option value="">Select a pass type</option>
+                  <option value="yearly">Yearly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="custom">Custom</option>
+                </select>
                 {errors.passName && (
                   <span className="text-red-500 text-sm">
                     {errors.passName.message}

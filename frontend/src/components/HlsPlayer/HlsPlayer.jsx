@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 import { useSelector } from "react-redux";
+
 const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
   const videoRef = useRef(null);
   const [hlsInstance, setHlsInstance] = useState(null);
@@ -14,55 +15,55 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
     src.includes("vimeo.com") ||
     src.includes("embed") ||
     src.includes("player.php");
+  const tryAutoPlay = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    try {
+      await video.play();
+    } catch (e) {
+      console.warn("Muted autoplay failed", e);
+    }
+    setTimeout(async () => {
+      video.muted = false;
+      try {
+        await video.play();
+        console.log("Auto-unmute success");
+      } catch (e) {
+        console.warn("Auto-unmute failed (browser blocked it)", e);
+        video.muted = true;
+      }
+    }, 500);
+  };
 
   useEffect(() => {
+    const video = videoRef.current;
     if (isM3u8 && Hls.isSupported()) {
       const hls = new Hls({
         maxMaxBufferLength: 30,
         maxBufferLength: 10,
         maxBufferSize: 60 * 1000 * 1000,
       });
-
       setHlsInstance(hls);
       hls.loadSource(src);
-      hls.attachMedia(videoRef.current);
-
+      hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         setLevels(hls.levels);
         const level720 = hls.levels.findIndex((level) => level.height === 720);
-        if (level720 !== -1) {
-          hls.currentLevel = level720;
-          setSelectedLevel(level720);
-        } else {
-          hls.currentLevel = -1;
-          setSelectedLevel(-1);
-        }
-
-        videoRef.current.muted = true;
-        const playPromise = videoRef.current.play();
-
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // Show play button or handle error
-          });
-        }
+        hls.currentLevel = level720 !== -1 ? level720 : -1;
+        setSelectedLevel(hls.currentLevel);
+        tryAutoPlay();
       });
 
       return () => {
         hls.destroy();
       };
-    } else if (
-      isM3u8 &&
-      videoRef.current?.canPlayType("application/vnd.apple.mpegurl")
-    ) {
-      // For Safari and other browsers with native HLS support
-      videoRef.current.src = src;
-      videoRef.current.muted = true;
-      videoRef.current.play().catch((e) => console.log("Auto-play error:", e));
+    } else if (isM3u8 && video?.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = src;
+      tryAutoPlay();
     } else if (isMp4) {
-      videoRef.current.src = src;
-      videoRef.current.muted = true;
-      videoRef.current.play().catch((e) => console.log("Auto-play error:", e));
+      video.src = src;
+      tryAutoPlay();
     }
   }, [src, isM3u8, isMp4]);
 
@@ -72,8 +73,6 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
       setSelectedLevel(levelIndex);
     }
   };
-
-  
 
   if (isEmbed) {
     return (
@@ -93,19 +92,16 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
             </div>
           </div>
         )}
-
         <div className="relative w-full aspect-video">
           <iframe
             src={src}
             className="w-full h-full bg-[var(--background)]"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            autoPlay
             title="Embedded Video"
           />
-
           {!user && trialActive && (
-            <div className="bg-red-600 w-6 h-6 lg:w-10 lg:h-10 text-xs lg:text-sm  z-20 flex items-center justify-center absolute right-0 top-0 ">
+            <div className="bg-red-600 w-6 h-6 lg:w-10 lg:h-10 text-xs lg:text-sm z-20 flex items-center justify-center absolute right-0 top-0">
               {trialTimeLeft}s
             </div>
           )}
@@ -113,7 +109,6 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
       </div>
     );
   }
-
   return (
     <div className="bg-[var(--background)]">
       {src && (
@@ -137,18 +132,16 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
           ref={videoRef}
           controls
           autoPlay
-          muted
           playsInline
           className="w-full relative aspect-video bg-[var(--background)]"
         />
-
         {levels.length > 0 && (
-          <div className="absolute -bottom-8 right-0 text-xs lg:text-sm py-2 ">
+          <div className="absolute -bottom-8 right-0 text-xs lg:text-sm py-2">
             <label className="mr-2">Quality:</label>
             <select
               value={selectedLevel}
               onChange={(e) => handleQualityChange(parseInt(e.target.value))}
-              className=" bg-[var(--secondary)]  "
+              className="bg-[var(--secondary)]"
             >
               <option value={-1}>Auto</option>
               {levels.map((level, i) => (
@@ -160,7 +153,7 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
           </div>
         )}
         {!user && trialActive && (
-          <div className="bg-red-600 w-6 h-6 lg:w-10 lg:h-10 text-xs lg:text-sm  z-20 flex items-center justify-center absolute right-0 top-0 ">
+          <div className="bg-red-600 w-6 h-6 lg:w-10 lg:h-10 text-xs lg:text-sm z-20 flex items-center justify-center absolute right-0 top-0">
             {trialTimeLeft}s
           </div>
         )}

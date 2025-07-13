@@ -14,10 +14,11 @@ const GiveSubscription = () => {
   } = useForm({});
 
   const [pricing, isLoading] = usePricing();
+
   const [selectedPass, setSelectedPass] = useState("");
   const [prefilledValues, setPrefilledValues] = useState({
     days: "",
-    regularPrice: "",
+    offerPrice: "",
   });
 
   if (isLoading) return <LoadingSpinner />;
@@ -25,33 +26,33 @@ const GiveSubscription = () => {
   const passNames = pricing
     ? [...new Set(pricing.map((item) => item.passName))]
     : [];
+  const packageNames = ["Custom", ...passNames];
 
-  const packageNames = ["Caustom", ...passNames];
-
+  // Handle form submission
   const onSubmit = async (data) => {
     try {
       const subscription = {
         pack: selectedPass,
         caustomDate:
-          selectedPass === "Caustom"
+          selectedPass === "Custom"
             ? data.days
             : prefilledValues.days || data.days,
         queryEmail: data.email,
         formData: {
           ...data,
           days:
-            selectedPass === "Caustom"
+            selectedPass === "Custom"
               ? data.days
               : prefilledValues.days || data.days,
           amount:
-            selectedPass === "Caustom"
+            selectedPass === "Custom"
               ? Number(data.regularPrice)
-              : Number(prefilledValues.regularPrice || data.regularPrice),
+              : Number(prefilledValues.offerPrice || data.offerPrice),
         },
         amount:
-          selectedPass === "Caustom"
-            ? data.regularPrice
-            : prefilledValues.regularPrice,
+          selectedPass === "Custom"
+            ? data.offerPrice
+            : prefilledValues.offerPrice,
       };
 
       const response = await axios.post(
@@ -90,22 +91,22 @@ const GiveSubscription = () => {
                 onChange={(e) => {
                   const value = e.target.value;
                   setSelectedPass(value);
-                  if (value !== "Caustom") {
+                  if (value !== "Custom") {
                     const matched = pricing.find(
                       (item) => item.passName === value
                     );
                     if (matched) {
                       setPrefilledValues({
                         days: matched.days || "",
-                        regularPrice: matched.regularPrice || "",
+                        regularPrice: matched.offerPrice || "",
                       });
                       setValue("days", matched.days || "");
-                      setValue("regularPrice", matched.regularPrice || "");
+                      setValue("offerPrice", matched.offerPrice || "");
                     }
                   } else {
-                    setPrefilledValues({ days: "", regularPrice: "" });
+                    setPrefilledValues({ days: "", offerPrice: "" });
                     setValue("days", "");
-                    setValue("regularPrice", "");
+                    setValue("offerPrice", "");
                   }
                 }}
               >
@@ -140,7 +141,7 @@ const GiveSubscription = () => {
                     days: e.target.value,
                   }))
                 }
-                disabled={selectedPass !== "Caustom"}
+                disabled={selectedPass !== "Custom"}
                 className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
                 placeholder="Enter days"
               />
@@ -153,22 +154,22 @@ const GiveSubscription = () => {
 
             {/* Regular Price */}
             <div className="flex flex-col gap-2">
-              <label htmlFor="regularPrice">Regular Price (Optional)</label>
+              <label htmlFor="offerPrice">Offer Price (Optional)</label>
               <div className="relative">
                 <span className="absolute left-3 top-3">$</span>
                 <input
-                  id="regularPrice"
+                  id="offerPrice"
                   type="number"
                   step="0.01"
-                  {...register("regularPrice")}
-                  value={prefilledValues.regularPrice}
+                  {...register("offerPrice")}
+                  value={prefilledValues.offerPrice}
                   onChange={(e) =>
                     setPrefilledValues((prev) => ({
                       ...prev,
-                      regularPrice: e.target.value,
+                      offerPrice: e.target.value,
                     }))
                   }
-                  disabled={selectedPass !== "Caustom"}
+                  disabled={selectedPass !== "Custom"}
                   className="w-full py-3 pl-8 pr-4 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
                   placeholder="0.00"
                 />
