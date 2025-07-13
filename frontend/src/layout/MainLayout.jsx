@@ -5,12 +5,12 @@ import useRole from "../hooks/useRole";
 import { useAuth } from "../hooks/useAuth";
 import LoadingSpinner from "../components/Shared/LoadingSpinner";
 // import { useDetectAdBlock } from "adblock-detect-react";
-import { SiAdblock } from "react-icons/si";
+// import { SiAdblock } from "react-icons/si";
 
 const MainLayout = () => {
   const { loading } = useAuth();
   const [, isLoading] = useRole();
-  // const adBlockDetected = useDetectAdBlock(); 
+  // const adBlockDetected = useDetectAdBlock(); // 🚨 Adblock detection
   if (isLoading || loading) return <LoadingSpinner />;
 
   return (

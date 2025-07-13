@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 import { useSelector } from "react-redux";
+
 const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
   const videoRef = useRef(null);
   const [hlsInstance, setHlsInstance] = useState(null);
@@ -57,10 +58,7 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
       return () => {
         hls.destroy();
       };
-    } else if (
-      isM3u8 &&
-      video?.canPlayType("application/vnd.apple.mpegurl")
-    ) {
+    } else if (isM3u8 && video?.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = src;
       tryAutoPlay();
     } else if (isMp4) {
@@ -68,12 +66,14 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
       tryAutoPlay();
     }
   }, [src, isM3u8, isMp4]);
+
   const handleQualityChange = (levelIndex) => {
     if (hlsInstance) {
       hlsInstance.currentLevel = levelIndex;
       setSelectedLevel(levelIndex);
     }
   };
+
   if (isEmbed) {
     return (
       <div className="bg-[var(--background)]">
