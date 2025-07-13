@@ -54,7 +54,7 @@ const Profile = () => {
               </p>
             )}
 
-            {userData?.subscription?.details && (
+            {userData?.subscription?.details?.phone && (
               <p className="text-sm flex items-center justify-between">
                 <span className="font-medium uppercase">Phone: </span>
                 <span>{userData?.subscription?.details?.phone}</span>
