@@ -1,29 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-
 import toast from "react-hot-toast";
 
 const AddPricing = () => {
   const axiosSecure = useAxiosSecure();
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    setValue,
   } = useForm();
 
+  const passName = watch("passName");
+
+  // Auto-set days and device based on passName
+  useEffect(() => {
+    if (passName === "weekly") {
+      setValue("days", 7);
+      setValue("device", 1);
+    } else if (passName === "monthly") {
+      setValue("days", 30);
+      setValue("device", 1);
+    } else if (passName === "yearly") {
+      setValue("days", 365);
+      setValue("device", 2);
+    } else if (passName === "custom") {
+      setValue("days", "");
+      setValue("device", 1);
+    }
+  }, [passName, setValue]);
+
   const handlePricingForm = async (data) => {
+    setLoading(true);
     try {
       const result = await axiosSecure.post(`/api/add-pricing`, data);
-
       if (result?.data?.id) {
         toast.success("Pricing added successfully!");
         reset();
       }
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message || "Failed to add pricing");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,6 +69,26 @@ const AddPricing = () => {
                 className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
                 placeholder="e.g. Annual Pass"
               />
+              {errors.passName && (
+                <span className="text-red-500 text-sm">
+                  {errors.passName.message}
+                </span>
+              )}
+            </div>
+            {/* Pass Name (Dropdown) */}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="plan">Plan</label>
+              <select
+                id="plan"
+                {...register("plan", { required: "Pass name is required" })}
+                className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
+              >
+                <option value="">Select a plan</option>
+                <option value="yearly">Yearly</option>
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+                <option value="custom">Custom</option>
+              </select>
               {errors.passName && (
                 <span className="text-red-500 text-sm">
                   {errors.passName.message}
@@ -107,9 +150,10 @@ const AddPricing = () => {
               <input
                 id="regularPrice"
                 type="number"
+                step="0.01"
                 {...register("regularPrice")}
                 className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
-                placeholder="e.g. $240"
+                placeholder="e.g. 240.00"
               />
             </div>
 
@@ -119,6 +163,7 @@ const AddPricing = () => {
               <input
                 id="offerPrice"
                 type="number"
+                step="0.01"
                 {...register("offerPrice", {
                   required: "Offer price is required",
                 })}
@@ -131,9 +176,8 @@ const AddPricing = () => {
                 </span>
               )}
             </div>
-
             {/* Discount */}
-            <div className="flex flex-col gap-2 md:col-span-2">
+            <div className="flex flex-col gap-2 ">
               <label htmlFor="discount">Discount (Optional)</label>
               <input
                 id="discount"
@@ -149,9 +193,36 @@ const AddPricing = () => {
           <div className="mt-6 flex justify-center">
             <button
               type="submit"
-              className="bg-[var(--primary)] text-white py-2 px-6 rounded-md hover:bg-opacity-90 transition-colors duration-300 w-full cursor-pointer"
+              disabled={loading}
+              className={`bg-[var(--primary)] text-white py-2 px-6 rounded-md transition-colors duration-300 w-full cursor-pointer flex items-center justify-center ${
+                loading
+                  ? "opacity-70 cursor-not-allowed"
+                  : "hover:bg-opacity-90"
+              }`}
             >
-              Add Pricing Plan
+              {loading ? (
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  ></path>
+                </svg>
+              ) : null}
+              {loading ? "Adding..." : "Add Pricing Plan"}
             </button>
           </div>
         </form>

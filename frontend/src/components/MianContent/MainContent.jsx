@@ -211,7 +211,7 @@ const MainContent = () => {
                               <div className="flex items-center space-x-2">
                                 {price.regularPrice && (
                                   <p className="line-through text-sm text-gray-400 group-hover:text-[var(--secondary)]">
-                                    {price?.regularPrice}
+                                    ${price?.regularPrice}
                                   </p>
                                 )}
                                 <p className="font-semibold text-lg group-hover:text-[var(--background)]">
@@ -220,7 +220,7 @@ const MainContent = () => {
                               </div>
                               {price.discount && (
                                 <p className="bg-[var(--primary)] text-sm px-2 rounded-sm group-hover:text-[var(--background)] group-hover:bg-[var(--text)]">
-                                  {price?.discount} Offer
+                                  {price?.discount}% Offer
                                 </p>
                               )}
                             </div>
