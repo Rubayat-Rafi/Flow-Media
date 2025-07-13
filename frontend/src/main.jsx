@@ -21,7 +21,7 @@ if (import.meta.env.VITE_NODE_ENV === "production") {
   // Additional production-only protections
   document.addEventListener("contextmenu", (e) => e.preventDefault());
   document.addEventListener("keydown", (e) => {
-    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
+    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key))) {
       e.preventDefault();
     }
   });
