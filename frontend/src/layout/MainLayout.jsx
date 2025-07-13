@@ -4,19 +4,19 @@ import { Outlet } from "react-router";
 import useRole from "../hooks/useRole";
 import { useAuth } from "../hooks/useAuth";
 import LoadingSpinner from "../components/Shared/LoadingSpinner";
-import { useDetectAdBlock } from "adblock-detect-react";
+// import { useDetectAdBlock } from "adblock-detect-react";
 import { SiAdblock } from "react-icons/si";
 
 const MainLayout = () => {
   const { loading } = useAuth();
   const [, isLoading] = useRole();
-  const adBlockDetected = useDetectAdBlock(); // 🚨 Adblock detection
+  // const adBlockDetected = useDetectAdBlock(); 
   if (isLoading || loading) return <LoadingSpinner />;
 
   return (
     <>
       {/* AdBlock Overlay */}
-      {adBlockDetected && (
+      {/* {adBlockDetected && (
         <div className="fixed inset-0 z-[9999] bg-black/20 flex flex-col items-center justify-center text-center px-4 h-screen">
           <div className="bg-white rounded-lg p-8">
             <div className="flex items-center justify-center mb-4">
@@ -35,7 +35,7 @@ const MainLayout = () => {
             </button>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Normal Layout Content */}
       <header>
