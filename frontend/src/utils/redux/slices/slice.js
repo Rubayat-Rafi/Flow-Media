@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-const Slice = createSlice({
+
+const slice = createSlice({
   name: "Slice",
   initialState: {
     url: "",
@@ -7,7 +8,7 @@ const Slice = createSlice({
     defaultChannel: null,
     runningUrl: null,
     events: null,
-    usbscribe: false,
+    subscribe: false,      
     hideVideoFlag: false,
     videoFlag: false,
     timeZone: "GMT+6",
@@ -18,7 +19,7 @@ const Slice = createSlice({
       state.url = action.payload;
     },
     addSubscription: (state, action) => {
-      state.usbscribe = action.payload;
+      state.subscribe = action.payload;
     },
     addVideoFlag: (state, action) => {
       state.hideVideoFlag = action.payload;
@@ -53,6 +54,7 @@ export const {
   addEvents,
   addDefaultUrl,
   addRunningUrl,
-  addDefaultChannel
-} = Slice.actions;
-export default Slice.reducer;
+  addDefaultChannel,
+} = slice.actions;
+
+export default slice.reducer;

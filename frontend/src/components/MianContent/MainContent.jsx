@@ -243,7 +243,7 @@ const MainContent = () => {
             />
           )
         ) : (
-          <div className="flex items-center justify-center w-full h-full">
+          <div className="flex items-center justify-center w-full h-full py-12">
             <div className="flex flex-col items-center justify-center text-center">
               <p className="text-lg font-medium mb-2 text-white"> WELCOME TO</p>
               <img src="/logo.png" className="w-[150px] h-auto" />
