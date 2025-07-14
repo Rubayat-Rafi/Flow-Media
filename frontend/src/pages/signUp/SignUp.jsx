@@ -17,41 +17,40 @@ const SignUp = () => {
 
 const handleSignUpFormSubmit = async (data) => {
   const { firstName, lastName, email, password } = data;
-  const name = `${firstName} ${lastName}`; 
+  const name = `${firstName} ${lastName}`;
   setLoading(true);
 
   try {
-    // 1. Create Firebase auth user
-    const userCredential = await createUser(email, password);
-    const uid = userCredential?.user?.uid;
+    // Log timing for debugging
+    console.time("signup-process");
     
-    if (!uid) {
-      throw new Error("User creation failed - no UID returned");
-    }
+    // Parallelize where possible
+    const [userCredential] = await Promise.all([
+      createUser(email, password),
+      // Any other independent operations could go here
+    ]);
+    
+    const uid = userCredential?.user?.uid;
+    if (!uid) throw new Error("User creation failed - no UID returned");
 
-    // 2. Update user profile with display name
-    await updateUserProfile(name);
+    // Chain dependent operations sequentially
+    await Promise.all([
+      updateUserProfile(name),
+      saveUser({ name, email, uid })
+    ]);
 
-    // 3. Prepare user data for backend
-    const userData = {
-      name,
-      email,
-      uid,
-    };
-
-    // 4. Save to your database
-    await saveUser(userData);
-
-    // 5. Reset form and handle UI
     reset();
     toast.success("Sign up successful!");
     navigate("/");
+    
   } catch (error) {
-    toast.error(error.message || "Sign up failed. Please try again later.");
+    console.error("Signup error:", error);
+    toast.error(error.message || "Sign up failed. Please try again.");
   } finally {
     setLoading(false);
   }
 };
+
 
   return (
     <section

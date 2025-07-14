@@ -3,44 +3,64 @@ const { ObjectId } = require("mongodb");
 const client = require("../lib/db_connection/db_connection.js");
 // const bcrypt = require("bcryptjs");
 const admin = require("../utils/firebase/firebaseAdmin.js");
+
 exports.registerUser = async (req, res) => {
   try {
+    console.time("user-registration");
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
     const { name, email, uid } = req.body;
 
-    const existingUser = await usersCollection.findOne({ email });
+    // Optimized query with projection
+    const existingUser = await usersCollection.findOne(
+      { email },
+      { projection: { email: 1 } }
+    );
+
     if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "User already exists", user: existingUser });
+      console.timeEnd("user-registration");
+      return res.status(409).json({
+        message: "User already exists",
+        user: existingUser,
+      });
     }
 
-    const subscriptionOwner = await usersCollection.findOne({
-      "subscription.emails": email,
-      "subscription.status": "active",
-    });
+    // Check subscription status with lean query
+    const subscriptionOwner = await usersCollection.findOne(
+      {
+        "subscription.emails": email,
+        "subscription.status": "active",
+      },
+      { projection: { _id: 1 } }
+    );
 
     const isSubscribed = Boolean(subscriptionOwner);
-    // const hashedPassword = await bcrypt.hash(password, 10);
-    // password: hashedPassword,
     const newUser = {
       name,
       email,
+      uid,
       role: "user",
       subscribe: isSubscribed,
       revenue: [],
-      uid,
       timestamp: Date.now(),
     };
-    const result = await usersCollection.insertOne(newUser);
+
+    // Insert with write concern 'majority' for better reliability
+    const result = await usersCollection.insertOne(newUser, {
+      writeConcern: { w: "majority" },
+    });
+
     res.status(201).json({
       message: "User registered successfully",
-      user: { ...newUser },
+      user: newUser,
       result,
     });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    console.error("Registration error:", err);
+    res.status(500).json({
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
 
