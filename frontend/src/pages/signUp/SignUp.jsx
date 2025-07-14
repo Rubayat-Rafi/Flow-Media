@@ -2,8 +2,9 @@ import { FaArrowLeftLong } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
-import { saveUser } from "../../api/utils";
+// import { saveUser } from "../../api/utils";
 import { toast } from "react-hot-toast";
+import axios from "axios";
 
 const SignUp = () => {
   const { createUser, updateUserProfile, setLoading } = useAuth();
@@ -16,17 +17,29 @@ const SignUp = () => {
   } = useForm();
 
   const handleSignUpFormSubmit = async (data) => {
-    const { firstName, lastName, email, password } = data;
-    const name = `${firstName} ${lastName}`;
-    setLoading(true);
     try {
+      const { firstName, lastName, email, password } = data;
+      const name = `${firstName} ${lastName}`;
+      setLoading(true);
+
+      // Step 1: Create user
       const userCredential = await createUser(email, password);
       const uid = userCredential?.user?.uid;
-      if (!uid) throw new Error("User  creation failed - no UID returned");
-      await updateUserProfile(name);
-      await saveUser({ name, email, uid });
-      // after firebase signup redirect to home page
+      if (!uid) throw new Error("User creation failed");
+
+      // Step 2: Send API and update profile in parallel
+      await Promise.all([
+        axios.post(`${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/signup`, {
+          name,
+          email,
+          uid,
+        }),
+        updateUserProfile(name),
+      ]);
+
+      // Step 3: Cleanup and redirect
       reset();
+      setLoading(false);
       toast.success("Sign up successful!");
       navigate("/");
     } catch (error) {
