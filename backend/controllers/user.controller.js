@@ -4,38 +4,35 @@ const client = require("../lib/db_connection/db_connection.js");
 // const bcrypt = require("bcryptjs");
 const admin = require("../utils/firebase/firebaseAdmin.js");
 
-exports.registerUser = async (req, res) => {
+exports.registerUser  = async (req, res) => {
   try {
-    console.time("user-registration");
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
     const { name, email, uid } = req.body;
 
-    // Optimized query with projection
-    const existingUser = await usersCollection.findOne(
+    const existingUser  = await usersCollection.findOne(
       { email },
       { projection: { email: 1 } }
     );
 
-    if (existingUser) {
+    if (existingUser ) {
       console.timeEnd("user-registration");
-      return res.status(409).json({
-        message: "User already exists",
-        user: existingUser,
+      return res.status(409).json({ 
+        message: "User  already exists",
+        user: existingUser  
       });
     }
 
-    // Check subscription status with lean query
     const subscriptionOwner = await usersCollection.findOne(
       {
         "subscription.emails": email,
-        "subscription.status": "active",
+        "subscription.status": "active"
       },
       { projection: { _id: 1 } }
     );
 
     const isSubscribed = Boolean(subscriptionOwner);
-    const newUser = {
+    const newUser  = {
       name,
       email,
       uid,
@@ -45,24 +42,24 @@ exports.registerUser = async (req, res) => {
       timestamp: Date.now(),
     };
 
-    // Insert with write concern 'majority' for better reliability
-    const result = await usersCollection.insertOne(newUser, {
-      writeConcern: { w: "majority" },
+    const result = await usersCollection.insertOne(newUser , {
+      writeConcern: { w: "majority" }
     });
 
     res.status(201).json({
-      message: "User registered successfully",
-      user: newUser,
-      result,
+      message: "User  registered successfully",
+      user: newUser ,
+      result
     });
   } catch (err) {
     console.error("Registration error:", err);
-    res.status(500).json({
-      message: "Server error",
-      error: err.message,
+    res.status(500).json({ 
+      message: "Server error", 
+      error: err.message 
     });
   }
 };
+
 
 exports.userRole = async (req, res) => {
   const db = client.db("flow_media");
