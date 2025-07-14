@@ -1,13 +1,14 @@
 require("dotenv").config();
 const { ObjectId } = require("mongodb");
 const client = require("../lib/db_connection/db_connection.js");
-const bcrypt = require("bcryptjs");
-const admin = require("../utils/firebase/firebaseAdmin.js")
+// const bcrypt = require("bcryptjs");
+const admin = require("../utils/firebase/firebaseAdmin.js");
 exports.registerUser = async (req, res) => {
   try {
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
-    const { name, email, password, uid } = req.body;
+    const { name, email, uid } = req.body;
+
     const existingUser = await usersCollection.findOne({ email });
     if (existingUser) {
       return res
@@ -21,11 +22,11 @@ exports.registerUser = async (req, res) => {
     });
 
     const isSubscribed = Boolean(subscriptionOwner);
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
+    // password: hashedPassword,
     const newUser = {
       name,
       email,
-      password: hashedPassword,
       role: "user",
       subscribe: isSubscribed,
       revenue: [],
@@ -35,7 +36,7 @@ exports.registerUser = async (req, res) => {
     const result = await usersCollection.insertOne(newUser);
     res.status(201).json({
       message: "User registered successfully",
-      user: { ...newUser, password: undefined },
+      user: { ...newUser },
       result,
     });
   } catch (err) {
@@ -49,9 +50,7 @@ exports.userRole = async (req, res) => {
   const email = req.params.email;
   const query = { email };
   try {
-    const user = await usersCollection.findOne(query, {
-      projection: { password: 0 },
-    });
+    const user = await usersCollection.findOne(query);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -68,7 +67,7 @@ exports.allUserData = async (req, res) => {
   const myEmail = req.params.email;
   try {
     const users = await usersCollection
-      .find({ email: { $ne: myEmail } }, { projection: { password: 0 } })
+      .find({ email: { $ne: myEmail } })
       .toArray();
 
     if (!users) {
@@ -136,7 +135,7 @@ exports.userData = async (req, res) => {
     const db = client.db("flow_media");
     const users = db.collection("users");
     const email = req.params.email;
-    
+
     if (!email) {
       return res.status(400).json({ message: "Email parameter is required" });
     }
@@ -146,7 +145,7 @@ exports.userData = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json(user); 
+    return res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

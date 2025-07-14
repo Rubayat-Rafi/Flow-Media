@@ -15,24 +15,43 @@ const SignUp = () => {
     formState: { errors },
   } = useForm();
 
-  const handleSignUpFormSubmit = async (data) => {
-    const { name, email, password } = data;
-    try {
-      const userCredential = await createUser(email, password);
-      const uid = userCredential?.user?.uid;
-      data.uid = uid;
-      await updateUserProfile(name);
-      await saveUser(data);
-      reset();
-      toast.success("sign up successfull");
-      setLoading(false);
-      // redirect to home page
-      navigate("/");
-    } catch (error) {
-      setLoading(false);
-      toast.error("Sign up failed. please try again later.", error);
+const handleSignUpFormSubmit = async (data) => {
+  const { firstName, lastName, email, password } = data;
+  const name = `${firstName} ${lastName}`; 
+  setLoading(true);
+
+  try {
+    // 1. Create Firebase auth user
+    const userCredential = await createUser(email, password);
+    const uid = userCredential?.user?.uid;
+    
+    if (!uid) {
+      throw new Error("User creation failed - no UID returned");
     }
-  };
+
+    // 2. Update user profile with display name
+    await updateUserProfile(name);
+
+    // 3. Prepare user data for backend
+    const userData = {
+      name,
+      email,
+      uid,
+    };
+
+    // 4. Save to your database
+    await saveUser(userData);
+
+    // 5. Reset form and handle UI
+    reset();
+    toast.success("Sign up successful!");
+    navigate("/");
+  } catch (error) {
+    toast.error(error.message || "Sign up failed. Please try again later.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section
@@ -70,19 +89,36 @@ const SignUp = () => {
           onSubmit={handleSubmit(handleSignUpFormSubmit)}
           className="flex flex-col space-y-4 z-20"
         >
-          {/* Name Field */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="label-text">
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              {...register("name", { required: true })}
-              placeholder="Enter your name"
-              className="input-fild"
-              required
-            />
+          <div className=" flex flex-col md:flex-row items-center justify-center gap-2">
+            {/*First Name Field */}
+            <div className="flex flex-col gap-2 w-full">
+              <label htmlFor="name" className="label-text">
+                First Name
+              </label>
+              <input
+                type="text"
+                name="firstName"
+                {...register("firstName", { required: true })}
+                placeholder="Enter first name"
+                className="input-fild"
+                required
+              />
+            </div>
+
+            {/* Last Name Field */}
+            <div className="flex flex-col gap-2 w-full">
+              <label htmlFor="name" className="label-text">
+                Last Name
+              </label>
+              <input
+                type="text"
+                name="lastName"
+                {...register("lastName", { required: false })}
+                placeholder="Enter last name"
+                className="input-fild"
+                required
+              />
+            </div>
           </div>
           {/* Email Field */}
           <div className="flex flex-col gap-2">
