@@ -28,7 +28,6 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
       video.muted = false;
       try {
         await video.play();
-        console.log("Auto-unmute success");
       } catch (e) {
         console.warn("Auto-unmute failed (browser blocked it)", e);
         video.muted = true;

@@ -14,7 +14,7 @@ const MainLayout = () => {
   if (isLoading || loading) return <LoadingSpinner />;
 
   return (
-    <>
+    <section className="">
       {/* AdBlock Overlay */}
       {/* {adBlockDetected && (
         <div className="fixed inset-0 z-[9999] bg-black/20 flex flex-col items-center justify-center text-center px-4 h-screen">
@@ -45,7 +45,7 @@ const MainLayout = () => {
         <Outlet />
       </main>
       <Footer />
-    </>
+    </section>
   );
 };
 

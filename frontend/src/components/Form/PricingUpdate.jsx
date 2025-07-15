@@ -13,6 +13,7 @@ const PricingUpdate = ({ setOpenModal, selectedPrice, refetch }) => {
   } = useForm({
     defaultValues: {
       passName: selectedPrice?.passName || "",
+      plan: selectedPrice?.plan || "",
       days: selectedPrice?.days || "",
       device: selectedPrice?.device || "",
       value: selectedPrice?.value || "",
@@ -58,27 +59,35 @@ const PricingUpdate = ({ setOpenModal, selectedPrice, refetch }) => {
         <div className="max-w-[800px] mx-auto bg-[var(--secondary)] p-6 rounded-md">
           <form onSubmit={handleSubmit(handleUpdatePricing)}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Pass Name (Dropdown) */}
+              {/* Pass Name */}
               <div className="flex flex-col gap-2">
                 <label htmlFor="passName">Pass Name</label>
-                <select
+                <input
                   id="passName"
+                  type="text"
                   {...register("passName", {
                     required: "Pass name is required",
                   })}
                   className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
-                >
-                  <option value="">Select a pass type</option>
-                  <option value="yearly">Yearly</option>
-                  <option value="monthly">Monthly</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="custom">Custom</option>
-                </select>
+                  placeholder="e.g. Annual Pass"
+                />
                 {errors.passName && (
                   <span className="text-red-500 text-sm">
                     {errors.passName.message}
                   </span>
                 )}
+              </div>
+
+              {/* Plan */}
+              <div className="flex flex-col gap-2">
+                <label htmlFor="plan">Plan</label>
+                <input
+                  id="plan"
+                  type="text"
+                  defaultValue={selectedPrice.plan}
+                  readOnly
+                  className="w-full py-3 px-4 rounded-md border border-gray-300 focus:outline-none text-[var(--text)] focus:ring-2 focus:ring-[var(--primary)] bg-[var(--background)]"
+                />
               </div>
 
               {/* Duration */}
@@ -161,7 +170,7 @@ const PricingUpdate = ({ setOpenModal, selectedPrice, refetch }) => {
               </div>
 
               {/* Discount */}
-              <div className="flex flex-col gap-2 md:col-span-2">
+              <div className="flex flex-col gap-2">
                 <label htmlFor="discount">Discount (Optional)</label>
                 <input
                   id="discount"
