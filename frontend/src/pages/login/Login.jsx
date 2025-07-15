@@ -1,7 +1,7 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useAuth } from "../../hooks/useAuth";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
 
 const Login = () => {
@@ -25,7 +25,7 @@ const Login = () => {
 
   return (
     <section
-      className="flex flex-col items-center justify-center min-h-screen p-4"
+      className="flex flex-col items-center justify-center min-h-screen p-4 relative"
       style={{
         backgroundImage: "url('https://res.cloudinary.com/dzdfnuno8/image/upload/v1752337116/sports-bg_irqw9u.jpg')",
         backgroundSize: "cover",
@@ -33,19 +33,19 @@ const Login = () => {
       }}
     >
       <div className="absolute inset-0 bg-[var(--background)]/80 pointer-events-none z-10"></div>
-      <div className="absolute top-[10%] left-[5%] z-20">
-        <a
-          className=" text-[var(--primary)]  font-semibold  flex items-center gap-2 hover:underline"
-          href="/"
+      <div className="absolute top-4 left-4 md:top-[10%] md:left-[5%] z-20">
+        <Link
+          className=" text-[var(--primary)] text-xs md:text-base font-semibold  flex items-center gap-2 hover:underline"
+          to="/"
         >
           <FaArrowLeftLong />
           Back to Home
-        </a>
+        </Link>
       </div>
 
       {/* Logo */}
-      <div className="z-20 mb-8">
-        <img src="/logo.png" className="max-h-[80px]" alt="logo" />
+      <div className="z-20 mb-4 md:mb-8">
+        <img src="/logo.png" className=" max-h-[60px] md:max-h-[80px]" alt="logo" />
       </div>
 
       {/* Login Card */}
@@ -106,12 +106,12 @@ const Login = () => {
           {/* Sign Up Link */}
           <p className="text-sm text-[var(--background)] text-center mt-2">
             Don't have an account?
-            <a
-              href="/signup"
+            <Link
+              to="/signup"
               className="text-[var(--primary)] font-medium hover:underline"
             >
               Sign up
-            </a>
+            </Link>
           </p>
         </form>
       </div>
