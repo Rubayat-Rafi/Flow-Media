@@ -126,7 +126,7 @@ const MainContent = () => {
               trialTimeLeft={trialTimeLeft}
             />
           ) : (
-            <div className="flex flex-col items-center justify-center h-full p-4">
+            <div className="flex flex-col items-center justify-center h-full px-4 py-12 lg:p-4 ">
               <div
                 className={`${
                   trialData?.used === false &&
@@ -135,10 +135,10 @@ const MainContent = () => {
               >
                 {trialData?.used === false && (
                   <>
-                    <h2 className="text-xl font-bold mb-4">
+                    <h2 className="text-base md:text-xl font-bold mb-2 md:mb-4">
                       Start Watching Now
                     </h2>
-                    <p className="mb-6">
+                    <p className="text-xs md:text-base mb-4 md:mb-6">
                       Try our free trial to access all content
                     </p>
                   </>
@@ -147,9 +147,9 @@ const MainContent = () => {
                 {trialData?.used === false && !trialActive && (
                   <button
                     onClick={() => startTrial()}
-                    className="bg-[var(--primary)] flex gap-2 items-center justify-center text-white  px-4 py-2 lg:py-3 w-full rounded-md font-medium hover:bg-opacity-90  cursor-pointer transition"
+                    className="bg-[var(--primary)] flex gap-2 items-center justify-center text-white text-xs md:text-base  px-4 py-2 lg:py-3 w-full rounded-sm md:rounded-md font-medium hover:bg-opacity-90  cursor-pointer transition"
                   >
-                    <FaPlay className="text-xl" />
+                    <FaPlay className="text-base md:text-xl" />
                     Watch Now
                   </button>
                 )}
