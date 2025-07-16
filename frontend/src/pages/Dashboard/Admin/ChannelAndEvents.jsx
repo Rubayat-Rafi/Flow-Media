@@ -65,7 +65,7 @@ const ChannelAndEvents = () => {
               className="bg-[var(--secondary)] p-6 rounded-lg  border border-[var(--text)]/20 overflow-hidden"
             >
               <div className="flex items-start justify-between gap-4">
-                <div className=" flex items-start gap-4">
+                <div className=" flex items-start gap-4  w-fit overflow-x-hidden">
                   {/* Channel Image */}
                   <div className="">
                     <div className="w-10 h-10  flex items-center justify-center overflow-hidden ">
@@ -84,7 +84,7 @@ const ChannelAndEvents = () => {
 
                   {/* Channel Info */}
                   <div className="">
-                    <h3 className="text-lg font-bold truncate">
+                    <h3 className="sm:text-lg font-bold truncate">
                       {channel.channelName}
                     </h3>
                     <p className="text-sm  mb-1">
@@ -93,7 +93,7 @@ const ChannelAndEvents = () => {
                     <div className="flex items-center gap-2">
                       <p className="text-sm text-blue-600 hover:text-blue-800">
                         {channel.channelURL.length > 25
-                          ? channel.channelURL.slice(0, 25) + "..."
+                          ? channel.channelURL.slice(0, 10) + "..."
                           : channel.channelURL}
                       </p>
                       <button
@@ -182,7 +182,8 @@ const ChannelAndEvents = () => {
               {/* Card Header */}
               <div className="bg-[var(--primary)] px-4 py-2 flex justify-between items-center">
                 <span className="text-white font-medium">
-                  {event?.category} Match {event?.eventName && (`( ${event?.eventName} )`)}
+                  {event?.category} Match{" "}
+                  {event?.eventName && `( ${event?.eventName} )`}
                 </span>
 
                 <div className="flex items-center space-x-3">
