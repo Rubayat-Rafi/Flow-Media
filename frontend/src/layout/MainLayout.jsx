@@ -14,9 +14,26 @@ const MainLayout = () => {
   if (isLoading || loading) return <LoadingSpinner />;
 
   return (
-    <section className="">
-      {/* AdBlock Overlay */}
-      {/* {adBlockDetected && (
+    <section>
+      <header>
+        <Navbar />
+      </header>
+
+      <main className="min-h-[calc(100vh-232px)]">
+        <Outlet />
+      </main>
+      <Footer />
+    </section>
+  );
+};
+
+export default MainLayout;
+
+{
+  /* AdBlock Overlay */
+}
+{
+  /* {adBlockDetected && (
         <div className="fixed inset-0 z-[9999] bg-black/20 flex flex-col items-center justify-center text-center px-4 h-screen">
           <div className="bg-white rounded-lg p-8">
             <div className="flex items-center justify-center mb-4">
@@ -35,18 +52,5 @@ const MainLayout = () => {
             </button>
           </div>
         </div>
-      )} */}
-
-      {/* Normal Layout Content */}
-      <header>
-        <Navbar />
-      </header>
-      <main className="min-h-[calc(100vh-232px)]">
-        <Outlet />
-      </main>
-      <Footer />
-    </section>
-  );
-};
-
-export default MainLayout;
+      )} */
+}

@@ -66,7 +66,7 @@ const Home = () => {
 
 
   return (
-    <section className="space-y-6 pb-10">
+    <section className="space-y-6 pb-10 ">
       <SportsNav onSelectCategory={category} />
 
       <div className="max-w-[1500px] w-full mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col-reverse lg:flex-row gap-6 h-full">
