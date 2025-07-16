@@ -52,6 +52,8 @@ const MainContent = () => {
     (item) => item?.category === "Channel"
   );
   const categoryId = searchParams.get("id");
+
+
   useEffect(() => {
     const pid = searchParams.get("pid");
     const sub6 = searchParams.get("sub6");
@@ -72,6 +74,7 @@ const MainContent = () => {
   const filterChannel = channelDataFilter.find(
     (item) => item?._id === categoryId
   );
+  
   const freeChannel = filterChannel?.type === "free" ? filterChannel : null;
   const { data: subscription, isLoading: subLoading } = useQuery({
     queryKey: ["subscription-status", user?.email],
