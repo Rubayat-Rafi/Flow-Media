@@ -1,47 +1,65 @@
 require("dotenv").config();
 const { ObjectId } = require("mongodb");
 const client = require("../lib/db_connection/db_connection.js");
-const bcrypt = require("bcryptjs");
-const admin = require("../utils/firebase/firebaseAdmin.js")
-exports.registerUser = async (req, res) => {
+// const bcrypt = require("bcryptjs");
+const admin = require("../utils/firebase/firebaseAdmin.js");
+
+exports.registerUser  = async (req, res) => {
   try {
     const db = client.db("flow_media");
     const usersCollection = db.collection("users");
-    const { name, email, password, uid } = req.body;
-    const existingUser = await usersCollection.findOne({ email });
-    if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "User already exists", user: existingUser });
+    const { name, email, uid } = req.body;
+
+    const existingUser  = await usersCollection.findOne(
+      { email },
+      { projection: { email: 1 } }
+    );
+
+    if (existingUser ) {
+      console.timeEnd("user-registration");
+      return res.status(409).json({ 
+        message: "User  already exists",
+        user: existingUser  
+      });
     }
 
-    const subscriptionOwner = await usersCollection.findOne({
-      "subscription.emails": email,
-      "subscription.status": "active",
-    });
+    const subscriptionOwner = await usersCollection.findOne(
+      {
+        "subscription.emails": email,
+        "subscription.status": "active"
+      },
+      { projection: { _id: 1 } }
+    );
 
     const isSubscribed = Boolean(subscriptionOwner);
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = {
+    const newUser  = {
       name,
       email,
-      password: hashedPassword,
+      uid,
       role: "user",
       subscribe: isSubscribed,
       revenue: [],
-      uid,
       timestamp: Date.now(),
     };
-    const result = await usersCollection.insertOne(newUser);
+
+    const result = await usersCollection.insertOne(newUser , {
+      writeConcern: { w: "majority" }
+    });
+
     res.status(201).json({
-      message: "User registered successfully",
-      user: { ...newUser, password: undefined },
-      result,
+      message: "User  registered successfully",
+      user: newUser ,
+      result
     });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    console.error("Registration error:", err);
+    res.status(500).json({ 
+      message: "Server error", 
+      error: err.message 
+    });
   }
 };
+
 
 exports.userRole = async (req, res) => {
   const db = client.db("flow_media");
@@ -49,9 +67,7 @@ exports.userRole = async (req, res) => {
   const email = req.params.email;
   const query = { email };
   try {
-    const user = await usersCollection.findOne(query, {
-      projection: { password: 0 },
-    });
+    const user = await usersCollection.findOne(query);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -68,7 +84,7 @@ exports.allUserData = async (req, res) => {
   const myEmail = req.params.email;
   try {
     const users = await usersCollection
-      .find({ email: { $ne: myEmail } }, { projection: { password: 0 } })
+      .find({ email: { $ne: myEmail } })
       .toArray();
 
     if (!users) {
@@ -136,7 +152,7 @@ exports.userData = async (req, res) => {
     const db = client.db("flow_media");
     const users = db.collection("users");
     const email = req.params.email;
-    
+
     if (!email) {
       return res.status(400).json({ message: "Email parameter is required" });
     }
@@ -146,7 +162,7 @@ exports.userData = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(200).json(user); 
+    return res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

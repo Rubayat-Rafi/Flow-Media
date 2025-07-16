@@ -1,9 +1,10 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../hooks/useAuth";
-import { useNavigate } from "react-router";
-import { saveUser } from "../../api/utils";
+import { Link, useNavigate } from "react-router";
+// import { saveUser } from "../../api/utils";
 import { toast } from "react-hot-toast";
+import axios from "axios";
 
 const SignUp = () => {
   const { createUser, updateUserProfile, setLoading } = useAuth();
@@ -16,27 +17,42 @@ const SignUp = () => {
   } = useForm();
 
   const handleSignUpFormSubmit = async (data) => {
-    const { name, email, password } = data;
     try {
+      const { firstName, lastName, email, password } = data;
+      const name = `${firstName} ${lastName}`;
+      setLoading(true);
+
+      // Step 1: Create user
       const userCredential = await createUser(email, password);
       const uid = userCredential?.user?.uid;
-      data.uid = uid;
-      await updateUserProfile(name);
-      await saveUser(data);
+      if (!uid) throw new Error("User creation failed");
+
+      // Step 2: Send API and update profile in parallel
+      await Promise.all([
+        axios.post(`${import.meta.env.VITE_FLOW_MRDIA_API}/api/user/signup`, {
+          name,
+          email,
+          uid,
+        }),
+        updateUserProfile(name),
+      ]);
+
+      // Step 3: Cleanup and redirect
       reset();
-      toast.success("sign up successfull");
       setLoading(false);
-      // redirect to home page
+      toast.success("Sign up successful!");
       navigate("/");
     } catch (error) {
+      console.error("Signup error:", error);
+      toast.error(error.message || "Sign up failed. Please try again.");
+    } finally {
       setLoading(false);
-      toast.error("Sign up failed. please try again later.", error);
     }
   };
 
   return (
     <section
-      className="flex flex-col items-center justify-center min-h-screen p-4"
+      className="flex flex-col items-center justify-center  w-full min-h-screen p-4 relative"
       style={{
         backgroundImage:
           "url('https://res.cloudinary.com/dzdfnuno8/image/upload/v1752337116/sports-bg_irqw9u.jpg')",
@@ -44,20 +60,20 @@ const SignUp = () => {
         backgroundPosition: "center",
       }}
     >
-      <div className="absolute inset-0 bg-[var(--background)]/80 pointer-events-none z-10"></div>
-      <div className="absolute top-[10%] left-[5%] z-20">
-        <a
-          className=" text-[var(--primary)]  font-semibold  flex items-center gap-2 hover:underline"
-          href="/"
+        <div className="absolute inset-0 bg-[var(--background)]/80 pointer-events-none z-10 "></div>
+      <div className="absolute top-4 left-4 md:top-[10%] md:left-[5%] z-20">
+        <Link
+          className=" text-[var(--primary)] text-xs md:text-base font-semibold  flex items-center gap-2 hover:underline"
+          to="/"
         >
           <FaArrowLeftLong />
           Back to Home
-        </a>
+        </Link>
       </div>
 
       {/* Logo */}
-      <div className="z-20 mb-8">
-        <img src="/logo.png" className="max-h-[80px]" alt="logo" />
+      <div className="z-20 my-4 md:mb-8">
+        <img src="/logo.png" className=" max-h-[60px] md:max-h-[80px]" alt="logo" />
       </div>
 
       {/* Login Card */}
@@ -70,19 +86,36 @@ const SignUp = () => {
           onSubmit={handleSubmit(handleSignUpFormSubmit)}
           className="flex flex-col space-y-4 z-20"
         >
-          {/* Name Field */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="label-text">
-              Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              {...register("name", { required: true })}
-              placeholder="Enter your name"
-              className="input-fild"
-              required
-            />
+          <div className=" flex flex-col md:flex-row items-center justify-center gap-2">
+            {/*First Name Field */}
+            <div className="flex flex-col gap-2 w-full">
+              <label htmlFor="name" className="label-text">
+                First Name
+              </label>
+              <input
+                type="text"
+                name="firstName"
+                {...register("firstName", { required: true })}
+                placeholder="Enter first name"
+                className="input-fild"
+                required
+              />
+            </div>
+
+            {/* Last Name Field */}
+            <div className="flex flex-col gap-2 w-full">
+              <label htmlFor="name" className="label-text">
+                Last Name
+              </label>
+              <input
+                type="text"
+                name="lastName"
+                {...register("lastName", { required: false })}
+                placeholder="Enter last name"
+                className="input-fild"
+                required
+              />
+            </div>
           </div>
           {/* Email Field */}
           <div className="flex flex-col gap-2">
@@ -167,12 +200,12 @@ const SignUp = () => {
           {/* Sign Up Link */}
           <p className="text-sm text-[var(--background)] text-center mt-2">
             Already have an account?
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="text-[var(--primary)] font-medium hover:underline"
             >
               Sign in
-            </a>
+            </Link>
           </p>
         </form>
       </div>
