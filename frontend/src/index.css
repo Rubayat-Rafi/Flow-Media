@@ -7,6 +7,8 @@ body {
   background: var(--background);
   color: var(--text);
   font-family: "Montserrat", sans-serif;
+  height: 100%;
+  width: 100%;
 }
 @theme {
   --background: #0c1117;

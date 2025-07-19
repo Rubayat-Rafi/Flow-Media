@@ -12,8 +12,8 @@ import LoadingSpinner from "../../components/Shared/LoadingSpinner";
 import { useSearchParams } from "react-router";
 import MainContent from "../../components/MianContent/MainContent";
 
-
 const Home = () => {
+  
   const { hideVideoFlag } = useSelector((state) => state?.Slice);
   const dispatch = useDispatch();
   const [selectedCategory, setSelectedCategory] = useState("Channel");
@@ -22,27 +22,32 @@ const Home = () => {
   const reqCategory = searchParams.get("q");
   const [isMounted, setIsMounted] = useState(false);
 
-
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  useEffect(() => {
-    if (!isMounted) return;
-    const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        document.body.style.overflow = "hidden";
-      } else {
-        dispatch(addVideoFlag(false));
-        document.body.style.overflow = "auto";
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => {
+
+
+useEffect(() => {
+  if (!isMounted) return;
+
+  const handleResize = () => {
+    if (window.innerWidth < 1024 && hideVideoFlag) {
+      document.body.style.overflow = "hidden";
+    } else {
+      dispatch(addVideoFlag(false));
       document.body.style.overflow = "auto";
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [hideVideoFlag, dispatch, isMounted]);
+    }
+  };
+
+  handleResize();
+  window.addEventListener("resize", handleResize);
+
+  return () => {
+    document.body.style.overflow = "auto";
+    window.removeEventListener("resize", handleResize);
+  };
+}, [hideVideoFlag, dispatch, isMounted]);
+
 
   const category = (selectCategory) => {
     setSelectedCategory(selectCategory);
@@ -63,8 +68,6 @@ const Home = () => {
     return <LoadingSpinner />;
   }
 
-
-
   return (
     <section className="space-y-6 pb-10 ">
       <SportsNav onSelectCategory={category} />
@@ -79,8 +82,8 @@ const Home = () => {
 
         <div
           className={` ${
-            !hideVideoFlag ? " max-lg:hidden" : "block"
-          } lg:w-6/8 max-lg:fixed top-0 left-0 right-0 z-20 relative h-full flex items-center justify-center max-lg:bg-black/50 backdrop-blur-xs  bottom-0 `}
+            !hideVideoFlag ? "max-lg:hidden" : "block"
+          } lg:w-6/8 max-lg:fixed top-0 left-0 right-0 bottom-0 z-20 max-lg:overflow-y-auto max-lg:h-screen flex items-center justify-center max-lg:bg-black/50 backdrop-blur-xs`}
         >
           <button
             onClick={handleClose}
