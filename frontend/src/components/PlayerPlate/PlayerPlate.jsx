@@ -5,16 +5,10 @@ import MatchCountdown from "../MatchCountdown/MatchCountdown";
 import { useSearchParams } from "react-router";
 import axios from "axios";
 
-
-
 const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
-
-  
-  const { defaultUrl } = useSelector((state) => state?.Slice);
+  const { defaultUrl, defaultChannel } = useSelector((state) => state?.Slice);
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("id");
-
-
   const { data: liveData, isLoading } = useQuery({
     queryKey: ["livePlay", categoryId],
     queryFn: async () => {
@@ -27,7 +21,6 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
     refetchInterval: 500,
     staleTime: 0,
   });
-
 
   const currentTimeUTC = new Date();
   const matchStartTime = new Date(liveData?.targetDate || null);
@@ -42,8 +35,6 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
     liveData?.category === "Channel" && !!liveData?.channelURL;
   const showDefaultStream =
     !showMatchStream && !showChannelStream && !isLoading && !showCountdown;
-
-
 
   return (
     <div className="h-full relative ">
@@ -73,6 +64,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
           user={user}
           trialActive={trialActive}
           trialTimeLeft={trialTimeLeft}
+          videoId={categoryId}
         />
       )}
 
@@ -83,6 +75,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
           user={user}
           trialActive={trialActive}
           trialTimeLeft={trialTimeLeft}
+          videoId={categoryId}
         />
       )}
 
@@ -93,6 +86,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
           user={user}
           trialActive={trialActive}
           trialTimeLeft={trialTimeLeft}
+          videoId={categoryId || defaultChannel?._id}
         />
       )}
     </div>

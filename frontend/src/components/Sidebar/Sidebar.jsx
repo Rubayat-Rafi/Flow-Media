@@ -163,11 +163,15 @@ const ChannelCard = ({
       >
         <div className="space-x-3 flex items-center">
           <div className="h-8 w-8">
-            <img
-              src={ch?.channelLogo}
-              alt={ch?.channelName}
-              className="w-full h-full object-cover rounded"
-            />
+            {ch?.channelLogo ? (
+              <img
+                src={ch?.channelLogo}
+                alt={ch?.channelName}
+                className="w-full h-full object-cover rounded"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-200 rounded">No Logo</div>
+            )}
           </div>
           <h3 className="font-medium text-sm">{ch?.channelName}</h3>
         </div>

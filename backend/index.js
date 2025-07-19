@@ -10,7 +10,8 @@ const paymentRoutes = require("./routes/payments.routes.js");
 const freeTrialRoutes = require("./routes/freeTrial.routes.js");
 const pricingRoutes = require("./routes/pricing.routes.js");
 const affiliateRoutes = require("./routes/affiliate.routes.js");
-const verifyToken = require("./middlewares/verifyToken.js");
+const pseudocodeRoutes = require("./routes/pseudocode.routes.js");
+
 
 const app = express();
 const PORT = process.env.PORT;
@@ -19,7 +20,6 @@ const PORT = process.env.PORT;
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
-
 // Routes
 app.use("/api/user", userRoutes);
 app.use("/api/users", userRoutes);
@@ -29,6 +29,9 @@ app.use("/api", pricingRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/free-trial", freeTrialRoutes);
 app.use("/api/affiliate", affiliateRoutes);
+app.use("/api/proxy", pseudocodeRoutes);
+
+
 
 // Root route
 app.get("/", (req, res) => {
@@ -39,8 +42,8 @@ app.get("/", (req, res) => {
   res.send(response);
 });
 
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
-module.exports = app;
+// module.exports = app;
