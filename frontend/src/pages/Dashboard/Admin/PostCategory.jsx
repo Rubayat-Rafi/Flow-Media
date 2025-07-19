@@ -14,12 +14,10 @@ const PostCategory = () => {
 
   const handlePostCategoryForm = async (data) => {
     try {
-      // ✅ Conditionally add type field for Channel
       if (selectedCategory === "Channel") {
         data.type = isFree ? "free" : "paid";
       }
 
-      // ✅ Format targetDate if it's an Event
       if (selectedCategory && selectedCategory !== "Channel") {
         if (data.matchDate && data.matchTime) {
           const localDate = new Date(`${data.matchDate}T${data.matchTime}:00`);
@@ -38,7 +36,7 @@ const PostCategory = () => {
       const res = await axiosSecure.post("/api/category", data);
       if (res.status === 201) {
         reset();
-        setIsFree(false); // ✅ reset checkbox
+        setIsFree(false); 
         toast.success("Post successfully");
       } else {
         toast.error("Failed to post category");

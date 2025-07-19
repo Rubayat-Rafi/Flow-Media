@@ -14,12 +14,12 @@ const MainLayout = () => {
   if (isLoading || loading) return <LoadingSpinner />;
 
   return (
-    <section>
+    <section className="">
       <header>
         <Navbar />
       </header>
 
-      <main className="min-h-[calc(100vh-232px)]">
+      <main className="min-h-[calc(100vh-232px)] overflow-y-auto">
         <Outlet />
       </main>
       <Footer />

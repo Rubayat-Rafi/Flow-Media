@@ -1,7 +1,11 @@
 import {
+  GiAmericanFootballPlayer,
   GiBaseballGlove,
   GiBoxingGloveSurprise,
+  GiCowboyBoot,
+  GiCurlingStone,
   GiHockey,
+  GiSoccerBall,
 } from "react-icons/gi";
 import {
   IoBasketballSharp,
@@ -19,6 +23,13 @@ import { PiBoxingGloveBold } from "react-icons/pi";
 export const Categories = [
   { name: "Channel", Icon: MdOutlineLiveTv },
   { name: "Football", Icon: IoFootball },
+  { name: "Soccer", Icon: GiSoccerBall },
+  { name: "NBA", Icon: IoBasketballSharp },
+  { name: "Rugby", Icon: GiAmericanFootballPlayer },
+  { name: "Curling", Icon: GiCurlingStone },
+  { name: "WNBA", Icon: IoBasketballSharp },
+  { name: "Rodeo", Icon: GiCowboyBoot },
+  { name: "GAA", Icon: GiSoccerBall },
   { name: "Cricket", Icon: MdSportsCricket },
   { name: "Basketball", Icon: IoBasketballSharp },
   { name: "Tennis", Icon: MdSportsTennis },
