@@ -48,7 +48,7 @@ const Sidebar = ({ channels }) => {
       : [];
 
   return (
-    <aside className="bg-[var(--secondary)] max-h-[600px] overflow-y-scroll rounded-md shadow-lg overflow-hidden h-full p-3 border border-[var(--text)]/10">
+    <aside className="bg-[var(--secondary)] h-full max-h-[500px]  md:max-h-[600px] overflow-y-scroll rounded-md shadow-lg overflow-hidden p-3 border border-[var(--text)]/10">
       <div className="space-y-3">
         {/* Show active channel card on top even outside of current category */}
         {activeIsChannel && (
