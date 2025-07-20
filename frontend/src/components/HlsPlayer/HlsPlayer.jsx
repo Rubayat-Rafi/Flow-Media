@@ -9,11 +9,23 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
   const { events } = useSelector((state) => state?.Slice);
   const isMp4 = src.endsWith(".mp4");
   const isM3u8 = src.endsWith(".m3u8");
+
+  // how can i define that all embeded video is run
+
   const isEmbed =
-    src.includes("youtube.com") ||
-    src.includes("vimeo.com") ||
+    src.includes(".com") ||
     src.includes("embed") ||
-    src.includes("player.php");
+    src.includes(".php") ||
+    src.includes("play.html");
+
+  // const isEmbed =
+  //   src.includes("youtube.com") ||
+  //   src.includes("vimeo.com") ||
+  //   src.includes("embed") ||
+  //   src.includes("player.php") ||
+  //   src.includes('play.html')||
+  //   src.includes('play.php');
+
   const tryAutoPlay = async () => {
     const video = videoRef.current;
     if (!video) return;
@@ -162,6 +174,27 @@ const HlsPlayer = ({ src, user, trialActive, trialTimeLeft }) => {
 
 export default HlsPlayer;
 
+
+
+
+// function loadStream(stream) {
+//         container.innerHTML = ''; 
+    
+//         if (stream.stream_type === 'embed' || stream.stream_type === 'iframe') {
+//             const iframe = document.createElement('iframe');
+//             iframe.src = stream.stream_url;
+//             iframe.setAttribute('allowfullscreen', '');
+//             iframe.setAttribute('webkitallowfullscreen', '');
+//             iframe.setAttribute('mozallowfullscreen', '');
+//             iframe.setAttribute('allow', 'autoplay; fullscreen');
+//             iframe.style.border = 'none';
+//             container.appendChild(iframe);
+//         }
+
+
+
+
+
 // import { useEffect, useRef, useState } from "react";
 // import shaka from "shaka-player";
 // import { useSelector } from "react-redux";
@@ -177,7 +210,7 @@ export default HlsPlayer;
 //   const isM3u8 = src.endsWith(".m3u8");
 //   const [streamToken, isLoading] = useProxyToken();
 //   const token = streamToken?.token;
-//   let validUrl = src; 
+//   let validUrl = src;
 //   if (!isLoading && videoId && token && isM3u8) {
 //     validUrl = `${
 //       import.meta.env.VITE_FLOW_MRDIA_API
@@ -369,3 +402,7 @@ export default HlsPlayer;
 // };
 
 // export default HlsPlayer;
+
+
+
+
