@@ -46,31 +46,43 @@ const MainContent = () => {
   const [trialActive, setTrialActive] = useState(false);
   const [trialTimeLeft, setTrialTimeLeft] = useState(60);
   const [pricing] = usePricing();
-  const [pid, setPid] = useState(null);
-  const [worker, setWorker] = useState(null);
+
+
+const [pid, setPid] = useState(4);
+const [worker, setWorker] = useState("member");
+
+const categoryId = searchParams.get("id");
+
+// Store search params in localStorage when available
+useEffect(() => {
+  const pid = searchParams.get("pid");
+  const sub6 = searchParams.get("sub6");
+  if (pid && sub6) {
+    localStorage.setItem("pid", pid);
+    localStorage.setItem("worker", sub6);
+    setPid(Number(pid));       // Also update the state from searchParams
+    setWorker(sub6);
+  }
+}, [searchParams]);
+
+// Load from localStorage on initial mount ONLY
+useEffect(() => {
+  const storedPid = localStorage.getItem("pid");
+  const storedWorker = localStorage.getItem("worker");
+
+  if (storedPid && storedWorker) {
+    setPid(Number(storedPid));
+    setWorker(storedWorker);
+  }
+}, []); // empty dependency array – run once only on mount
+  
+  
+  
+  
   const channelDataFilter = categorys?.filter(
     (item) => item?.category === "Channel"
   );
-  const categoryId = searchParams.get("id");
 
-
-  useEffect(() => {
-    const pid = searchParams.get("pid");
-    const sub6 = searchParams.get("sub6");
-    if (pid) {
-      localStorage.setItem("pid", pid);
-      localStorage.setItem("worker", sub6);
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
-    const storedPid = localStorage.getItem("pid");
-    const storedWorker = localStorage.getItem("worker");
-    if (storedPid && storedWorker) {
-      setPid(storedPid);
-      setWorker(storedWorker);
-    }
-  }, [pid, worker]);
   const filterChannel = channelDataFilter.find(
     (item) => item?._id === categoryId
   );
