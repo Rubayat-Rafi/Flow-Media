@@ -9,6 +9,9 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
   const { defaultUrl, defaultChannel } = useSelector((state) => state?.Slice);
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("id");
+  const category = searchParams.get("q");
+  console.log(category);
+  console.log(categoryId);
   const { data: liveData, isLoading } = useQuery({
     queryKey: ["livePlay", categoryId],
     queryFn: async () => {
@@ -34,7 +37,12 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
   const showChannelStream =
     liveData?.category === "Channel" && !!liveData?.channelURL;
   const showDefaultStream =
-    !showMatchStream && !showChannelStream && !isLoading && !showCountdown;
+    !showMatchStream &&
+    !showChannelStream &&
+    !isLoading &&
+    !showCountdown &&
+    !category &&
+    !categoryId;
 
   return (
     <div className="h-full relative ">
