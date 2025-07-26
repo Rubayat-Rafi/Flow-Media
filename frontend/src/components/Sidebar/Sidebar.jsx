@@ -48,7 +48,7 @@ const Sidebar = ({ channels }) => {
       : [];
 
   return (
-    <aside className="bg-[var(--secondary)] h-full max-h-[500px]  md:max-h-[600px] overflow-y-scroll rounded-md shadow-lg overflow-hidden p-3 border border-[var(--text)]/10">
+    <aside className="bg-[var(--secondary)] h-full max-h-[600px] overflow-y-scroll rounded-md shadow-lg overflow-hidden p-3 border border-[var(--text)]/10">
       <div className="space-y-3">
         {/* Show active channel card on top even outside of current category */}
         {activeIsChannel && (
@@ -125,10 +125,10 @@ const Sidebar = ({ channels }) => {
 
         {allChannelsToShow?.length === 0 && (
           <div className="flex items-center flex-col text-center justify-center py-6">
-            <h6 className="text-base font-semibold text-gray-400">
+            <h6 className="text-sm lg:text-base font-semibold text-gray-400">
               There are no events today
             </h6>
-            <p className="text-xs text-gray-400">
+            <p className="text-[10px] lg:text-xs text-gray-400">
               Come back tomorrow or pick another sport
             </p>
           </div>
@@ -162,7 +162,7 @@ const ChannelCard = ({
         `}
       >
         <div className="space-x-3 flex items-center">
-          <div className="h-8 w-8">
+          <div className="w-6 h-6 lg:h-8 lg:w-8">
             {ch?.channelLogo ? (
               <img
                 src={ch?.channelLogo}
@@ -170,10 +170,10 @@ const ChannelCard = ({
                 className="w-full h-full object-cover rounded"
               />
             ) : (
-              <div className="w-full h-full bg-gray-200 rounded">No Logo</div>
+              <div className="w-full h-full bg-gray-200 rounded text-[8px]">No Logo</div>
             )}
           </div>
-          <h3 className="font-medium text-sm">{ch?.channelName}</h3>
+          <h3 className="font-medium text-[10px] md:text-sm">{ch?.channelName}</h3>
         </div>
         <button
           onClick={() => {
@@ -197,7 +197,7 @@ const ChannelCard = ({
               : ch?._id === categoryId
               ? "bg-red-500 text-[var(--text)]"
               : "bg-[var(--primary)]"
-          } cursor-pointer px-2 py-1 rounded-md text-[var(--background)] font-medium text-xs transition duration-300`}
+          } cursor-pointer px-1 py-0.5 md:px-2 md:py-1 rounded md:rounded-md text-[var(--background)] font-medium text-[8px] md:text-xs transition duration-300`}
         >
           {!category && !categoryId && index === 0
             ? "watching"

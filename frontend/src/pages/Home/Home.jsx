@@ -31,7 +31,7 @@ useEffect(() => {
   if (!isMounted) return;
 
   const handleResize = () => {
-    if (window.innerWidth < 1024 && hideVideoFlag) {
+    if (window.innerWidth < 768 && hideVideoFlag) {
       document.body.style.overflow = "hidden";
     } else {
       dispatch(addVideoFlag(false));
@@ -72,22 +72,21 @@ useEffect(() => {
     <section className="space-y-6 pb-10 ">
       <SportsNav onSelectCategory={category} />
 
-      <div className="max-w-[1500px] w-full mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col-reverse lg:flex-row gap-6 h-full">
+      <div className="max-w-[1500px] w-full mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-col-reverse  sm:flex-row gap-2 md:gap-6 h-full">
         {/* Sidebar - Always visible on desktop, modal on mobile */}
-        <div className="w-full lg:w-2/8">
+        <div className="w-full sm:w-3/8 md:w-2/8">
           <Sidebar sidebarContent={selectedCategory} channels={categorys} />
         </div>
 
         {/* Main content */}
-
         <div
           className={` ${
-            !hideVideoFlag ? "max-lg:hidden" : "block"
-          } lg:w-6/8 max-lg:fixed top-0 left-0 right-0 bottom-0 z-20 max-lg:overflow-y-auto max-lg:h-screen flex items-center justify-center max-lg:bg-black/50 backdrop-blur-xs`}
+            !hideVideoFlag ? "max-sm:hidden" : "block"
+          }  w-full sm:w-5/8 md:w-6/8 max-sm:fixed top-0 left-0 right-0 bottom-0 z-20 max-sm:overflow-y-auto max-sm:h-screen flex items-center justify-center max-sm:bg-black/50 backdrop-blur-xs`}
         >
           <button
             onClick={handleClose}
-            className=" lg:hidden hover:bg-red-600 absolute right-5 top-5 p-2  rounded-full cursor-pointer  bg-[var(--primary)]"
+            className=" sm:hidden hover:bg-red-600 absolute right-5 top-5 p-2  rounded-full cursor-pointer  bg-[var(--primary)]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +103,7 @@ useEffect(() => {
           </button>
 
           <div
-            className={`w-full flex items-center justify-center z-20 max-lg:px-2`}
+            className={`w-full flex items-center justify-center z-20 max-sm:px-2`}
           >
             <MainContent />
           </div>

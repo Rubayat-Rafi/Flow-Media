@@ -1,4 +1,4 @@
-import { useLocation } from "react-router";
+import { Link, useLocation } from "react-router";
 import Container from "./Shared/Container";
 
 const Footer = () => {
@@ -28,6 +28,10 @@ const Footer = () => {
               <a href="#" className="link_css">
                 Privacy Policy
               </a>
+              |
+              <Link to='/subscription' className="link_css">
+                Pricing
+              </Link>
               |
               <a href="https://pub.adsflowmedia.com/panel/auth/register" className="link_css">
                 Affiliates

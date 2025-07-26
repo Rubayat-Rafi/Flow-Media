@@ -12,6 +12,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
   const category = searchParams.get("q");
   console.log(category);
   console.log(categoryId);
+
   const { data: liveData, isLoading } = useQuery({
     queryKey: ["livePlay", categoryId],
     queryFn: async () => {
@@ -61,6 +62,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
             matchDate={liveData.matchDate}
             matchId={liveData?._id}
             targetDate={liveData?.targetDate}
+            user={user}
           />
         )}
       </div>

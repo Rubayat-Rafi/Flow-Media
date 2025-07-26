@@ -8,8 +8,9 @@ import {
   convertMatchDateZone,
   convertMatchTimeByTimeZone,
 } from "../TimeZone/ConvertMatchTimeByTimeZone";
+import { Link } from "react-router";
 
-const MatchCountdown = ({ matchId, targetDate }) => {
+const MatchCountdown = ({ matchId, targetDate, user }) => {
   const [timeLeft, setTimeLeft] = useState(null);
   const [hasUpdated, setHasUpdated] = useState(false);
   const { events, timeZone } = useSelector((state) => state?.Slice);
@@ -90,25 +91,17 @@ const MatchCountdown = ({ matchId, targetDate }) => {
 
   return (
     <div
-      style={{ backgroundImage: "url('https://res.cloudinary.com/dzdfnuno8/image/upload/v1752337122/count-bg_jaffwd.jpg')" }}
+      style={{
+        backgroundImage:
+          "url('https://res.cloudinary.com/dzdfnuno8/image/upload/v1752337122/count-bg_jaffwd.jpg')",
+      }}
       className="w-full max-h-[600px] h-full flex items-center justify-center relative bg-cover bg-center"
     >
-      {/* Background Image */}
-      {/* <div className="absolute inset-0 z-0">
-        <img
-          src="/count-bg.jpg"
-          alt="Stadium background"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/70" />
-      </div> */}
-        <div className="absolute inset-0 bg-black/70" />
+      <div className="absolute inset-0 bg-black/70" />
 
       {/* Countdown Content */}
       <div className="relative z-10 h-full w-full flex flex-col items-center justify-center text-white p-6 rounded-lg text-center">
-        <h3 className="font-bold text-2xl md:text-3xl">
-          {events?.category}
-        </h3>
+        <h3 className="font-bold text-2xl md:text-3xl">{events?.category}</h3>
 
         <div className="flex flex-col items-center w-full">
           <div className="flex items-center justify-center gap-8 md:gap-16 w-full mb-8">
@@ -116,7 +109,7 @@ const MatchCountdown = ({ matchId, targetDate }) => {
               <img
                 src={events?.team1Image}
                 alt={events?.teamA}
-                className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2 bg-amber-200"
+                className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2"
               />
               <h4 className="text-xl font-semibold">{events?.teamA}</h4>
             </div>
@@ -126,7 +119,7 @@ const MatchCountdown = ({ matchId, targetDate }) => {
               {days > 0 && (
                 <div className="mb-4">
                   <span className="text-3xl md:text-4xl font-bold">
-                  In  {days} Days
+                    In {days} Days
                   </span>
                 </div>
               )}
@@ -136,7 +129,7 @@ const MatchCountdown = ({ matchId, targetDate }) => {
               <img
                 src={events?.team2Image}
                 alt={events?.teamB}
-                className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2 bg-amber-200"
+                className="w-24 h-24 md:w-32 md:h-32 object-contain mb-2"
               />
               <h4 className="text-xl font-semibold">{events?.teamB}</h4>
             </div>
@@ -165,6 +158,14 @@ const MatchCountdown = ({ matchId, targetDate }) => {
             </p>
           </div>
         </div>
+
+        {user?.subscribe === false && (
+          <div className="mt-8 ">
+            <Link to={"/subscription"} className="primary-btn">
+              Get Subscription
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

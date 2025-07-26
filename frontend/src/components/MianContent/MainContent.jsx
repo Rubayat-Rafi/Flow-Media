@@ -48,33 +48,61 @@ const MainContent = () => {
   const [pricing] = usePricing();
 
 
-const [pid, setPid] = useState(4);
-const [worker, setWorker] = useState("member");
+// const [pid, setPid] = useState(4);
+// const [worker, setWorker] = useState("member");
 
-const categoryId = searchParams.get("id");
+// const categoryId = searchParams.get("id");
 
 // Store search params in localStorage when available
-useEffect(() => {
-  const pid = searchParams.get("pid");
-  const sub6 = searchParams.get("sub6");
-  if (pid && sub6) {
-    localStorage.setItem("pid", pid);
-    localStorage.setItem("worker", sub6);
-    setPid(Number(pid));       // Also update the state from searchParams
-    setWorker(sub6);
-  }
-}, [searchParams]);
+// useEffect(() => {
+//   const pid = searchParams.get("pid");
+//   const sub6 = searchParams.get("sub6");
+//   if (pid && sub6) {
+//     localStorage.setItem("pid", pid);
+//     localStorage.setItem("worker", sub6);
+//     setPid(Number(pid));       
+//     // Also update the state from searchParams
+//     setWorker(sub6);
+//   }
+// }, [searchParams]);
 
 // Load from localStorage on initial mount ONLY
-useEffect(() => {
-  const storedPid = localStorage.getItem("pid");
-  const storedWorker = localStorage.getItem("worker");
+// useEffect(() => {
+//   const storedPid = localStorage.getItem("pid");
+//   const storedWorker = localStorage.getItem("worker");
+//   if (storedPid && storedWorker) {
+//     setPid(Number(storedPid));
+//     setWorker(storedWorker);
+//   }
+// }, []); 
+// empty dependency array – run once only on mount
 
-  if (storedPid && storedWorker) {
-    setPid(Number(storedPid));
-    setWorker(storedWorker);
-  }
-}, []); // empty dependency array – run once only on mount
+
+
+
+  const [pid, setPid] = useState(4);
+  const [worker, setWorker] = useState('member');
+
+  const categoryId = searchParams.get("id");
+  
+  
+  useEffect(() => {
+    const pid = searchParams.get("pid");
+    const sub6 = searchParams.get("sub6");
+    if (pid) {
+      localStorage.setItem("pid", pid);
+      localStorage.setItem("worker", sub6);
+    }
+  }, [searchParams]);
+  
+  useEffect(() => {
+    const storedPid = localStorage.getItem("pid");
+    const storedWorker = localStorage.getItem("worker");
+    if (storedPid && storedWorker) {
+      setPid(storedPid);
+      setWorker(storedWorker);
+    }
+  }, [pid, worker]);
   
   
   
@@ -128,7 +156,7 @@ useEffect(() => {
 
   return (
     <Subscription
-      className={`w-full lg:h-[600px]  ${
+      className={`w-full max-h-[600px] sm:h-[600px] h-full ${
         !subscription && "bg-[var(--secondary)] rounded-lg"
       }`}
     >
