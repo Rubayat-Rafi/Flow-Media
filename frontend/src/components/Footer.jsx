@@ -21,24 +21,29 @@ const Footer = () => {
               </p>
             </div>
             <div className="flex flex-wrap gap-4">
-              <a href="#" className="link_css">
+              <Link to="/terms-and-condition" className="link_css">
                 Terms And Conditions
-              </a>
+              </Link>
               |
-              <a href="#" className="link_css">
+              <Link to="/privacy-policy" className="link_css">
                 Privacy Policy
-              </a>
+              </Link>
               |
-              <Link to='/subscription' className="link_css">
+              <Link to="/subscription" className="link_css">
                 Pricing
               </Link>
               |
-              <a href="https://pub.adsflowmedia.com/panel/auth/register" className="link_css">
+              <Link to="/refund-policy" className="link_css">
+                Refund Policy
+              </Link>
+              |
+              <Link
+                target="_blank"
+                to="https://pub.adsflowmedia.com/panel/auth/register"
+                className="link_css"
+              >
                 Affiliates
-              </a>
-              {/* <a href="/affiliate" className="link_css">
-                Affiliates
-              </a> */}
+              </Link>
               |
               <a href="#" className="link_css">
                 Contact Us

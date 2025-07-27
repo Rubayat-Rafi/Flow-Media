@@ -19,6 +19,9 @@ import AddPricing from "../pages/Dashboard/Admin/AddPricing";
 import Pricing from "../pages/Dashboard/Admin/Pricing";
 import GiveSubscription from "../pages/Dashboard/Admin/GiveSubscription";
 import Subscription from "../pages/SubscriptionPage/Subscription";
+import TermsAndConditions from "../pages/TermsAndConditions/TermsAndConditions";
+import PrivacyPolicy from "../pages/PrivacyPolicy/PrivacyPolicy";
+import RefundPolicy from "../pages/RefundPolicy/RefundPolicy";
 // import Affiliate from "../pages/Affiliate/Affiliate";
 // import ManageAffiliate from "../pages/Dashboard/Admin/ManageAffiliate";
 // import ViewAffiliate from "../pages/Dashboard/Admin/ViewAffiliate";
@@ -47,6 +50,18 @@ export const router = createBrowserRouter([
       {
         path: "/subscription",
         element: <Subscription />,
+      },
+      {
+        path: "/terms-and-condition",
+        element: <TermsAndConditions />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "/refund-policy",
+        element: <RefundPolicy />,
       },
       {
         path: "/dashboard",
