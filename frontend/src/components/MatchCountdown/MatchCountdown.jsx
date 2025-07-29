@@ -3,7 +3,7 @@ import { MdOutlineAccessTime } from "react-icons/md";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
-
+import useUserData from "../../hooks/useUserData";
 import {
   convertMatchDateZone,
   convertMatchTimeByTimeZone,
@@ -14,6 +14,9 @@ const MatchCountdown = ({ matchId, targetDate, user }) => {
   const [timeLeft, setTimeLeft] = useState(null);
   const [hasUpdated, setHasUpdated] = useState(false);
   const { events, timeZone } = useSelector((state) => state?.Slice);
+  const [userData, isLoading] = useUserData();
+  // console.log(userData?.subscribe)
+  console.log(isLoading);
 
   // Extract GMT offset from string (e.g., GMT+6 or GMT-5)
   const offsetMatch = timeZone?.match(/GMT([+-]?\d+)/);
@@ -159,7 +162,7 @@ const MatchCountdown = ({ matchId, targetDate, user }) => {
           </div>
         </div>
 
-        {user?.subscribe === false && (
+        {!isLoading && userData?.subscribe === false && (
           <div className="mt-8 ">
             <Link to={"/subscription"} className="primary-btn">
               Get Subscription

@@ -4,15 +4,14 @@ import HlsPlayer from "../HlsPlayer/HlsPlayer";
 import MatchCountdown from "../MatchCountdown/MatchCountdown";
 import { useSearchParams } from "react-router";
 import axios from "axios";
-
+import useUserData from "../../hooks/useUserData";
+import Pricing from "../Pricing/Pricing";
 const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
   const { defaultUrl, defaultChannel } = useSelector((state) => state?.Slice);
   const [searchParams] = useSearchParams();
   const categoryId = searchParams.get("id");
-  const category = searchParams.get("q");
-  console.log(category);
-  console.log(categoryId);
-
+  const [userData] = useUserData();
+  const isSubscribed = userData?.subscribe;
   const { data: liveData, isLoading } = useQuery({
     queryKey: ["livePlay", categoryId],
     queryFn: async () => {
@@ -22,53 +21,43 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
       return data;
     },
     enabled: !!categoryId,
-    refetchInterval: 500,
+    refetchInterval: 500, 
     staleTime: 0,
   });
 
   const currentTimeUTC = new Date();
-  const matchStartTime = new Date(liveData?.targetDate || null);
-  const showCountdown =
+  const matchStartTime = liveData?.targetDate
+    ? new Date(liveData?.targetDate)
+    : null;
+
+  const beforeMatch =
     matchStartTime &&
     currentTimeUTC < matchStartTime &&
     liveData?.matchTime &&
     liveData?.matchDate;
-  const showMatchStream =
-    matchStartTime && currentTimeUTC >= matchStartTime && !!liveData?.matchUrl;
-  const showChannelStream =
-    liveData?.category === "Channel" && !!liveData?.channelURL;
-  const showDefaultStream =
-    !showMatchStream &&
-    !showChannelStream &&
-    !isLoading &&
-    !showCountdown &&
-    !category &&
-    !categoryId;
-
-  return (
-    <div className="h-full relative ">
-      {/*Loading State */}
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-50">
-          <div className=" loading loading-spinner loading-md"></div>
-        </div>
-      )}
-
-      {/* Countdown Timer */}
-      <div className="absolute top-0 right-0 bottom-0 left-0">
-        {showCountdown && (
-          <MatchCountdown
-            matchTime={liveData.matchTime}
-            matchDate={liveData.matchDate}
-            matchId={liveData?._id}
-            targetDate={liveData?.targetDate}
-            user={user}
-          />
-        )}
+  const afterMatch =
+    matchStartTime && currentTimeUTC >= matchStartTime;
+  if (isLoading) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-50">
+        <div className="loading loading-spinner loading-md"></div>
       </div>
-
-      {/* Match Streaming */}
-      {showMatchStream && (
+    );
+  }
+  if (isSubscribed) {
+    if (beforeMatch) {
+      return (
+        <MatchCountdown
+          matchTime={liveData?.matchTime}
+          matchDate={liveData?.matchDate}
+          matchId={liveData?._id}
+          targetDate={liveData?.targetDate}
+          user={user}
+        />
+      );
+    }
+    if (afterMatch && liveData?.matchUrl) {
+      return (
         <HlsPlayer
           src={liveData.matchUrl}
           user={user}
@@ -76,10 +65,10 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
           trialTimeLeft={trialTimeLeft}
           videoId={categoryId}
         />
-      )}
-
-      {/* Channel Streaming */}
-      {showChannelStream && (
+      );
+    }
+    if (liveData?.category === "Channel" && liveData?.channelURL) {
+      return (
         <HlsPlayer
           src={liveData.channelURL}
           user={user}
@@ -87,20 +76,41 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
           trialTimeLeft={trialTimeLeft}
           videoId={categoryId}
         />
-      )}
+      );
+    }
+    return (
+      <HlsPlayer
+        src={defaultUrl}
+        user={user}
+        trialActive={trialActive}
+        trialTimeLeft={trialTimeLeft}
+        videoId={categoryId || defaultChannel?._id}
+      />
+    );
+  }
 
-      {/* Fallback */}
-      {showDefaultStream && (
-        <HlsPlayer
-          src={defaultUrl}
+  if (!isSubscribed) {
+    if (liveData?.category === "Channel") {
+      return <Pricing />;
+    }
+    if (beforeMatch) {
+      return (
+        <MatchCountdown
+          matchTime={liveData?.matchTime}
+          matchDate={liveData?.matchDate}
+          matchId={liveData?._id}
+          targetDate={liveData?.targetDate}
           user={user}
-          trialActive={trialActive}
-          trialTimeLeft={trialTimeLeft}
-          videoId={categoryId || defaultChannel?._id}
         />
-      )}
-    </div>
-  );
+      );
+    }
+
+    if (afterMatch) {
+      return <Pricing />;
+    }
+    return <Pricing />;
+  }
+  return null;
 };
 
 export default PlayerPlate;
