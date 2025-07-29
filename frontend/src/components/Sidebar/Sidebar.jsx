@@ -16,10 +16,10 @@ const Sidebar = ({ channels }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [activeChannel, setActiveChannel] = useState(null);
+  const [activeMatchId, setActiveMatchId] = useState(null); // ✅ Track the active schedule
   const [searchParams] = useSearchParams();
   const category = searchParams.get("q");
   const categoryId = searchParams.get("id");
-  const event_name = categoryId || null;
   const cat = category || "Channel";
 
   const filteredChannels = channels?.filter((ch) => ch.category === cat);
@@ -73,8 +73,9 @@ const Sidebar = ({ channels }) => {
             url={url}
             timeZone={timeZone}
             navigate={navigate}
-            event_name={event_name}
             user={user}
+            activeMatchId={activeMatchId}
+            setActiveMatchId={setActiveMatchId}
           />
         )}
 
@@ -115,8 +116,9 @@ const Sidebar = ({ channels }) => {
                     url={url}
                     timeZone={timeZone}
                     navigate={navigate}
-                    event_name={event_name}
                     user={user}
+                    activeMatchId={activeMatchId}
+                    setActiveMatchId={setActiveMatchId}
                   />
                 ))}
               </div>
@@ -170,7 +172,9 @@ const ChannelCard = ({
                 className="w-full h-full object-cover rounded"
               />
             ) : (
-              <div className="w-full h-full bg-gray-200 rounded text-[8px]">No Logo</div>
+              <div className="w-full h-full bg-gray-200 rounded text-[8px]">
+                No Logo
+              </div>
             )}
           </div>
           <h3 className="font-medium text-[10px] md:text-sm">{ch?.channelName}</h3>
@@ -217,8 +221,9 @@ const SheduleCard = ({
   url,
   timeZone,
   navigate,
-  event_name,
   user,
+  activeMatchId,
+  setActiveMatchId,
 }) => {
   const [isLive, setIsLive] = useState(false);
 
@@ -233,9 +238,9 @@ const SheduleCard = ({
     const interval = setInterval(checkLiveStatus, 60000);
 
     return () => clearInterval(interval);
-  }, [ch?.matchTime, ch?.matchDate]);
+  }, [ch?.targetDate]);
 
-  const isWatching = url === ch?.matchUrl || ch?._id === event_name;
+  const isWatching = activeMatchId === ch?._id; // ✅ Only highlight the clicked one
 
   return (
     <div
@@ -271,13 +276,11 @@ const SheduleCard = ({
             onClick={() => {
               if (!user) {
                 toast.error("Login for full access!", {
-                  style: {
-                    background: "red",
-                    color: "#fff",
-                  },
+                  style: { background: "red", color: "#fff" },
                   position: "bottom-center",
                 });
               } else {
+                setActiveMatchId(ch?._id); // ✅ Track only this schedule
                 setActiveChannel(ch);
                 dispatch(addVideoFlag(true));
                 dispatch(addUrl(ch?.matchUrl));
