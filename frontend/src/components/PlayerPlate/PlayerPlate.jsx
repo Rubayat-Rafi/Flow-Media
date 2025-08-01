@@ -12,6 +12,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
   const categoryId = searchParams.get("id");
   const [userData] = useUserData();
   const isSubscribed = userData?.subscribe;
+
   const { data: liveData, isLoading } = useQuery({
     queryKey: ["livePlay", categoryId],
     queryFn: async () => {
@@ -21,7 +22,7 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
       return data;
     },
     enabled: !!categoryId,
-    refetchInterval: 500, 
+    refetchInterval: 500,
     staleTime: 0,
   });
 
@@ -35,8 +36,10 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
     currentTimeUTC < matchStartTime &&
     liveData?.matchTime &&
     liveData?.matchDate;
+
   const afterMatch =
     matchStartTime && currentTimeUTC >= matchStartTime;
+
   if (isLoading) {
     return (
       <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-50">
@@ -44,6 +47,25 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
       </div>
     );
   }
+
+  // ✅ Priority: if trial is active, show video
+  if (trialActive) {
+    return (
+      <HlsPlayer
+        src={
+          liveData?.matchUrl ||
+          liveData?.channelURL ||
+          defaultUrl
+        }
+        user={user}
+        trialActive={trialActive}
+        trialTimeLeft={trialTimeLeft}
+        videoId={categoryId || defaultChannel?._id}
+      />
+    );
+  }
+
+  // ✅ If subscribed
   if (isSubscribed) {
     if (beforeMatch) {
       return (
@@ -61,8 +83,6 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
         <HlsPlayer
           src={liveData.matchUrl}
           user={user}
-          trialActive={trialActive}
-          trialTimeLeft={trialTimeLeft}
           videoId={categoryId}
         />
       );
@@ -72,8 +92,6 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
         <HlsPlayer
           src={liveData.channelURL}
           user={user}
-          trialActive={trialActive}
-          trialTimeLeft={trialTimeLeft}
           videoId={categoryId}
         />
       );
@@ -82,17 +100,12 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
       <HlsPlayer
         src={defaultUrl}
         user={user}
-        trialActive={trialActive}
-        trialTimeLeft={trialTimeLeft}
         videoId={categoryId || defaultChannel?._id}
       />
     );
   }
 
   if (!isSubscribed) {
-    if (liveData?.category === "Channel") {
-      return <Pricing />;
-    }
     if (beforeMatch) {
       return (
         <MatchCountdown
@@ -104,12 +117,9 @@ const PlayerPlate = ({ user, trialActive, trialTimeLeft }) => {
         />
       );
     }
-
-    if (afterMatch) {
-      return <Pricing />;
-    }
     return <Pricing />;
   }
+
   return null;
 };
 
